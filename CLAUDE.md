@@ -1,0 +1,1 @@
+Olá Claude, esse será o projeto das nossas vidas.
