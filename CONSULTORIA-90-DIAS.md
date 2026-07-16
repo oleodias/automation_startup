@@ -1,21 +1,23 @@
 # Consultoria — Startup de Automação (Vale do Taquari/RS)
 
-*Resposta ao prompt v3 — julho/2026. Preços verificados na web em 15/07/2026; onde há faixa, é estimativa e está sinalizada.*
+*Resposta ao prompt v3, revisada (v2) em 16/07/2026 com o novo objetivo dos fundadores: os 90 dias entregam **estrutura da startup + landing page + portfólio de automações demonstráveis** — fechar cliente vira bônus, não meta. Preços verificados na web em 15/07/2026; onde há faixa, é estimativa e está sinalizada. O plano de construção detalhado das automações está em [`AUTOMACOES.md`](AUTOMACOES.md).*
 
 ## Quadro-resumo de decisões
 
 | Decisão | Recomendação |
 |---|---|
-| **Nicho** | Clínicas e consultórios pequenos (odonto, estética, fisioterapia, veterinária) de Lajeado/Estrela/Encantado |
+| **Meta dos 90 dias** | Estrutura da startup pronta + landing page no ar com 3 automações demonstráveis (vídeo + demo interativa no WhatsApp); cliente pagante = bônus |
+| **Nicho-alvo do portfólio** | Clínicas e consultórios pequenos de Lajeado/Estrela/Encantado (as automações 2 e 3 também cobrem comércio/serviços) |
 | **Oferta de entrada** | Confirmação e reagendamento automático de consultas pelo WhatsApp, que corta faltas (no-show) pela metade — instalado em 2 semanas na agenda que a clínica já usa |
-| **Cobrança** | Híbrido: setup R$ 1.200–1.800 + mensalidade R$ 350 (piso absoluto p/ 1º cliente: R$ 800 + R$ 250) |
-| **Canal nº 1** | Rede pessoal morna + visita presencial (indicação > tudo; cold WhatsApp é último recurso) |
-| **Infra** | n8n self-hosted + Evolution API em VPS Hostinger (~R$ 50–100/mês) — não usar n8n Cloud agora |
-| **1ª ação (<1h, esta semana)** | Cada um lista 15 donos/gestores de negócio a até 1 grau de distância (família, colegas UNIVATES/TripleTen, comerciantes de quem já são clientes) e envia 3 mensagens pedindo 20 min de conversa sobre "como funciona a agenda/atendimento de vocês" — descoberta, não venda |
+| **Cobrança (para o trimestre 2)** | Híbrido: setup R$ 1.200–1.800 + mensalidade R$ 350 (piso absoluto p/ 1º cliente: R$ 800 + R$ 250) |
+| **Infra** | n8n self-hosted + Evolution API em VPS Hostinger (~R$ 55–100/mês) — não usar n8n Cloud agora |
+| **1ª ação (amanhã)** | Contratar o VPS e subir Docker + n8n + Evolution API com chip de teste dedicado (checklist do dia 1 em `AUTOMACOES.md`) — sem isso nenhuma automação sai do papel |
 
 ---
 
 ## 0. Reality check — as 5 premissas mais frágeis
+
+> **Nota da revisão v2 (obrigatória de ler):** trocar a meta de "1 cliente pagante" por "landing page + portfólio" é uma decisão legítima — reduz a pressão comercial e joga a favor do ponto forte de vocês (construir). Mas ela **aumenta** o risco do erro nº 1 do item 9: construir 90 dias no vácuo e descobrir no dia 91 que o portfólio responde dores que ninguém paga para resolver. Dois antídotos ficaram embutidos no plano e não são negociáveis: (a) **5 conversas de validação na quinzena 1** — os números colhidos nelas viram a copy da landing page; (b) a landing page nasce com **captura de leads** (a demo interativa registra quem testou), para que o dia 91 comece com uma lista de interessados, não do zero. E fique claro: landing page é *apoio* de venda, não *canal* de venda — para PME do interior, quem vende continua sendo indicação + demo no celular do dono (item 5, agora agendado para o trimestre 2).
 
 **1. "Ticket mínimo R$ 800" está mal formulado, não baixo.** R$ 800 como projeto único é armadilha: vocês entregam, o fluxo quebra em 3 semanas (WhatsApp muda, API cai) e vocês dão suporte de graça para sempre. O que fazer: R$ 800 é o *piso do setup*; a meta real é **setup + mensalidade ≥ R$ 250**. Um cliente de R$ 800 único é pior que um de R$ 500 + R$ 300/mês. A meta de 90 dias, reformulada assim, é realista.
 
@@ -47,57 +49,58 @@
 
 ---
 
-## 2. Plano de 90 dias (nicho: clínicas)
+## 2. Plano de 90 dias (v2 — meta: estrutura + landing page + portfólio)
 
-Orçamento de horas: 2 pessoas × 10–15h/sem × 13 semanas ≈ **260–390h disponíveis**. O plano abaixo soma **~190h** — folga proposital de ~30% para prova na UNIVATES, imprevisto no emprego e retrabalho.
+Orçamento de horas: 2 pessoas × 10–15h/sem × 13 semanas ≈ **260–390h disponíveis**. O plano abaixo soma **~180h** — folga proposital de ~30% para prova na UNIVATES, imprevisto no emprego e retrabalho. O detalhamento técnico de cada automação está em `AUTOMACOES.md`.
 
-**Quinzena 1 (dias 1–14) — Descoberta. ~25h (12h/pessoa).**
-Fazer: cada um lista 15 contatos a 1 grau (colegas de aula com família empreendedora, professores, o dentista/fisio de vocês mesmos); roteiro de 6 perguntas de descoberta (quantas faltas/sem? quem confirma? como? quanto custa uma falta? já tentou resolver? o que aconteceu?); realizar **≥ 8 conversas de 20–30 min** (presencial ou chamada), sem vender nada.
-Entregável: planilha com 8+ conversas anotadas (números reais de faltas e processo atual) + decisão registrada: clínicas confirmado ou pivô justificado.
+**Quinzena 1 (dias 1–14) — Fundação técnica + validação mínima. ~30h.**
+Fazer: **dia 1** — contratar VPS, subir Docker + n8n + PostgreSQL + Evolution API com HTTPS e conectar um **chip de teste dedicado** (~R$ 20 pré-pago; nunca o número pessoal — se a Meta banir, que banha um chip descartável); fluxo "hello world" webhook → WhatsApp. Nos demais dias: nome da startup + logo simples (Canva grátis) + número WhatsApp Business da empresa; e **5 conversas de 20 min** com donos conhecidos (o dentista/fisio de vocês, comerciantes de quem já são clientes) com uma pergunta central: *"quanto isso te custa por mês?"* — faltas, orçamentos sem resposta, tempo de secretária.
+Entregável: infra 24/7 no ar respondendo no WhatsApp + nome/identidade definidos + 3 dores confirmadas **com números reais** (que viram a copy da landing page).
 
-**Quinzena 2 (dias 15–28) — Demo e infra. ~40h.**
-Fazer: contratar VPS Hostinger, subir Docker + n8n + Evolution API (você lidera — é sua praia de infra); Leonardo constrói o fluxo P1 do item 3 (confirmação com clínica fictícia); gravar vídeo-demo de 3 min com celular na mão; escrever one-pager da oferta com preço.
-Entregável: demo funcionando 24/7 acessível de qualquer celular + vídeo de 3 min + one-pager. **Critério: a demo tem que rodar ao vivo sem vocês tocarem em nada.**
+**Quinzena 2 (dias 15–28) — Automação A1: confirmação de consultas. ~40h.**
+Fazer: construir A1 completa (5 fluxos: disparo D-1, interpretação de respostas com IA, lista de espera, resumo diário, healthcheck) sobre a clínica fictícia; divisão em `AUTOMACOES.md` — você nos fluxos de infra/cron, Leonardo nos fluxos de conversa/IA.
+Entregável: A1 rodando de ponta a ponta com "pacientes" fictícios + roteiro do vídeo escrito. **Critério: funciona sem vocês tocarem em nada.**
 
-**Quinzena 3 (dias 29–45) — Prospecção onda 1. ~35h.**
-Fazer: 30 abordagens (priorize os 16+ contatos mornos da quinzena 1 e as indicações que eles derem); meta de 10 conversas comerciais e **3 demos apresentadas ao vivo**; enviar ≥ 2 propostas (modelo do item 4).
-Entregável: funil registrado em planilha: 30 abordados / conversas / demos / propostas.
+**Quinzena 3 (dias 29–45) — Automações A2 e A3. ~35h.**
+Fazer: A2 (resgate de orçamentos parados) e A3 (relatório diário do dono), reaproveitando ~70% da base de A1; colocar A1 em "operação assistida" — rodando todo dia com pacientes fictícios, monitorada pelo healthcheck.
+Entregável: 3 automações funcionais + A1 com 7 dias seguidos de operação sem intervenção manual.
 
 **✅ CHECKPOINT DIA 45 — critérios objetivos:**
-- ≥ 30 abordagens feitas E ≥ 8 conversas → o canal funciona.
-- ≥ 2 propostas enviadas OU 1 em negociação → **manter** nicho e oferta.
-- Muitas conversas, mas ninguém pediu proposta → **ajustar oferta/preço** (a dor existe, a solução ou o preço não convenceram): testar piloto de R$ 500/30 dias.
-- < 8 conversas apesar de 30 abordagens → **trocar de nicho** (vocês não têm acesso a esse público): migrar para contabilidade, reaproveitando ~70% do fluxo (cobrança de documentos usa a mesma base técnica).
+- A1 rodou **7 dias seguidos sem intervenção manual**? Se não, pare tudo e estabilize — demo que falha na frente de visita mata a credibilidade da página inteira.
+- A2 funcional e A3 encaminhada? Se A1 atrasou, **corte A3 do escopo dos 90 dias** — duas automações sólidas valem mais que três capengas.
+- As 5 conversas da quinzena 1 aconteceram? Se não, façam agora — escrever a landing page sem os números reais é escrever ficção.
 
-**Quinzena 4 (dias 46–60) — Fechamento. ~30h.**
-Fazer: follow-up das propostas (cadência do item 5); se travar, oferta de fundador: setup com 40–50% de desconto em troca de case documentado + depoimento + 2 indicações; **iniciar abertura do CNPJ no dia em que houver "sim" verbal** (item 6 — leva 1–3 semanas, não pode começar depois da assinatura); onda 2: +20 abordagens.
-Entregável: 1 contrato assinado (meta) + CNPJ em andamento.
+**Quinzena 4 (dias 46–60) — Landing page com Claude Code. ~30h.**
+Fazer: construir a página (estrutura completa no item 7) com Claude Code — estática, hospedagem grátis, domínio `.com.br` (~R$ 40/ano, agora deixa de ser adiável); montar a **demo interativa**: botão "teste no seu WhatsApp" → link `wa.me` do chip de demo → n8n roda um roteiro guiado de 2 min simulando o paciente → salva o lead em planilha.
+Entregável: página no ar em domínio próprio, com os 3 blocos de portfólio e a demo interativa capturando leads.
 
-**Quinzena 5 (dias 61–75) — Implantação do cliente 1. ~35h.**
-Fazer: kickoff de 1h com dono + secretária; mapear a agenda real; adaptar o fluxo; rodar 1 semana em paralelo ao processo manual (a secretária confere); go-live; treinar a secretária (30 min + PDF de 1 página).
-Entregável: automação em produção + medição baseline de faltas (antes) registrada.
+**Quinzena 5 (dias 61–75) — Vídeos, case e polimento. ~25h.**
+Fazer: gravar os 3 vídeos de 60–90s (celular na mão, tela + WhatsApp lado a lado); montar 1 case **simulado e rotulado como simulação** (dados da clínica fictícia — honestidade aqui é diferencial, case inventado como se fosse real destrói a confiança na primeira pergunta); **teste com 5 pessoas leigas**: mostrar a página por 60 segundos e perguntar "o que a gente faz? quanto custa? o que você faria agora?" — se não souberem responder, a copy falhou e volta pra bancada; analytics básico (Cloudflare/Umami, grátis).
+Entregável: página completa, validada por leigos, com vídeos e case no ar.
 
-**Quinzena 6 (dias 76–90) — Case e escala. ~25h.**
-Fazer: medir faltas antes/depois; montar case de 1 página com números; pedir formalmente 3 indicações ao cliente 1 ("quem você conhece que sofre com faltas?"); onda 3 de prospecção liderada pelo case.
-Entregável: case com número real + pipeline com ≥ 3 leads para o trimestre seguinte.
+**Quinzena 6 (dias 76–90) — Soft launch + preparação comercial. ~20h.**
+Fazer: divulgar na rede pessoal e nos grupos locais ("lançamos, dá uma olhada — pra quem você mandaria isso?"); acompanhar os leads capturados pela demo; preparar o **kit comercial do trimestre 2**: one-pager, proposta modelo (item 4) e cadência de prospecção (item 5) prontos para uso; decidir formalização (item 6) conforme o primeiro interessado aparecer.
+Entregável: página publicada e divulgada + lista de leads/indicações + kit comercial pronto — **o dia 91 começa a venda com tudo na mão, não do zero**.
 
-**Plano B (dia 91, zero clientes):** não recomeçar do zero — diagnosticar **onde o funil quebrou**, nesta ordem: (1) *Propostas enviadas e não fechadas* → problema de risco/confiança, não de nicho: voltar aos que disseram "quase" com piloto pago de R$ 500/30 dias e garantia de devolução; (2) *Conversas sem virar proposta* → dor fraca ou oferta errada: trocar a oferta dentro do mesmo nicho (ex.: resgate de orçamento de tratamento não fechado, que mexe em receita e não em custo); (3) *Abordagens sem virar conversa* → problema de canal/rede, não de mercado: trocar canal (pedir 1 indicação a cada conversa antiga, ir a eventos ACIL/CIC Vale do Taquari) antes de trocar de nicho. Só trocar de nicho se (3) persistir — e o nicho nº 2 é contabilidade.
+**Plano B (dia 91):** o risco do plano v2 é o inverso do v1 — chegar ao dia 91 com tudo bonito e **zero tração**. Se ninguém de fora da rede pessoal testou a demo nem pediu contato, o problema quase nunca é a página: é distribuição. Não gastem o trimestre 2 "melhorando o site"; ativem o funil do item 5 (indicação + visita presencial + demo no celular do dono), que continua integralmente válido — a landing page vira o material de apoio que faltava no plano v1. Se, além disso, as conversas do trimestre 2 mostrarem que as dores do portfólio não geram proposta, o pivô é de *oferta* dentro do nicho (checkpoint do plano v1), não de refazer a página.
 
 ---
 
-## 3. Portfólio sem clientes
+## 3. Portfólio sem clientes — agora o entregável central
 
-**P1 — Confirmação de consultas "Clínica Sorriso" (a demo principal). ~30h.**
+*(v2: este item deixou de ser apoio e virou o coração dos 90 dias. O detalhamento de construção — arquitetura, fluxos n8n, divisão de trabalho, checklist do dia 1 — está em `AUTOMACOES.md`. Aqui fica o escopo e o roteiro de demo.)*
+
+**P1/A1 — Confirmação de consultas "Clínica Sorriso" (a demo principal). ~30h.**
 Stack: n8n self-hosted + Evolution API (WhatsApp) + Google Sheets como agenda (ou Google Calendar) + Claude/GPT via API para interpretar respostas fora do padrão ("não vou poder, meu filho adoeceu" → intenção: remarcar).
 Escopo mínimo: agenda em planilha → D-1 às 10h dispara mensagem → paciente responde 1 (confirmo) / 2 (remarcar) / 3 (cancelar) → planilha atualiza + horário liberado é oferecido à lista de espera → 7h do dia seguinte, resumo para a "secretária".
 
-**P2 — Resgate de orçamentos parados. ~15h.**
+**P2/A2 — Resgate de orçamentos parados. ~15h.**
 Stack: n8n + Evolution API + Google Sheets.
 Escopo mínimo: planilha de orçamentos → 48h sem resposta dispara follow-up personalizado → 7 dias, segunda tentativa com gatilho de escassez → alerta ao vendedor quando o cliente responde. Serve para comércio E para clínicas (orçamento de tratamento) — mesma demo, dois mercados.
 
-**P3 (só se sobrar tempo) — Relatório do dono. ~8h.** Todo dia às 19h, resumo do dia (agendamentos, confirmações, faltas) no WhatsApp do dono. Barato de fazer e é o que o dono mostra pros amigos — gera indicação.
+**P3/A3 — Relatório do dono. ~10h.** Todo dia às 19h, resumo do dia (agendamentos, confirmações, faltas, orçamentos recuperados) com 1 gráfico no WhatsApp do dono. Barato de fazer, é o vídeo mais bonito da landing page e é o que o dono mostra pros amigos — gera indicação. *(v2: promovida de "opcional" a parte do portfólio; é a primeira a ser cortada se A1 atrasar — ver checkpoint do dia 45.)*
 
-**Roteiro exato da demo de 10 min (dono leigo):**
+**Roteiro exato da demo de 10 min (dono leigo — guardar para o trimestre 2 e usar nas visitas):**
 - **Min 0–1 — a dor em R$:** "Quantas consultas marcadas por semana? E quantas faltas? [ele responde 5] Então: 5 faltas × R$ 150 × 4 semanas = R$ 3.000/mês indo embora. É isso que a gente ataca."
 - **Min 1–4 — o celular DELE na mão:** você cadastra o número dele na planilha como "paciente de amanhã". Ele recebe a mensagem de confirmação na hora, no próprio WhatsApp. Peça: "responde 2". Ele vê o sistema oferecer horários e remarcar sozinho. *Esse é o momento da venda — tudo antes e depois é cerimônia.*
 - **Min 4–6 — a agenda se atualizando sozinha:** projete a planilha/agenda: o horário dele mudou sem ninguém tocar em nada. Frase: "sua secretária não ligou pra ninguém".
@@ -125,6 +128,8 @@ Escopo mínimo: planilha de orçamentos → 48h sem resposta dispara follow-up p
 ---
 
 ## 5. Aquisição dos 3 primeiros clientes
+
+*(v2: este item sai dos 90 dias e vira o plano do **trimestre 2**, começando no dia 91 — com a landing page, os vídeos e a demo interativa como munição. Tudo abaixo permanece válido.)*
 
 **Quem abordar:** dono, sócio ou gerente administrativo de clínica com 2–8 profissionais e recepção própria, **sem TI interno** — em Lajeado, Estrela, Encantado, Arroio do Meio e Teutônia. Nessa faixa, quem decide é quem sente a dor no caixa. Clínica de 1 profissional não tem volume; acima de 10, já tem software robusto e processo de compra lento.
 
@@ -156,11 +161,24 @@ Escopo mínimo: planilha de orçamentos → 48h sem resposta dispara follow-up p
 
 ---
 
-## 7. Presença digital mínima
+## 7. Presença digital — a landing page como entregável central (v2)
 
-Resposta direta: **no estágio de vocês, site não é prioridade — canal 1-a-1 é.** A venda dos 3 primeiros clientes acontece por indicação e demo presencial; o site serve só como "verificação de legitimidade" quando o dono pesquisa vocês antes da reunião. Então: uma página única (GitHub Pages ou Carrd, R$ 0) com: quem somos (foto + nome + cidade — rosto local vende no interior), o que fazemos em 1 frase, o vídeo-demo de 3 min, 1 case quando existir, e botão de WhatsApp. Máximo 4h de trabalho, na quinzena 2, e não se toca mais nela. **NÃO precisa:** blog, SEO, identidade visual paga, domínio próprio no início (adiável; R$ ~40/ano quando quiserem).
+*(Revisado: no plano v1 o site era secundário; com o novo objetivo, a landing page é um dos três entregáveis dos 90 dias. A recomendação cética permanece registrada: página não substitui o funil 1-a-1 do item 5 — ela o municia.)*
 
-**A UMA prioridade recomendada:** o **vídeo-demo de 3 minutos + WhatsApp Business bem montado** (perfil completo com foto, descrição, respostas rápidas e catálogo com a oferta). É o ativo que roda dentro do canal onde a venda acontece — um vídeo bom encaminhado por um indicador vale mais que qualquer site.
+**O que a página PRECISA ter (nesta ordem, de cima para baixo):**
+1. **Hero com a dor em número** — "Sua clínica perde R$ 3.000/mês com pacientes que faltam?" (o número vem das 5 conversas da quinzena 1, não de achismo) + 1 frase do que fazemos + botão de WhatsApp. Nada de "soluções inovadoras em automação inteligente".
+2. **Portfólio — 3 blocos, um por automação (A1, A2, A3):** cada bloco = a dor em 1 frase + vídeo de 60–90s + botão **"Teste agora no seu WhatsApp"** (link `wa.me` do chip de demo que dispara o roteiro guiado de 2 min via n8n). A demo interativa é o diferencial da página inteira — nenhum concorrente regional deixa o visitante *sentir* a automação; e cada teste vira lead salvo em planilha.
+3. **Quem somos** — foto, nomes, Lajeado/RS. Rosto local e endereço na região vendem no interior mais que qualquer selo.
+4. **Faixa de investimento** — "a partir de R$ X de implantação + R$ Y/mês". Assusta curioso e qualifica lead; esconder preço só gera conversa perdida.
+5. **CTA única e repetida** — falar no WhatsApp. Sem formulário longo, sem "agende uma call".
+
+**O que NÃO precisa:** blog, SEO além de título/descrição básicos, múltiplas páginas, chatbot no site (ironia à parte — o WhatsApp é o chatbot), animações pesadas, identidade visual paga.
+
+**Stack recomendada:** página estática (HTML/CSS/JS) gerada com Claude Code, hospedada de graça (GitHub Pages ou Cloudflare Pages), domínio `.com.br` ~R$ 40/ano (com o novo objetivo, deixa de ser adiável), captura de leads via webhook do próprio n8n (R$ 0), analytics leve e gratuito (Cloudflare Web Analytics ou Umami). Custo total da página: ~R$ 40/ano.
+
+**Critério de pronto (quinzena 5):** 5 pessoas leigas olham a página por 60 segundos e respondem certo a "o que eles fazem? quanto custa? o que você faria agora?". Enquanto errarem, a copy volta pra bancada.
+
+**Complemento que continua valendo:** WhatsApp Business da empresa bem montado (perfil completo, respostas rápidas, catálogo) — é para onde a página manda todo mundo.
 
 ---
 
@@ -222,11 +240,11 @@ Nos dois cenários, o primeiro contrato (R$ 1.500 + R$ 350/mês) praticamente pa
 
 ## Perguntas para a próxima conversa
 
-1. **Quantos nomes reais a rede morna de vocês tem?** Listem os 30 contatos (1ª ação) e me digam o número — se for < 20, o funil do item 5 precisa de outro canal desde o início.
-2. **Quem é o rosto comercial?** Quem dos dois fará as visitas e demos presenciais — e essa pessoa consegue liberar 2 horários de almoço por semana em Lajeado?
-3. Vocês toleram fechar o cliente 1 com **oferta de fundador** (setup ~R$ 800 + garantia de devolução) para acelerar, ou preferem defender o preço cheio e arriscar mais 30 dias de funil?
-4. As clínicas de que vocês já são pacientes/têm proximidade usam **qual agenda hoje** (papel, Google Agenda, iClinic)? Isso define quanto do P1 é integração vs. planilha.
-5. Existe algum cenário em que um de vocês **reduz o emprego em 12 meses** se houver 3+ clientes pagando, ou o teto de 10–15h/semana é fixo? Isso muda a meta de mensalidade acumulada que faz sentido perseguir.
+1. **Qual número de WhatsApp vai rodar as demos?** Recomendo chip pré-pago dedicado (~R$ 20) — um banimento da Meta não pode derrubar o número pessoal de nenhum dos dois. Já compraram?
+2. **Nome da startup:** têm candidatos? É pré-requisito do domínio e da página (quinzena 1/4) — travar nisso atrasa tudo; nome "bom o suficiente" ganha de nome perfeito.
+3. **As 5 conversas de validação da quinzena 1: com quem, exatamente?** Citem os nomes — se não saírem 5 nomes em 2 minutos, esse é o primeiro problema a resolver.
+4. **Quem aparece?** Quem grava a voz/rosto dos vídeos e assina o "quem somos" da página — e essa pessoa assume o funil de vendas do item 5 no dia 91?
+5. As clínicas de que vocês já são pacientes usam **qual agenda hoje** (papel, Google Agenda, iClinic)? Isso define quanto de A1 é integração vs. planilha — e a resposta pode mudar o escopo antes de amanhã.
 
 ---
 
