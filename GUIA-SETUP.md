@@ -72,7 +72,11 @@ ssh root@IP_DO_SERVIDOR                 # deve entrar SEM pedir senha
 
 > **Windows:** se `ssh-copy-id` não existir, rodem `type $env:USERPROFILE\.ssh\id_ed25519.pub` no PowerShell, copiem a linha inteira e, no servidor, colem dentro de `~/.ssh/authorized_keys` (criem com `mkdir -p ~/.ssh && nano ~/.ssh/authorized_keys`).
 
-Só depois que o login **sem senha funcionou**, desativem o login por senha — no servidor:
+**Agora a chave do SEGUNDO sócio** — o servidor é um só, mas cada pessoa entra com a própria chave (dois controles remotos, uma televisão; se um notebook morrer, o outro sócio continua entrando). No computador do segundo sócio, repitam os mesmos três comandos acima (`ssh-keygen` → `ssh-copy-id` → teste de login). Só sigam adiante quando **os dois** entrarem sem senha.
+
+> **Lembrete de operação a dois:** este setup (Passos 1–5) é feito UMA vez, no servidor — um digita, o outro lê o passo e confere o checkpoint. Depois de hoje, o dia a dia de vocês é na interface web do n8n (navegador, os dois ao mesmo tempo); o SSH vira coisa rara, de manutenção. Regra de convivência no n8n: nunca editem o mesmo fluxo ao mesmo tempo — o último que salva sobrescreve o outro.
+
+Só depois que o login **sem senha funcionou para os dois**, desativem o login por senha — no servidor:
 
 ```bash
 sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config
