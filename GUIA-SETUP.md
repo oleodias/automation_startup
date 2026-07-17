@@ -110,11 +110,13 @@ No servidor:
 
 ```bash
 apt install -y git
-git clone https://github.com/oleodias/automation_startup.git
+git clone -b claude/automation-startup-consulting-68gigr https://github.com/oleodias/automation_startup.git
 cd automation_startup/infra
 cp .env.example .env
 nano .env
 ```
+
+> O `-b` aponta para o branch onde os arquivos estão (enquanto não fizermos o merge para o `main`). **Se o repositório for privado**, o clone vai pedir usuário e senha: usem o usuário do GitHub e, como senha, um *Personal Access Token* (GitHub → Settings → Developer settings → Fine-grained tokens → acesso de leitura só a este repositório). Alternativa sem token: criar os 3 arquivos na mão com `nano` copiando o conteúdo de `infra/` direto do GitHub no navegador.
 
 No `.env`, preencham (as instruções estão comentadas no próprio arquivo):
 - `N8N_DOMAIN` e `EVO_DOMAIN` → os dois subdomínios do Passo 4;
