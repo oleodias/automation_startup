@@ -1,0 +1,10 @@
+# O Caddy emite e renova os certificados HTTPS sozinho (Let's Encrypt).
+# Os domínios vêm do arquivo .env via docker-compose.
+
+{$N8N_DOMAIN} {
+	reverse_proxy n8n:5678
+}
+
+{$EVO_DOMAIN} {
+	reverse_proxy evolution:8080
+}
