@@ -136,9 +136,11 @@ docker compose ps        # todos os serviços devem ficar "running"/"healthy" em
 Criem o banco da Evolution API (o compose só cria o do n8n):
 
 ```bash
-docker compose exec postgres psql -U automacao -c 'CREATE DATABASE evolution;'
+docker compose exec postgres psql -U automacao -d postgres -c 'CREATE DATABASE evolution;'
 docker compose restart evolution
 ```
+
+> Estes comandos (como todo `docker compose ...`) só funcionam dentro da pasta `infra` — é lá que está o `docker-compose.yml`. Se aparecer "no configuration file provided", rode `cd ~/automation_startup/infra` primeiro.
 
 ✅ **Checkpoint:** `https://SEU-n8n.duckdns.org` abre no navegador com cadeado (HTTPS) mostrando a tela de criação de conta do n8n, e `https://SEU-evo.duckdns.org` responde (um JSON de status). O certificado pode levar ~2 min no primeiro acesso — o Caddy o emite sozinho.
 Criem a **conta de dono do n8n** (e-mail da startup + senha forte → Bitwarden).
