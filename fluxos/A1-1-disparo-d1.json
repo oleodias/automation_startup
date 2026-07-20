@@ -1,0 +1,333 @@
+{
+  "name": "A1.1 — Disparo D-1 (confirmação)",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Depois de importar\n1. Em CADA nó Google Sheets (verdes): selecione a credencial Google + o documento **Clinica Sorriso — Agenda** + a aba indicada no nome do nó.\n2. Teste com **Execute workflow** (o gatilho de 10h só vale com o fluxo ativo).\n3. O nó vermelho 📤 é placeholder — quando o WhatsApp voltar, vira um HTTP Request POST para\n`https://moderneasyevo.duckdns.org/message/sendText/demo`\ncom header `apikey` e body `{number, text}`.",
+        "height": 320,
+        "width": 380,
+        "color": 4
+      },
+      "id": "sticky-a11-1",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-60, -340]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 10 * * *"
+            }
+          ]
+        }
+      },
+      "id": "a11-trigger",
+      "name": "Todo dia às 10h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
+      },
+      "id": "a11-read",
+      "name": "Ler aba Agenda",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f1",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "agendada",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "f2",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "={{ $now.plus({ days: 1 }).setZone('America/Sao_Paulo').toFormat('dd/MM/yyyy') }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a11-filter",
+      "name": "Amanhã e agendada",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [440, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "m1",
+              "name": "para",
+              "value": "={{ $json.telefone }}",
+              "type": "string"
+            },
+            {
+              "id": "m2",
+              "name": "mensagem",
+              "value": "=Olá, {{ $json.paciente }}! Aqui é da Clínica Sorriso 😊 Sua consulta com {{ $json.profissional }} está marcada para amanhã ({{ $json.data }}) às {{ $json.hora }}. Responda: 1️⃣ Confirmo · 2️⃣ Preciso remarcar · 3️⃣ Preciso cancelar",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "a11-msg",
+      "name": "Montar mensagem",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [660, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "p1",
+              "name": "para",
+              "value": "={{ $json.para }}",
+              "type": "string"
+            },
+            {
+              "id": "p2",
+              "name": "mensagem",
+              "value": "={{ $json.mensagem }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "a11-placeholder",
+      "name": "📤 EVOLUTION (pendente) — confirmação D-1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [880, 0]
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $json.row_number }}",
+            "status": "aguardando resposta"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "a11-update",
+      "name": "Marcar aguardando resposta (aba Agenda)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1100, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "l1",
+              "name": "quando",
+              "value": "={{ $now.setZone('America/Sao_Paulo').toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "l2",
+              "name": "fluxo",
+              "value": "disparo-d1",
+              "type": "string"
+            },
+            {
+              "id": "l3",
+              "name": "paciente",
+              "value": "={{ $('Montar mensagem').item.json.paciente }}",
+              "type": "string"
+            },
+            {
+              "id": "l4",
+              "name": "acao",
+              "value": "mensagem de confirmação enviada",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a11-logprep",
+      "name": "Preparar log",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1320, 0]
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "a11-log",
+      "name": "Registrar no Log (aba Log)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1540, 0]
+    }
+  ],
+  "connections": {
+    "Todo dia às 10h": {
+      "main": [
+        [
+          {
+            "node": "Ler aba Agenda",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ler aba Agenda": {
+      "main": [
+        [
+          {
+            "node": "Amanhã e agendada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Amanhã e agendada": {
+      "main": [
+        [
+          {
+            "node": "Montar mensagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Montar mensagem": {
+      "main": [
+        [
+          {
+            "node": "📤 EVOLUTION (pendente) — confirmação D-1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "📤 EVOLUTION (pendente) — confirmação D-1": {
+      "main": [
+        [
+          {
+            "node": "Marcar aguardando resposta (aba Agenda)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marcar aguardando resposta (aba Agenda)": {
+      "main": [
+        [
+          {
+            "node": "Preparar log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar log": {
+      "main": [
+        [
+          {
+            "node": "Registrar no Log (aba Log)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}
