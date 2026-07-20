@@ -42,6 +42,31 @@
 ### Lição do dia
 - Primeira mensagem de número novo tem que ser banal ("Oi, tudo bem?") — nada de links, textões ou formatação estranha. A restrição de 6h foi o aviso barato; a versão cara é o banimento. Com o número da empresa: devagar e sempre.
 
+---
+
+## Dia 3 (noite de construção) — restrição de 7 dias + molde da A1 + identidade
+
+### Situação
+- ⚠️ **Restrição de 7 DIAS no WhatsApp Business** (segunda punição do número, após a de 6h). Sem conexão de aparelhos (nem WhatsApp Web, nem Evolution) até expirar. Causa exata desconhecida; padrão provável: número novo + comportamento atípico reincidente aos olhos do algoritmo.
+- Decisão: usar a semana para construir o que não depende do WhatsApp — **molde completo da A1** + **identidade visual**.
+
+### Protocolo do número a partir de agora (inegociável)
+1. Durante a restrição: **não tentar conectar nada**, nem reinstalar, nem trocar de aparelho. Verificar no app se há opção "solicitar análise" e usá-la uma vez.
+2. Ao expirar: 5–7 dias de vida civil — conversas manuais bidirecionais com contatos que salvaram o número, áudio, figurinha, grupo; **quem recebe primeiro sempre iniciou conversa antes**; zero links.
+3. Só depois: conectar Evolution e começar com **5–10 mensagens/dia**, todas para números que já conversaram com o número, crescendo ao longo de semanas ([cronogramas de aquecimento de referência](https://www.socialhub.pro/blog/evitar-banimento-whatsapp/)).
+4. Nos fluxos: delay aleatório entre envios (nó Wait 20–60s), texto com nome do destinatário e pequenas variações — nunca rajada de mensagens idênticas.
+5. **Se houver 3ª punição, o número está queimado**: plano B é linha nova + migração da demo para a **API oficial da Meta (Cloud API)**, que elimina o risco de banimento por automação.
+
+### Construído nesta sessão (guias no repositório)
+- `A1-CONSTRUCAO.md` — guia nó por nó do molde da A1: fluxos Disparo D-1, Recepção (webhook + switch + IA), Resumo diário e Healthcheck; envios de WhatsApp como nós-placeholder padronizados (`📤 EVOLUTION (pendente)`), troca futura mecânica
+- `IDENTIDADE.md` — guia de marca v1: posicionamento, paleta (verde-mata #0B3D2E + âmbar #F5A524), tipografia (Manrope + Inter), direção do logo, banco de frases de impacto, aplicações
+- Healthcheck com alerta por e-mail fica ATIVO — inclusive avisará quando a instância `demo` conectar
+
+### Próximos marcos
+1. Construir os 4 fluxos no n8n seguindo `A1-CONSTRUCAO.md` + exportar `.json` para `fluxos/`
+2. Logo no Canva (3 versões) + tagline escolhida
+3. Expirada a restrição → protocolo de aquecimento → conectar Evolution → trocar placeholders → teste ponta a ponta da A1
+
 ### Lições da noite (para não repetir)
 - Comando com `apt`, `ufw`, `docker` = **dentro do servidor** (prompt `root@srv...`); `ssh`, `ssh-keygen`, `type` = no Windows (prompt `PS C:\...`)
 - Todo `docker compose ...` roda dentro de `~/automation_startup/infra`
