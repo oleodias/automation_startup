@@ -63,9 +63,12 @@
 - Healthcheck com alerta por e-mail fica ATIVO — inclusive avisará quando a instância `demo` conectar
 
 ### Próximos marcos
-1. Construir os 4 fluxos no n8n seguindo `A1-CONSTRUCAO.md` + exportar `.json` para `fluxos/`
+1. Importar os 4 fluxos prontos de `fluxos/*.json` no n8n (Workflows → Import from File) + configurar credenciais/planilha + testar
 2. Logo no Canva (3 versões) + tagline escolhida
 3. Expirada a restrição → protocolo de aquecimento → conectar Evolution → trocar placeholders → teste ponta a ponta da A1
+
+### Incidente resolvido (20/07)
+Leonardo sem acesso ao servidor de casa (ping/SSH/HTTPS bloqueados) enquanto Matheus acessava normal. Diagnóstico por eliminação: servidor ok, fail2ban zero bans, ufw limpo, DNS resolvendo → problema na rota local. **Solução: reiniciar o roteador de casa** (IP dinâmico/CGNAT renovado). Lição: quando "só um de nós" não acessa, o suspeito é a ponta local — testar via 4G/5G isola o problema em 1 minuto.
 
 ### Lições da noite (para não repetir)
 - Comando com `apt`, `ufw`, `docker` = **dentro do servidor** (prompt `root@srv...`); `ssh`, `ssh-keygen`, `type` = no Windows (prompt `PS C:\...`)
