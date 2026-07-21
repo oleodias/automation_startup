@@ -1,0 +1,60 @@
+name: Publicar site (GitHub Pages)
+
+# Publica a landing page da ModernEasy no GitHub Pages.
+# Roda automaticamente a cada push na main que altere o site,
+# e pode ser disparado manualmente pela aba Actions (Run workflow).
+on:
+  push:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "landingPage/assets-marca/**"
+      - ".github/workflows/deploy-pages.yml"
+  workflow_dispatch:
+
+# Permissões necessárias para o deploy oficial de Pages via Actions.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Garante que apenas um deploy rode por vez.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Baixar o repositório
+        uses: actions/checkout@v4
+
+      # Ativa o Pages e troca a fonte para "GitHub Actions" automaticamente,
+      # mesmo que antes estivesse apontando para uma pasta (ex.: /docs).
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+
+      # Monta uma pasta _site só com o que o site precisa:
+      # o index.html e as imagens da marca. Nada de docs internos nem PDF.
+      - name: Montar o site
+        run: |
+          set -e
+          rm -rf _site
+          mkdir -p _site/landingPage/assets-marca
+          cp index.html _site/
+          cp landingPage/assets-marca/*.png _site/landingPage/assets-marca/
+          # Evita o processamento Jekyll (serve os arquivos como estão).
+          touch _site/.nojekyll
+
+      - name: Empacotar artefato
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Publicar no Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
