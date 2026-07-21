@@ -67,6 +67,9 @@
 2. Logo no Canva (3 versões) + tagline escolhida
 3. Expirada a restrição → protocolo de aquecimento → conectar Evolution → trocar placeholders → teste ponta a ponta da A1
 
+### Convenção de branches (definida em 21/07)
+Repositório consolidado: **a `main` é a raiz única** com o projeto inteiro. Arquivos de teste antigos (`teste.txt`, `valeo.html`, do PR `matheus-teste`) foram removidos. Fluxo acordado: o Claude commita na branch de trabalho `claude/automation-startup-consulting-68gigr` e, ao fim de cada sessão, sincroniza tudo na `main`. **Para os sócios: olhem sempre a `main`** — ela reflete o estado completo e atual.
+
 ### Incidente resolvido (20/07)
 Leonardo sem acesso ao servidor de casa (ping/SSH/HTTPS bloqueados) enquanto Matheus acessava normal. Diagnóstico por eliminação: servidor ok, fail2ban zero bans, ufw limpo, DNS resolvendo → problema na rota local. **Solução: reiniciar o roteador de casa** (IP dinâmico/CGNAT renovado). Lição: quando "só um de nós" não acessa, o suspeito é a ponta local — testar via 4G/5G isola o problema em 1 minuto.
 
