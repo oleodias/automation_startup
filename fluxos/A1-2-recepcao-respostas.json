@@ -1,0 +1,739 @@
+{
+  "name": "A1.2 — Recepção de respostas",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Depois de importar\n1. Nós Google Sheets: selecionar credencial + documento + aba.\n2. No nó **Claude — classificar intenção**: trocar `SUA_CHAVE_ANTHROPIC_AQUI` pela chave real (console.anthropic.com).\n3. Nós 📤 são placeholders do WhatsApp.\n4. A URL deste webhook (produção) é\n`https://moderneasyn8n.duckdns.org/webhook/evolution-demo`\n— será cadastrada na Evolution (Settings da instância → Webhook → evento `messages.upsert`) quando o número voltar.\n5. Para testar HOJE: use **Listen for test event** no Webhook e envie um POST simulando o payload (exemplo na nota ao lado).",
+        "height": 380,
+        "width": 400,
+        "color": 4
+      },
+      "id": "sticky-a12-1",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-80, -420]
+    },
+    {
+      "parameters": {
+        "content": "## Payload de teste (POST)\n```json\n{\n  \"data\": {\n    \"key\": { \"remoteJid\": \"5551999990000@s.whatsapp.net\" },\n    \"message\": { \"conversation\": \"1\" }\n  }\n}\n```\nTroque o telefone por um que esteja na Agenda com status `aguardando resposta`, e o texto por `1`, `2`, `3` ou frase livre.",
+        "height": 300,
+        "width": 360,
+        "color": 5
+      },
+      "id": "sticky-a12-2",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [360, -420]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "evolution-demo",
+        "options": {}
+      },
+      "id": "a12-webhook",
+      "name": "Webhook Evolution",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "webhookId": "9f4e2c1a-77aa-4b2e-9c33-moderneasy01",
+      "position": [0, 200]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e1",
+              "name": "telefone",
+              "value": "={{ ($json.body?.data?.key?.remoteJid || $json.data?.key?.remoteJid || '').split('@')[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "e2",
+              "name": "texto",
+              "value": "={{ ($json.body?.data?.message?.conversation || $json.data?.message?.conversation || '').trim() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a12-extract",
+      "name": "Extrair dados",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [220, 200]
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
+      },
+      "id": "a12-read",
+      "name": "Ler aba Agenda",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [440, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cp1",
+              "leftValue": "={{ $json.telefone }}",
+              "rightValue": "={{ $('Extrair dados').first().json.telefone }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "cp2",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "aguardando resposta",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a12-filter",
+      "name": "Consulta pendente",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [660, 200]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "s1",
+                    "leftValue": "={{ $('Extrair dados').first().json.texto }}",
+                    "rightValue": "1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CONFIRMA"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "s2",
+                    "leftValue": "={{ $('Extrair dados').first().json.texto }}",
+                    "rightValue": "2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "REMARCA"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "s3",
+                    "leftValue": "={{ $('Extrair dados').first().json.texto }}",
+                    "rightValue": "3",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CANCELA"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "a12-switch",
+      "name": "Interpretar resposta",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [880, 200]
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $json.row_number }}",
+            "status": "confirmada"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "a12-upd-conf",
+      "name": "Status: confirmada",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1160, -60]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "rc1",
+              "name": "para",
+              "value": "={{ $('Consulta pendente').first().json.telefone }}",
+              "type": "string"
+            },
+            {
+              "id": "rc2",
+              "name": "mensagem",
+              "value": "=Perfeito, {{ $('Consulta pendente').first().json.paciente }}! Consulta confirmada 😊 Até amanhã!",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a12-ph-conf",
+      "name": "📤 EVOLUTION (pendente) — resposta confirmada",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1380, -60]
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $json.row_number }}",
+            "status": "remarcada",
+            "observacao": "reagendar manualmente"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "a12-upd-rem",
+      "name": "Status: remarcada",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1160, 140]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "rr1",
+              "name": "para",
+              "value": "={{ $('Consulta pendente').first().json.telefone }}",
+              "type": "string"
+            },
+            {
+              "id": "rr2",
+              "name": "mensagem",
+              "value": "=Sem problema, {{ $('Consulta pendente').first().json.paciente }}! Nossa equipe já vai te chamar para achar um novo horário 😉",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a12-ph-rem",
+      "name": "📤 EVOLUTION (pendente) — resposta remarcação",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1380, 140]
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $json.row_number }}",
+            "status": "cancelada"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "a12-upd-can",
+      "name": "Status: cancelada",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1160, 340]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "rk1",
+              "name": "para",
+              "value": "={{ $('Consulta pendente').first().json.telefone }}",
+              "type": "string"
+            },
+            {
+              "id": "rk2",
+              "name": "mensagem",
+              "value": "=Tudo bem, {{ $('Consulta pendente').first().json.paciente }}, consulta cancelada. Quando quiser remarcar é só chamar aqui!",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a12-ph-can",
+      "name": "📤 EVOLUTION (pendente) — resposta cancelamento",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1380, 340]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "SUA_CHAVE_ANTHROPIC_AQUI"
+            },
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"model\": \"claude-haiku-4-5-20251001\", \"max_tokens\": 20, \"system\": \"Classifique a mensagem de um paciente respondendo à confirmação de uma consulta. Responda APENAS uma destas palavras: confirmar, remarcar, cancelar, duvida, humano.\", \"messages\": [ { \"role\": \"user\", \"content\": {{ JSON.stringify($('Extrair dados').first().json.texto) }} } ] }",
+        "options": {}
+      },
+      "id": "a12-claude",
+      "name": "Claude — classificar intenção",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1160, 560]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "i1",
+              "name": "intencao",
+              "value": "={{ ($json.content?.[0]?.text || '').toLowerCase().trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "i2",
+              "name": "row_number",
+              "value": "={{ $('Consulta pendente').first().json.row_number }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a12-intencao",
+      "name": "Extrair intenção",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1380, 560]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "t1",
+                    "leftValue": "={{ $json.intencao }}",
+                    "rightValue": "confirmar",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "confirmar"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "t2",
+                    "leftValue": "={{ $json.intencao }}",
+                    "rightValue": "remarcar",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "remarcar"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "t3",
+                    "leftValue": "={{ $json.intencao }}",
+                    "rightValue": "cancelar",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "cancelar"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "a12-switch-ia",
+      "name": "Rotear intenção",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [1600, 560]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "sec1",
+              "name": "para",
+              "value": "NUMERO_DA_SECRETARIA",
+              "type": "string"
+            },
+            {
+              "id": "sec2",
+              "name": "mensagem",
+              "value": "=⚠️ Atenção: {{ $('Consulta pendente').first().json.paciente }} respondeu algo que precisa de um humano: \"{{ $('Extrair dados').first().json.texto }}\" — telefone {{ $('Consulta pendente').first().json.telefone }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a12-ph-sec",
+      "name": "📤 EVOLUTION (pendente) — avisar secretária",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1840, 700]
+    }
+  ],
+  "connections": {
+    "Webhook Evolution": {
+      "main": [
+        [
+          {
+            "node": "Extrair dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrair dados": {
+      "main": [
+        [
+          {
+            "node": "Ler aba Agenda",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ler aba Agenda": {
+      "main": [
+        [
+          {
+            "node": "Consulta pendente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consulta pendente": {
+      "main": [
+        [
+          {
+            "node": "Interpretar resposta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Interpretar resposta": {
+      "main": [
+        [
+          {
+            "node": "Status: confirmada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Status: remarcada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Status: cancelada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Claude — classificar intenção",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status: confirmada": {
+      "main": [
+        [
+          {
+            "node": "📤 EVOLUTION (pendente) — resposta confirmada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status: remarcada": {
+      "main": [
+        [
+          {
+            "node": "📤 EVOLUTION (pendente) — resposta remarcação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status: cancelada": {
+      "main": [
+        [
+          {
+            "node": "📤 EVOLUTION (pendente) — resposta cancelamento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude — classificar intenção": {
+      "main": [
+        [
+          {
+            "node": "Extrair intenção",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrair intenção": {
+      "main": [
+        [
+          {
+            "node": "Rotear intenção",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rotear intenção": {
+      "main": [
+        [
+          {
+            "node": "Status: confirmada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Status: remarcada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Status: cancelada",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "📤 EVOLUTION (pendente) — avisar secretária",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}
