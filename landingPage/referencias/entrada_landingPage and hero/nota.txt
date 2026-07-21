@@ -1,0 +1,5 @@
+Gostei muito de como esta página está construída; de como as animações foram trabalhadas, algo fluido e elegante ao olhos. o site é tecnológico e ao mesmo tempo, gourmet, premium, cara de site corporativo, feito para vender a marca. O link do site é esse: https://atompoint.com/ - vale destacar também alguns pontos que quero o a nossa landing page tenha:
+
+- na print do site da steven.com, que eles possuem uma animação ao entrar na página, que seria a logo deles sendo escrita, e dando entrada ao site; 
+- Falando também sobre as duas primeiras seções da página: https://atompoint.com/, onde eles trabalham com uma imagem responsiva ao fundo (aqui poderia ser a nossa logo...) e o título, que fica se alternando ao longo do tempo a palavra destacada em branco;
+- logo abaixo da seção do titulo responsivo, nesta mesma página (https://atompoint.com/), podemos ver alguns cards se alternando, onde mostra projetos que eles fizeram. pensei em adicionar isso na nossa página, onde irá direcionar para uma aba específica que explica a automação que fizemos, parte por parte e a sua aplicação dentro do contexto empresarial. quero fazer isso projeto por projeto.
