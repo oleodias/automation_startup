@@ -54,6 +54,20 @@ então nossa animação de fundo *significa* algo (uma automação sendo montada
 - **Sem estatística no hero** (nada de "R$ X/mês", "−14h" no topo). Topo mais limpo/premium.
 - **Público do hero:** PMEs em geral.
 - **Primeiro case:** Clínica Sorriso como piloto.
+- **Só desktop por enquanto** — não investir em layout mobile agora (voltamos a ele depois).
+- **Preview:** os sócios veem abrindo o `index.html` no VSCode/navegador; o Claude NÃO deve
+  ficar mandando screenshots no chat (economia de tokens). Verificar visual continua valendo
+  (Playwright), só não despejar imagem para o usuário.
+
+### Animação de fundo do hero — via Claude Design (2026-07-21)
+O Leo pediu para terceirizar a *concepção* da animação de fundo do hero a um "Claude Design"
+(um Claude focado em design/artifacts). Preparei o prompt em
+`landingPage/referencias/entrada_landingPage and hero/PROMPT-animacao-fundo-hero.md`
+— ele descreve o símbolo (linha verde ascendente conectando nós), a marca, a paleta, as
+restrições técnicas (self-contained, sem libs, desktop, verde-vivo, âmbar proibido no fundo,
+legibilidade acima de tudo, respeitar reduced-motion) e pede 2–3 conceitos + implementação.
+**Ao usar: anexar `simbolo.png` e `logo-principal.png`.** Quando o resultado voltar, a gente
+escolhe/ajusta e substitui a rede SVG provisória que está no hero hoje.
 
 ---
 
