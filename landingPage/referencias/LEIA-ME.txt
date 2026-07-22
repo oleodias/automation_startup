@@ -1,0 +1,52 @@
+COMO DROPAR REFERÊNCIAS PARA A LANDING PAGE
+===========================================
+
+Esta pasta é onde o Leo e o Matheus jogam tudo que serve de inspiração
+para construir a landing page da ModernEasy, seção por seção.
+
+O Claude (o meu e o do Matheus) lê tudo que estiver aqui dentro antes de
+montar cada bloco da página.
+
+
+O QUE COLOCAR
+-------------
+Para cada referência, o ideal é vir com os três:
+
+1) UM .txt explicando o que você gostou, com o máximo de detalhe.
+   Ex.: "hero-site-x.txt":
+        - Link: https://exemplo.com
+        - Gostei que o título aparece com um fade suave ao carregar.
+        - O botão âmbar pulsa de leve chamando atenção.
+        - O menu do topo encolhe e fica fixo quando rola a página.
+        - NÃO gostei: o fundo com vídeo pesado, deixa lento.
+
+2) PRINTS (.png ou .jpg) do que você viu.
+   Importantes! Eu consigo LER um site pelo link, mas NÃO consigo
+   assistir à animação em movimento. O print (e a sua descrição no .txt)
+   é o que me permite reproduzir o efeito.
+
+3) O LINK do site (pode ser dentro do .txt mesmo).
+
+
+COMO ORGANIZAR
+--------------
+Do jeito que for mais fácil pra vocês. Duas sugestões:
+
+  - Por SEÇÃO da página:   referencias/hero/  referencias/prova/  referencias/precos/ ...
+  - Por PESSOA:            referencias/leo/   referencias/matheus/
+
+Pode misturar. O que importa é o .txt descrevendo a intenção.
+
+
+NOME DOS ARQUIVOS
+-----------------
+Use nomes que se entendam sozinhos, ex.:
+  hero-clinica-x.txt  +  hero-clinica-x-print1.png
+
+
+DEPOIS DE ADICIONAR
+-------------------
+É só me avisar ("olha as referências do hero que subi") e eu leio,
+proponho a seção direto no index.html, e a gente lapida palavra por
+palavra até travar. Cada seção travada vai pra main e atualiza o link
+público do site.
