@@ -108,6 +108,28 @@ futuras. Cores da marca mantidas (só o posicionamento foi copiado).
 **Verificação (Playwright, viewport 1728px):** logo.left = 86px e título.left = 86px
 (alinhados ✓), botão a 86px da borda direita (navbar full-width simétrica ✓), sem erros de JS.
 
+**Nota de colaboração:** houve um conflito porque o `index.html` foi reformatado com Prettier
+(defaults) em outra sessão enquanto eu editava. Resolvido mantendo as mudanças de layout +
+rodando o mesmo Prettier por cima (o arquivo agora segue o formato Prettier). **Combinado:**
+dar Sync antes de editar e avisar quando estiver mexendo no `index.html`.
+
+### Fundo do hero v2 — marca-d'água do símbolo + animação (prompt para Claude Design, 2026-07-21)
+O Leo quer elevar o fundo do hero: uma **animação premium** com a **logo/símbolo em grande
+formato como marca-d'água** ao fundo, e a animação interagindo com ela (profundidade +
+movimento), sem prejudicar a leitura. Referência de *técnica* (não de design): atompoint —
+usar a NOSSA identidade (verde), não copiar o azul/estética deles.
+
+**Regra do Manual (marca-d'água), cravada no prompt:** *"Símbolo gigante, cortado na borda,
+opacidade 5–8%. Um por peça, sempre num canto — nunca atrás de texto denso."* Como o texto do
+hero fica à esquerda, a marca-d'água mora à direita, cortada na borda.
+
+Prompt salvo em
+`landingPage/referencias/entrada_landingPage and hero/PROMPT-animacao-fundo-hero-v2.md`
+(anexar `simbolo.png`, `logo-principal.png` e a página MARCA D'ÁGUA do manual ao usar).
+Quando o resultado voltar, ele **substitui a rede SVG provisória** que está no hero hoje —
+integro só o fundo, preservando título/navbar. (Este é o "fundo mais adiante" que ficou
+pendente desde a Valéo.)
+
 ---
 
 ## Registro por seção
