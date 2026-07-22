@@ -150,6 +150,29 @@ real disponível em `A1-CONSTRUCAO.md`). Decisões de layout/escopo sendo defini
 sócios. Sem foto de produto ainda → cards devem usar um grafismo/ícone (ex.: mini-fluxo),
 não banco de imagem.
 
+**Rascunho v1 (2026-07-21).** Referência: `referencias/portifolio/` (print + nota) — a seção
+"Spotlight" da atompoint. Pedido do Leo: bonito **e fácil para leigo** (dono de clínica,
+mercado); quer no futuro **vídeos do n8n rodando + prints**. Construí no `index.html`:
+- **Carrossel "Spotlight"** (`#cases`, fundo verde-mata para separar do hero): um case por
+  vez, **número gigante ao fundo**, tag + título + descrição em linguagem de gente + link
+  "Ver o passo a passo", com **setas + indicadores (dots)** e avanço automático que pausa no
+  hover. Altura do palco acompanha o case ativo. Respeita `prefers-reduced-motion`.
+- **Lado esquerdo = mockup de conversa no WhatsApp** (demonstração) em vez de foto — é o que
+  o leigo entende na hora e é o **lugar reservado para o vídeo/print do fluxo real** depois
+  (tem legenda "Demonstração · em breve, vídeo do fluxo real"). Bolhas em verde-vivo (não uso
+  o verde oficial do WhatsApp — regra da marca).
+- **3 cases seed:** 01 Confirmação de consultas (**piloto real Clínica Sorriso**, de
+  `A1-CONSTRUCAO.md`), 02 Orçamento respondido na hora, 03 Lembrete de pagamento. Os cards
+  02/03 são automações que oferecemos (rotulados "Automação", não cliente fake).
+
+**Verificação (Playwright):** seção presente ✓, seta avança ✓, dot pula pro case certo ✓,
+altura do palco ajusta ✓, sem erros de JS. Prettier aplicado.
+
+**Aberto para lapidar:** textos dos cases; se o link "Ver o passo a passo" deve já abrir uma
+página dedicada (multi-página) ou virar um expandir/modal; efeito "espião" dos cards vizinhos
+(a atompoint mostra as bordas dos cards ao lado — deixei um crossfade limpo por ora);
+e trocar os mockups pelos vídeos/prints reais quando existirem.
+
 ---
 
 ## Registro por seção
