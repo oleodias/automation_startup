@@ -130,6 +130,26 @@ Quando o resultado voltar, ele **substitui a rede SVG provisória** que está no
 integro só o fundo, preservando título/navbar. (Este é o "fundo mais adiante" que ficou
 pendente desde a Valéo.)
 
+**Resultado (2026-07-21):** o Claude Design devolveu uma versão bem-feita (marca-d'água do
+símbolo + partículas verdes fluindo), mas **não era o que o Leo imaginava** → decisão:
+**pular o fundo v2** e manter o fundo de rede SVG que já temos. O prompt e a referência ficam
+guardados na pasta caso queiram retomar depois.
+
+---
+
+## Seção 1 (HERO) — APROVADA E PUBLICADA NA MAIN ✅ (2026-07-21)
+O hero foi aprovado (intro + navbar full-width + título com palavra girando + fundo de rede)
+e **mergeado na `main`** (commit de merge `ce1cc0b`) → publicado no GitHub Pages via
+`deploy-pages.yml`. Próxima seção: **Portfólio de automações** (os "cases").
+
+### Seção 2 — PORTFÓLIO DE AUTOMAÇÕES (em definição)
+Conceito (já conversado): inspirado na seção "Spotlight" da atompoint — cards de automações
+reais, cada um levando a uma página dedicada que explica a automação parte por parte + a
+aplicação no negócio. **Primeiro case = Clínica Sorriso como piloto/demonstração** (conteúdo
+real disponível em `A1-CONSTRUCAO.md`). Decisões de layout/escopo sendo definidas com os
+sócios. Sem foto de produto ainda → cards devem usar um grafismo/ícone (ex.: mini-fluxo),
+não banco de imagem.
+
 ---
 
 ## Registro por seção
