@@ -1,333 +1,925 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ModernEasy — Automação que trabalha por você</title>
-  <meta name="description" content="A ModernEasy instala automação que trabalha pelo dono da empresa — sem complicação, feita aqui no Vale do Taquari.">
-  <link rel="icon" type="image/png" href="landingPage/assets-marca/app-icon-avatar.png">
-  <meta property="og:title" content="ModernEasy — Automação que trabalha por você">
-  <meta property="og:description" content="Automação sem complicação, feita aqui no Vale.">
-  <meta property="og:image" content="landingPage/assets-marca/logo-principal.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
-  <!-- Salvaguarda: se o JS estiver desligado, a intro some e o site aparece normalmente. -->
-  <noscript><style>#intro{display:none!important}</style></noscript>
-  <style>
-    /* ============================================================
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ModernEasy — Automação que trabalha por você</title>
+    <meta
+      name="description"
+      content="A ModernEasy instala automação que trabalha pelo dono da empresa — sem complicação, feita aqui no Vale do Taquari."
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="landingPage/assets-marca/app-icon-avatar.png"
+    />
+    <meta
+      property="og:title"
+      content="ModernEasy — Automação que trabalha por você"
+    />
+    <meta
+      property="og:description"
+      content="Automação sem complicação, feita aqui no Vale."
+    />
+    <meta
+      property="og:image"
+      content="landingPage/assets-marca/logo-principal.png"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Figtree:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Salvaguarda: se o JS estiver desligado, a intro some e o site aparece normalmente. -->
+    <noscript
+      ><style>
+        #intro {
+          display: none !important;
+        }
+      </style></noscript
+    >
+    <style>
+      /* ============================================================
        ModernEasy — Landing Page (reconstrução seção por seção)
        Regras: Manual de Identidade Visual (landingPage/*.pdf)
        Processo documentado em: landingPage/PROCESSO.md
        ============================================================ */
-    :root{
-      --verde-abissal:#06251C;
-      --verde-mata:#0B3D2E;
-      --verde-vivo:#1FA36C;
-      --ambar:#F5A524;
-      --areia:#FAF7F2;
-      --grafite:#1C1C1C;
-      --cinza-verde:#5C6B64;
-    }
-    *{margin:0;padding:0;box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{font-family:'Figtree',sans-serif;font-size:17px;line-height:1.65;color:var(--areia);background:var(--verde-abissal)}
-    h1,h2,h3{font-family:'Sora',sans-serif;font-weight:600}
-    .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+      :root {
+        --verde-abissal: #06251c;
+        --verde-mata: #0b3d2e;
+        --verde-vivo: #1fa36c;
+        --ambar: #f5a524;
+        --areia: #faf7f2;
+        --grafite: #1c1c1c;
+        --cinza-verde: #5c6b64;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: "Figtree", sans-serif;
+        font-size: 17px;
+        line-height: 1.65;
+        color: var(--areia);
+        background: var(--verde-abissal);
+      }
+      h1,
+      h2,
+      h3 {
+        font-family: "Sora", sans-serif;
+        font-weight: 600;
+      }
+      .wrap {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
 
-    /* ---------- Botão CTA (regra da marca: âmbar, pill, texto grafite) ---------- */
-    .cta{display:inline-block;background:var(--ambar);color:var(--grafite);font-weight:600;font-size:17px;padding:16px 34px;border-radius:999px;text-decoration:none;transition:transform .18s ease,box-shadow .18s ease}
-    .cta:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(245,165,36,.35)}
+      /* ---------- Botão CTA (regra da marca: âmbar, pill, texto grafite) ---------- */
+      .cta {
+        display: inline-block;
+        background: var(--ambar);
+        color: var(--grafite);
+        font-weight: 600;
+        font-size: 17px;
+        padding: 16px 34px;
+        border-radius: 999px;
+        text-decoration: none;
+        transition:
+          transform 0.18s ease,
+          box-shadow 0.18s ease;
+      }
+      .cta:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 26px rgba(245, 165, 36, 0.35);
+      }
 
-    /* ---------- Header ---------- */
-    header{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(6,37,28,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(250,247,242,.07)}
-    .nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
-    .nav .logo img{height:32px;display:block}
-    .nav .links{display:flex;align-items:center;gap:30px}
-    .nav a.link{color:var(--areia);text-decoration:none;font-size:15px;opacity:.85;transition:opacity .15s ease,color .15s ease}
-    .nav a.link:hover{opacity:1;color:var(--verde-vivo)}
-    .nav .mini-cta{background:transparent;border:1px solid var(--ambar);color:var(--ambar);font-weight:600;font-size:14px;padding:9px 20px;border-radius:999px;text-decoration:none;transition:background .18s ease,color .18s ease}
-    .nav .mini-cta:hover{background:var(--ambar);color:var(--grafite)}
-    @media(max-width:720px){.nav a.link{display:none}}
+      /* ---------- Header ---------- */
+      header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 50;
+        background: rgba(6, 37, 28, 0.82);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(250, 247, 242, 0.07);
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 0;
+      }
+      .nav .logo img {
+        height: 32px;
+        display: block;
+      }
+      .nav .links {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+      }
+      .nav a.link {
+        color: var(--areia);
+        text-decoration: none;
+        font-size: 15px;
+        opacity: 0.85;
+        transition:
+          opacity 0.15s ease,
+          color 0.15s ease;
+      }
+      .nav a.link:hover {
+        opacity: 1;
+        color: var(--verde-vivo);
+      }
+      .nav .mini-cta {
+        background: transparent;
+        border: 1px solid var(--ambar);
+        color: var(--ambar);
+        font-weight: 600;
+        font-size: 14px;
+        padding: 9px 20px;
+        border-radius: 999px;
+        text-decoration: none;
+        transition:
+          background 0.18s ease,
+          color 0.18s ease;
+      }
+      .nav .mini-cta:hover {
+        background: var(--ambar);
+        color: var(--grafite);
+      }
+      @media (max-width: 720px) {
+        .nav a.link {
+          display: none;
+        }
+      }
 
-    /* ---------- HERO ---------- */
-    .hero{position:relative;min-height:100svh;display:flex;align-items:center;overflow:hidden;padding:120px 0 80px}
-    /* fundo: rede de nós (fluxo de automação) */
-    .hero .rede{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-    .hero .conteudo{position:relative;z-index:2;max-width:820px}
+      /* ---------- HERO ---------- */
+      .hero {
+        position: relative;
+        min-height: 100svh;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        padding: 120px 0 80px;
+      }
+      /* fundo: rede de nós (fluxo de automação) */
+      .hero .rede {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+      .hero .conteudo {
+        position: relative;
+        z-index: 2;
+        max-width: 820px;
+      }
 
-    .hero .kicker{font-family:'Sora',sans-serif;font-size:13px;font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:var(--verde-vivo);display:block;margin-bottom:26px}
+      .hero .kicker {
+        font-family: "Sora", sans-serif;
+        font-size: 13px;
+        font-weight: 400;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--verde-vivo);
+        display: block;
+        margin-bottom: 26px;
+      }
 
-    .hero h1{font-size:clamp(34px,5.6vw,62px);line-height:1.14;letter-spacing:-.02em;font-weight:700;color:var(--areia)}
-    /* a linha da palavra que gira — a altura desliza suavemente entre palavras de
+      .hero h1 {
+        font-size: clamp(34px, 5.6vw, 62px);
+        line-height: 1.14;
+        letter-spacing: -0.02em;
+        font-weight: 700;
+        color: var(--areia);
+      }
+      /* a linha da palavra que gira — a altura desliza suavemente entre palavras de
        1 e 2 linhas (JS mede a próxima palavra e anima a altura), sem pulos nem vãos */
-    .gira{display:block;position:relative;color:var(--verde-vivo);min-height:1.14em;transition:height .45s ease}
-    .gira .medidor{position:absolute;top:0;left:0;width:100%;visibility:hidden;pointer-events:none}
-    .gira .palavra{display:inline-block;opacity:1;transform:translateY(0);transition:opacity .45s ease,transform .45s ease}
-    .gira .palavra.saindo{opacity:0;transform:translateY(-14px)}
-    .gira .palavra.entrando{opacity:0;transform:translateY(14px);transition:none}
+      .gira {
+        display: block;
+        position: relative;
+        color: var(--verde-vivo);
+        min-height: 1.14em;
+        transition: height 0.45s ease;
+      }
+      .gira .medidor {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      .gira .palavra {
+        display: inline-block;
+        opacity: 1;
+        transform: translateY(0);
+        transition:
+          opacity 0.45s ease,
+          transform 0.45s ease;
+      }
+      .gira .palavra.saindo {
+        opacity: 0;
+        transform: translateY(-14px);
+      }
+      .gira .palavra.entrando {
+        opacity: 0;
+        transform: translateY(14px);
+        transition: none;
+      }
 
-    .hero p.sub{font-size:19px;max-width:54ch;color:rgba(250,247,242,.78);margin:28px 0 40px}
-    .hero .nota{margin-top:16px;font-size:14px;color:rgba(250,247,242,.5)}
+      .hero p.sub {
+        font-size: 19px;
+        max-width: 54ch;
+        color: rgba(250, 247, 242, 0.78);
+        margin: 28px 0 40px;
+      }
+      .hero .nota {
+        margin-top: 16px;
+        font-size: 14px;
+        color: rgba(250, 247, 242, 0.5);
+      }
 
-    /* seta convidando a rolar */
-    .rolar{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);z-index:2;opacity:.45}
-    .rolar span{display:block;width:22px;height:34px;border:2px solid var(--areia);border-radius:12px;position:relative}
-    .rolar span::after{content:"";position:absolute;top:6px;left:50%;width:4px;height:8px;margin-left:-2px;border-radius:4px;background:var(--areia);animation:rolarPonto 1.8s ease-in-out infinite}
-    @keyframes rolarPonto{0%{transform:translateY(0);opacity:1}70%{transform:translateY(12px);opacity:0}100%{transform:translateY(0);opacity:0}}
+      /* seta convidando a rolar */
+      .rolar {
+        position: absolute;
+        left: 50%;
+        bottom: 28px;
+        transform: translateX(-50%);
+        z-index: 2;
+        opacity: 0.45;
+      }
+      .rolar span {
+        display: block;
+        width: 22px;
+        height: 34px;
+        border: 2px solid var(--areia);
+        border-radius: 12px;
+        position: relative;
+      }
+      .rolar span::after {
+        content: "";
+        position: absolute;
+        top: 6px;
+        left: 50%;
+        width: 4px;
+        height: 8px;
+        margin-left: -2px;
+        border-radius: 4px;
+        background: var(--areia);
+        animation: rolarPonto 1.8s ease-in-out infinite;
+      }
+      @keyframes rolarPonto {
+        0% {
+          transform: translateY(0);
+          opacity: 1;
+        }
+        70% {
+          transform: translateY(12px);
+          opacity: 0;
+        }
+        100% {
+          transform: translateY(0);
+          opacity: 0;
+        }
+      }
 
-    /* ---------- animações do fundo ---------- */
-    .no{animation:pulsar 4.2s ease-in-out infinite}
-    @keyframes pulsar{0%,100%{opacity:.35}50%{opacity:.9}}
-    .linha-fluxo{stroke-dasharray:6 14;animation:fluir 3.6s linear infinite}
-    @keyframes fluir{to{stroke-dashoffset:-80}}
-    .deriva{animation:derivar 16s ease-in-out infinite alternate}
-    @keyframes derivar{from{transform:translateY(0px)}to{transform:translateY(-18px)}}
+      /* ---------- animações do fundo ---------- */
+      .no {
+        animation: pulsar 4.2s ease-in-out infinite;
+      }
+      @keyframes pulsar {
+        0%,
+        100% {
+          opacity: 0.35;
+        }
+        50% {
+          opacity: 0.9;
+        }
+      }
+      .linha-fluxo {
+        stroke-dasharray: 6 14;
+        animation: fluir 3.6s linear infinite;
+      }
+      @keyframes fluir {
+        to {
+          stroke-dashoffset: -80;
+        }
+      }
+      .deriva {
+        animation: derivar 16s ease-in-out infinite alternate;
+      }
+      @keyframes derivar {
+        from {
+          transform: translateY(0px);
+        }
+        to {
+          transform: translateY(-18px);
+        }
+      }
 
-    /* respeito a quem pediu menos movimento */
-    @media (prefers-reduced-motion: reduce){
-      .no,.linha-fluxo,.deriva,.rolar span::after{animation:none}
-      .gira .palavra{transition:none}
-    }
+      /* respeito a quem pediu menos movimento */
+      @media (prefers-reduced-motion: reduce) {
+        .no,
+        .linha-fluxo,
+        .deriva,
+        .rolar span::after {
+          animation: none;
+        }
+        .gira .palavra {
+          transition: none;
+        }
+      }
 
-    /* ============================================================
+      /* ============================================================
        INTRO DE ENTRADA (captada da versão "Valéo" do Claude Design)
        A logo "moderneasy" se desenha, o símbolo risca por cima e o
        véu abre revelando o hero. É um overlay fixo e autossuficiente:
        não altera o título nem o fundo da seção 1.
        Timeline e parâmetros no <script> [INTRO], lá embaixo.
        ============================================================ */
-    .intro{position:fixed;inset:0;z-index:60;background:var(--verde-abissal);display:flex;align-items:center;justify-content:center}
-    .intro__center{position:relative;display:flex;align-items:center;justify-content:center}
-    .intro__word{position:relative;z-index:1;font-family:'Sora',sans-serif;font-weight:800;font-size:clamp(48px,7vw,96px);letter-spacing:-.03em;line-height:1;white-space:nowrap}
-    .intro__word--front{position:absolute;inset:0;z-index:3;pointer-events:none}
-    .intro__word .il{display:inline-block;opacity:0}
-    .intro__svg{position:absolute;width:76%;left:12%;top:50%;transform:translateY(-52%);overflow:visible;pointer-events:none;z-index:2}
-    .intro__counter,.intro__tagline{position:absolute;bottom:40px;left:0;right:0;text-align:center;color:rgba(250,247,242,.55)}
-    .intro__counter{font-size:14px;letter-spacing:.1em;font-variant-numeric:tabular-nums}
-    .intro__tagline{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:rgba(250,247,242,.6);opacity:0}
+      .intro {
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        background: var(--verde-abissal);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .intro__center {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .intro__word {
+        position: relative;
+        z-index: 1;
+        font-family: "Sora", sans-serif;
+        font-weight: 800;
+        font-size: clamp(48px, 7vw, 96px);
+        letter-spacing: -0.03em;
+        line-height: 1;
+        white-space: nowrap;
+      }
+      .intro__word--front {
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        pointer-events: none;
+      }
+      .intro__word .il {
+        display: inline-block;
+        opacity: 0;
+      }
+      .intro__svg {
+        position: absolute;
+        width: 76%;
+        left: 12%;
+        top: 50%;
+        transform: translateY(-52%);
+        overflow: visible;
+        pointer-events: none;
+        z-index: 2;
+      }
+      .intro__counter,
+      .intro__tagline {
+        position: absolute;
+        bottom: 40px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        color: rgba(250, 247, 242, 0.55);
+      }
+      .intro__counter {
+        font-size: 14px;
+        letter-spacing: 0.1em;
+        font-variant-numeric: tabular-nums;
+      }
+      .intro__tagline {
+        font-size: 12px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: rgba(250, 247, 242, 0.6);
+        opacity: 0;
+      }
 
-    /* ---------- rodapé provisório (slim, até as próximas seções nascerem) ---------- */
-    footer{border-top:1px solid rgba(250,247,242,.07);padding:28px 0;font-size:14px;color:rgba(250,247,242,.55)}
-    footer .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-    footer img{height:24px;display:block;opacity:.85}
-    footer a{color:rgba(250,247,242,.75);text-decoration:none}
-    footer a:hover{color:var(--verde-vivo)}
-  </style>
-</head>
-<body>
+      /* ---------- rodapé provisório (slim, até as próximas seções nascerem) ---------- */
+      footer {
+        border-top: 1px solid rgba(250, 247, 242, 0.07);
+        padding: 28px 0;
+        font-size: 14px;
+        color: rgba(250, 247, 242, 0.55);
+      }
+      footer .wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      footer img {
+        height: 24px;
+        display: block;
+        opacity: 0.85;
+      }
+      footer a {
+        color: rgba(250, 247, 242, 0.75);
+        text-decoration: none;
+      }
+      footer a:hover {
+        color: var(--verde-vivo);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ============ INTRO DE ENTRADA (overlay; captada da "Valéo") ============ -->
+    <div class="intro" id="intro">
+      <div class="intro__center">
+        <div class="intro__word">
+          <span class="il" data-li="0" style="color: #faf7f2">m</span
+          ><span class="il" data-li="1" style="color: #faf7f2">o</span
+          ><span class="il" data-li="2" style="color: #faf7f2">d</span
+          ><span class="il" data-li="3" style="color: #faf7f2">e</span
+          ><span class="il" data-li="4" style="color: #faf7f2">r</span
+          ><span class="il" data-li="5" style="color: #faf7f2">n</span
+          ><span class="il" data-li="6" style="color: #1fa36c">e</span
+          ><span class="il" data-li="7" style="color: #1fa36c">a</span
+          ><span class="il" data-li="8" style="color: #1fa36c">s</span
+          ><span class="il" data-li="9" style="color: #1fa36c">y</span>
+        </div>
+        <svg class="intro__svg" viewBox="0 0 256 197" aria-hidden="true">
+          <path
+            id="introPath"
+            data-symbol-d="M30 150 L78 74 L128 150 L206 50"
+            d="M30 150 L78 74 L128 150 L206 50 C236 10 190 -3 128 -3 C9.3 -3 -87 44 -87 102 C-87 160 9.3 207 128 207 C246.7 207 343 160 343 102 C343 44 246.7 -3 128 -3"
+            stroke="#1FA36C"
+            stroke-width="14"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            style="opacity: 0.97; stroke-dasharray: 0.1 99999"
+          />
+          <circle
+            class="intro__node"
+            data-frac="0.59"
+            cx="128"
+            cy="150"
+            r="11"
+            fill="#1FA36C"
+            style="opacity: 0"
+          />
+          <circle
+            class="intro__node"
+            data-frac="1"
+            cx="206"
+            cy="50"
+            r="20"
+            fill="#1FA36C"
+            style="opacity: 0"
+          />
+        </svg>
+        <div class="intro__word intro__word--front" aria-hidden="true">
+          <span class="il" data-li="0" style="color: #faf7f2">m</span
+          ><span class="il" data-li="1" style="color: #faf7f2">o</span
+          ><span class="il" data-li="2" style="color: #faf7f2">d</span
+          ><span class="il" data-li="3" style="color: #faf7f2">e</span
+          ><span class="il" data-li="4" style="color: #faf7f2">r</span
+          ><span class="il" data-li="5" style="color: #faf7f2">n</span
+          ><span class="il" data-li="6" style="color: #1fa36c">e</span
+          ><span class="il" data-li="7" style="color: #1fa36c">a</span
+          ><span class="il" data-li="8" style="color: #1fa36c">s</span
+          ><span class="il" data-li="9" style="color: #1fa36c">y</span>
+        </div>
+      </div>
+      <div class="intro__counter" id="introCounter">0</div>
+      <div class="intro__tagline" id="introTagline">
+        Automação sem complicação · feita aqui no Vale
+      </div>
+    </div>
 
-<!-- ============ INTRO DE ENTRADA (overlay; captada da "Valéo") ============ -->
-<div class="intro" id="intro">
-  <div class="intro__center">
-    <div class="intro__word"><span class="il" data-li="0" style="color:#FAF7F2">m</span><span class="il" data-li="1" style="color:#FAF7F2">o</span><span class="il" data-li="2" style="color:#FAF7F2">d</span><span class="il" data-li="3" style="color:#FAF7F2">e</span><span class="il" data-li="4" style="color:#FAF7F2">r</span><span class="il" data-li="5" style="color:#FAF7F2">n</span><span class="il" data-li="6" style="color:#1FA36C">e</span><span class="il" data-li="7" style="color:#1FA36C">a</span><span class="il" data-li="8" style="color:#1FA36C">s</span><span class="il" data-li="9" style="color:#1FA36C">y</span></div>
-    <svg class="intro__svg" viewBox="0 0 256 197" aria-hidden="true">
-      <path id="introPath" data-symbol-d="M30 150 L78 74 L128 150 L206 50" d="M30 150 L78 74 L128 150 L206 50 C236 10 190 -3 128 -3 C9.3 -3 -87 44 -87 102 C-87 160 9.3 207 128 207 C246.7 207 343 160 343 102 C343 44 246.7 -3 128 -3" stroke="#1FA36C" stroke-width="14" fill="none" stroke-linecap="round" stroke-linejoin="round" style="opacity:.97;stroke-dasharray:0.1 99999"/>
-      <circle class="intro__node" data-frac="0.59" cx="128" cy="150" r="11" fill="#1FA36C" style="opacity:0"/>
-      <circle class="intro__node" data-frac="1" cx="206" cy="50" r="20" fill="#1FA36C" style="opacity:0"/>
-    </svg>
-    <div class="intro__word intro__word--front" aria-hidden="true"><span class="il" data-li="0" style="color:#FAF7F2">m</span><span class="il" data-li="1" style="color:#FAF7F2">o</span><span class="il" data-li="2" style="color:#FAF7F2">d</span><span class="il" data-li="3" style="color:#FAF7F2">e</span><span class="il" data-li="4" style="color:#FAF7F2">r</span><span class="il" data-li="5" style="color:#FAF7F2">n</span><span class="il" data-li="6" style="color:#1FA36C">e</span><span class="il" data-li="7" style="color:#1FA36C">a</span><span class="il" data-li="8" style="color:#1FA36C">s</span><span class="il" data-li="9" style="color:#1FA36C">y</span></div>
-  </div>
-  <div class="intro__counter" id="introCounter">0</div>
-  <div class="intro__tagline" id="introTagline">Automação sem complicação · feita aqui no Vale</div>
-</div>
+    <header>
+      <div class="wrap nav">
+        <a class="logo" href="#"
+          ><img
+            src="landingPage/assets-marca/logo-negativa-para-fundo-escuro.png"
+            alt="moderneasy"
+        /></a>
+        <nav class="links">
+          <a class="link" href="#servicos">O que fazemos</a>
+          <a class="link" href="#cases">Cases</a>
+          <a class="link" href="#contato">Contato</a>
+          <a
+            class="mini-cta"
+            href="https://wa.me/5551993584396?text=Ol%C3%A1!%20Quero%20conhecer%20a%20automa%C3%A7%C3%A3o%20da%20ModernEasy."
+            target="_blank"
+            rel="noopener"
+            >WhatsApp</a
+          >
+        </nav>
+      </div>
+    </header>
 
-<header>
-  <div class="wrap nav">
-    <a class="logo" href="#"><img src="landingPage/assets-marca/logo-negativa-para-fundo-escuro.png" alt="moderneasy"></a>
-    <nav class="links">
-      <a class="link" href="#servicos">O que fazemos</a>
-      <a class="link" href="#cases">Cases</a>
-      <a class="link" href="#contato">Contato</a>
-      <a class="mini-cta" href="https://wa.me/5551993584396?text=Ol%C3%A1!%20Quero%20conhecer%20a%20automa%C3%A7%C3%A3o%20da%20ModernEasy." target="_blank" rel="noopener">WhatsApp</a>
-    </nav>
-  </div>
-</header>
-
-<!-- ============ SEÇÃO 1: HERO ============ -->
-<section class="hero">
-  <!-- fundo: rede de nós conectados — o símbolo da ModernEasy é um fluxo,
+    <!-- ============ SEÇÃO 1: HERO ============ -->
+    <section class="hero">
+      <!-- fundo: rede de nós conectados — o símbolo da ModernEasy é um fluxo,
        então o fundo é uma automação "viva", não decoração abstrata -->
-  <svg class="rede" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <g class="deriva" opacity=".5">
-      <!-- conexões -->
-      <g stroke="#1FA36C" stroke-width="1.4" fill="none" opacity=".5">
-        <path class="linha-fluxo" d="M140 210 C 320 150, 470 260, 640 200"/>
-        <path class="linha-fluxo" d="M640 200 C 800 140, 950 300, 1120 240" style="animation-delay:-1.2s"/>
-        <path class="linha-fluxo" d="M1120 240 C 1240 200, 1330 300, 1400 270" style="animation-delay:-2.4s"/>
-        <path class="linha-fluxo" d="M240 640 C 420 560, 560 700, 760 620" style="animation-delay:-.6s"/>
-        <path class="linha-fluxo" d="M760 620 C 940 550, 1080 700, 1280 610" style="animation-delay:-1.8s"/>
-        <path class="linha-fluxo" d="M140 210 C 160 380, 200 500, 240 640" style="animation-delay:-3s"/>
-        <path class="linha-fluxo" d="M640 200 C 680 360, 720 480, 760 620" style="animation-delay:-2.1s"/>
-        <path class="linha-fluxo" d="M1120 240 C 1170 380, 1230 500, 1280 610" style="animation-delay:-.9s"/>
-      </g>
-      <!-- nós -->
-      <g fill="#1FA36C">
-        <circle class="no" cx="140" cy="210" r="5"/>
-        <circle class="no" cx="640" cy="200" r="7" style="animation-delay:-1s"/>
-        <circle class="no" cx="1120" cy="240" r="5" style="animation-delay:-2s"/>
-        <circle class="no" cx="1400" cy="270" r="4" style="animation-delay:-.5s"/>
-        <circle class="no" cx="240" cy="640" r="6" style="animation-delay:-1.5s"/>
-        <circle class="no" cx="760" cy="620" r="7" style="animation-delay:-2.5s"/>
-        <circle class="no" cx="1280" cy="610" r="5" style="animation-delay:-3s"/>
-      </g>
-    </g>
-  </svg>
+      <svg
+        class="rede"
+        viewBox="0 0 1440 900"
+        preserveAspectRatio="xMidYMid slice"
+        aria-hidden="true"
+      >
+        <g class="deriva" opacity=".5">
+          <!-- conexões -->
+          <g stroke="#1FA36C" stroke-width="1.4" fill="none" opacity=".5">
+            <path
+              class="linha-fluxo"
+              d="M140 210 C 320 150, 470 260, 640 200"
+            />
+            <path
+              class="linha-fluxo"
+              d="M640 200 C 800 140, 950 300, 1120 240"
+              style="animation-delay: -1.2s"
+            />
+            <path
+              class="linha-fluxo"
+              d="M1120 240 C 1240 200, 1330 300, 1400 270"
+              style="animation-delay: -2.4s"
+            />
+            <path
+              class="linha-fluxo"
+              d="M240 640 C 420 560, 560 700, 760 620"
+              style="animation-delay: -0.6s"
+            />
+            <path
+              class="linha-fluxo"
+              d="M760 620 C 940 550, 1080 700, 1280 610"
+              style="animation-delay: -1.8s"
+            />
+            <path
+              class="linha-fluxo"
+              d="M140 210 C 160 380, 200 500, 240 640"
+              style="animation-delay: -3s"
+            />
+            <path
+              class="linha-fluxo"
+              d="M640 200 C 680 360, 720 480, 760 620"
+              style="animation-delay: -2.1s"
+            />
+            <path
+              class="linha-fluxo"
+              d="M1120 240 C 1170 380, 1230 500, 1280 610"
+              style="animation-delay: -0.9s"
+            />
+          </g>
+          <!-- nós -->
+          <g fill="#1FA36C">
+            <circle class="no" cx="140" cy="210" r="5" />
+            <circle
+              class="no"
+              cx="640"
+              cy="200"
+              r="7"
+              style="animation-delay: -1s"
+            />
+            <circle
+              class="no"
+              cx="1120"
+              cy="240"
+              r="5"
+              style="animation-delay: -2s"
+            />
+            <circle
+              class="no"
+              cx="1400"
+              cy="270"
+              r="4"
+              style="animation-delay: -0.5s"
+            />
+            <circle
+              class="no"
+              cx="240"
+              cy="640"
+              r="6"
+              style="animation-delay: -1.5s"
+            />
+            <circle
+              class="no"
+              cx="760"
+              cy="620"
+              r="7"
+              style="animation-delay: -2.5s"
+            />
+            <circle
+              class="no"
+              cx="1280"
+              cy="610"
+              r="5"
+              style="animation-delay: -3s"
+            />
+          </g>
+        </g>
+      </svg>
 
-  <div class="wrap">
-    <div class="conteudo">
-      <span class="kicker">Automação com IA · Feita no Vale do Taquari</span>
-      <h1>
-        A ModernEasy cuida da
-        <span class="gira"><span class="palavra" id="palavraGira">confirmação de agendamentos</span></span>
-        enquanto você cuida do cliente.
-      </h1>
-      <p class="sub">Tecnologia que trabalha sozinha, dentro do WhatsApp e das ferramentas que a sua empresa já usa. Você não precisa entender de tecnologia — ela é que passa a entender do seu negócio.</p>
-      <a class="cta" href="https://wa.me/5551993584396?text=Ol%C3%A1!%20Quero%20ver%20a%20automa%C3%A7%C3%A3o%20da%20ModernEasy%20funcionando." target="_blank" rel="noopener">Veja funcionando no seu WhatsApp →</a>
-      <p class="nota">Demonstração gratuita · direto no seu WhatsApp · sem cadastro</p>
-    </div>
-  </div>
+      <div class="wrap">
+        <div class="conteudo">
+          <span class="kicker"
+            >Automação com IA · Feita no Vale do Taquari</span
+          >
+          <h1>
+            Nós cuidamos da
+            <span class="gira"
+              ><span class="palavra" id="palavraGira"
+                >confirmação de agendamentos</span
+              ></span
+            >
+            enquanto você cuida do cliente.
+          </h1>
+          <p class="sub">
+            Tecnologia que trabalha sozinha, dentro do WhatsApp e das
+            ferramentas que a sua empresa já usa. Você não precisa entender de
+            tecnologia — ela é que passa a entender do seu negócio.
+          </p>
+          <a
+            class="cta"
+            href="https://wa.me/5551993584396?text=Ol%C3%A1!%20Quero%20ver%20a%20automa%C3%A7%C3%A3o%20da%20ModernEasy%20funcionando."
+            target="_blank"
+            rel="noopener"
+            >Veja funcionando no seu WhatsApp →</a
+          >
+          <p class="nota">
+            Demonstração gratuita · direto no seu WhatsApp · sem cadastro
+          </p>
+        </div>
+      </div>
 
-  <div class="rolar" aria-hidden="true"><span></span></div>
-</section>
+      <div class="rolar" aria-hidden="true"><span></span></div>
+    </section>
 
-<!-- (próximas seções nascem aqui, uma a uma) -->
+    <!-- (próximas seções nascem aqui, uma a uma) -->
 
-<footer id="contato">
-  <div class="wrap">
-    <img src="landingPage/assets-marca/logo-negativa-para-fundo-escuro.png" alt="moderneasy">
-    <div>
-      <a href="mailto:moderneasyautomation@gmail.com">moderneasyautomation@gmail.com</a> ·
-      <a href="https://instagram.com/modern.easy" target="_blank" rel="noopener">@modern.easy</a> ·
-      Encantado – RS
-    </div>
-  </div>
-</footer>
+    <footer id="contato">
+      <div class="wrap">
+        <img
+          src="landingPage/assets-marca/logo-negativa-para-fundo-escuro.png"
+          alt="moderneasy"
+        />
+        <div>
+          <a href="mailto:moderneasyautomation@gmail.com"
+            >moderneasyautomation@gmail.com</a
+          >
+          ·
+          <a
+            href="https://instagram.com/modern.easy"
+            target="_blank"
+            rel="noopener"
+            >@modern.easy</a
+          >
+          · Encantado – RS
+        </div>
+      </div>
+    </footer>
 
-<script>
-  // Rotação da palavra destacada do título.
-  // Todas femininas, para concordar com "cuida da ...".
-  // Cada palavra é um serviço real da ModernEasy — a troca conta o portfólio sozinha.
-  (function(){
-    var palavras = [
-      "confirmação de agendamentos",
-      "resposta aos orçamentos",
-      "cobrança dos clientes",
-      "papelada do dia a dia",
-      "rotina no WhatsApp"
-    ];
-    var el = document.getElementById("palavraGira");
-    var gira = el.parentNode;
-    var i = 0;
+    <script>
+      // Rotação da palavra destacada do título.
+      // Todas femininas, para concordar com "cuida da ...".
+      // Cada palavra é um serviço real da ModernEasy — a troca conta o portfólio sozinha.
+      (function () {
+        var palavras = [
+          "confirmação de agendamentos",
+          "resposta aos orçamentos",
+          "cobrança dos clientes",
+          "papelada do dia a dia",
+          "rotina no WhatsApp",
+        ];
+        var el = document.getElementById("palavraGira");
+        var gira = el.parentNode;
+        var i = 0;
 
-    // Medidor invisível: mede a altura que a próxima palavra vai ocupar,
-    // para a altura do bloco DESLIZAR suavemente (sem pulo, sem vão morto).
-    var medidor = document.createElement("span");
-    medidor.className = "medidor";
-    medidor.setAttribute("aria-hidden", "true");
-    gira.appendChild(medidor);
-    function alturaDe(palavra){
-      medidor.textContent = palavra;
-      return medidor.offsetHeight;
-    }
-    function assentar(){ gira.style.height = alturaDe(palavras[i]) + "px"; }
-    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(assentar); }
-    else { assentar(); }
-    window.addEventListener("resize", assentar);
+        // Medidor invisível: mede a altura que a próxima palavra vai ocupar,
+        // para a altura do bloco DESLIZAR suavemente (sem pulo, sem vão morto).
+        var medidor = document.createElement("span");
+        medidor.className = "medidor";
+        medidor.setAttribute("aria-hidden", "true");
+        gira.appendChild(medidor);
+        function alturaDe(palavra) {
+          medidor.textContent = palavra;
+          return medidor.offsetHeight;
+        }
+        function assentar() {
+          gira.style.height = alturaDe(palavras[i]) + "px";
+        }
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(assentar);
+        } else {
+          assentar();
+        }
+        window.addEventListener("resize", assentar);
 
-    // respeita quem pediu menos movimento: sem rotação
-    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    setInterval(function(){
-      el.classList.add("saindo");
-      // a altura já começa a deslizar rumo à próxima palavra, junto com o fade
-      gira.style.height = alturaDe(palavras[(i + 1) % palavras.length]) + "px";
-      setTimeout(function(){
-        i = (i + 1) % palavras.length;
-        el.textContent = palavras[i];
-        el.classList.remove("saindo");
-        el.classList.add("entrando");
-        // força reflow para a transição de entrada valer
-        void el.offsetWidth;
-        el.classList.remove("entrando");
-      }, 460);
-    }, 3200);
-  })();
-</script>
+        // respeita quem pediu menos movimento: sem rotação
+        if (
+          window.matchMedia &&
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        )
+          return;
+        setInterval(function () {
+          el.classList.add("saindo");
+          // a altura já começa a deslizar rumo à próxima palavra, junto com o fade
+          gira.style.height =
+            alturaDe(palavras[(i + 1) % palavras.length]) + "px";
+          setTimeout(function () {
+            i = (i + 1) % palavras.length;
+            el.textContent = palavras[i];
+            el.classList.remove("saindo");
+            el.classList.add("entrando");
+            // força reflow para a transição de entrada valer
+            void el.offsetWidth;
+            el.classList.remove("entrando");
+          }, 460);
+        }, 3200);
+      })();
+    </script>
 
-<script>
-/* =========================================================================
+    <script>
+      /* =========================================================================
    [INTRO] Intro de entrada (captada da versão "Valéo" do Claude Design).
    A logo se desenha, o símbolo vira um traço contínuo que contorna a marca
    e revela o hero. Overlay autossuficiente — não depende do fundo da seção.
    Ajuste a timeline no objeto T (tempos em ms).
    ========================================================================= */
-(function(){
-  var mq=window.matchMedia('(prefers-reduced-motion: reduce)');
-  var intro=document.getElementById('intro');
-  if(intro){
-    if(mq.matches){ intro.style.display='none'; }   // menos movimento -> sem intro
-    else{
-      var T={drawStart:300,drawDur:1400,sweepAt:1850,sweepDur:1900,revealAt:2450,exitAt:2900}; // timeline (ms) — ajuste fácil
-      var ipath=document.getElementById('introPath');
-      var letters=intro.querySelectorAll('.il');
-      var nodes=intro.querySelectorAll('.intro__node');
-      var counter=document.getElementById('introCounter');
-      var tagline=document.getElementById('introTagline');
-      var isvg=intro.querySelector('.intro__svg');
-      // letras entram
-      letters.forEach(function(el){var li=+el.getAttribute('data-li');el.animate(
-        [{opacity:0,transform:'translateY(16px)'},{opacity:1,transform:'translateY(0)'}],
-        {duration:500,delay:120+li*45,easing:'cubic-bezier(.2,.7,.2,1)',fill:'forwards'});});
-      // traço se desenha atravessando o logotipo (o mesmo caminho continua no laço ao redor da marca)
-      var symD=ipath.getAttribute('data-symbol-d');
-      var tmp=ipath.cloneNode(); tmp.setAttribute('d',symD); isvg.appendChild(tmp);
-      var lenSym=tmp.getTotalLength(); isvg.removeChild(tmp);
-      var lenTotal=ipath.getTotalLength();
-      ipath.style.strokeDasharray=lenSym+' '+lenTotal; ipath.style.strokeDashoffset=lenSym;
-      ipath.animate([{strokeDashoffset:lenSym},{strokeDashoffset:0}],
-        {duration:T.drawDur,delay:T.drawStart,easing:'cubic-bezier(.65,0,.35,1)',fill:'forwards'});
-      // nós pipocam quando o traço passa por eles
-      nodes.forEach(function(el){
-        var frac=parseFloat(el.getAttribute('data-frac'));
-        el.style.transformBox='fill-box'; el.style.transformOrigin='center';
-        el.animate([{opacity:0,transform:'scale(0)'},{opacity:1,transform:'scale(1.3)',offset:.7},{opacity:1,transform:'scale(1)'}],
-          {duration:360,delay:Math.max(0,T.drawStart+T.drawDur*frac-120),easing:'cubic-bezier(.2,.8,.3,1.4)',fill:'forwards'});});
-      // contador 0→100 sincronizado com o traço
-      var t0i=performance.now();
-      (function tick(){
-        var pr=Math.min(1,(performance.now()-t0i)/(T.drawStart+T.drawDur));
-        counter.textContent=Math.round((1-Math.pow(1-pr,3))*100);
-        if(pr<1)requestAnimationFrame(tick);
+      (function () {
+        var mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+        var intro = document.getElementById("intro");
+        if (intro) {
+          if (mq.matches) {
+            intro.style.display = "none";
+          } // menos movimento -> sem intro
+          else {
+            var T = {
+              drawStart: 300,
+              drawDur: 1400,
+              sweepAt: 1850,
+              sweepDur: 1900,
+              revealAt: 2450,
+              exitAt: 2900,
+            }; // timeline (ms) — ajuste fácil
+            var ipath = document.getElementById("introPath");
+            var letters = intro.querySelectorAll(".il");
+            var nodes = intro.querySelectorAll(".intro__node");
+            var counter = document.getElementById("introCounter");
+            var tagline = document.getElementById("introTagline");
+            var isvg = intro.querySelector(".intro__svg");
+            // letras entram
+            letters.forEach(function (el) {
+              var li = +el.getAttribute("data-li");
+              el.animate(
+                [
+                  { opacity: 0, transform: "translateY(16px)" },
+                  { opacity: 1, transform: "translateY(0)" },
+                ],
+                {
+                  duration: 500,
+                  delay: 120 + li * 45,
+                  easing: "cubic-bezier(.2,.7,.2,1)",
+                  fill: "forwards",
+                },
+              );
+            });
+            // traço se desenha atravessando o logotipo (o mesmo caminho continua no laço ao redor da marca)
+            var symD = ipath.getAttribute("data-symbol-d");
+            var tmp = ipath.cloneNode();
+            tmp.setAttribute("d", symD);
+            isvg.appendChild(tmp);
+            var lenSym = tmp.getTotalLength();
+            isvg.removeChild(tmp);
+            var lenTotal = ipath.getTotalLength();
+            ipath.style.strokeDasharray = lenSym + " " + lenTotal;
+            ipath.style.strokeDashoffset = lenSym;
+            ipath.animate(
+              [{ strokeDashoffset: lenSym }, { strokeDashoffset: 0 }],
+              {
+                duration: T.drawDur,
+                delay: T.drawStart,
+                easing: "cubic-bezier(.65,0,.35,1)",
+                fill: "forwards",
+              },
+            );
+            // nós pipocam quando o traço passa por eles
+            nodes.forEach(function (el) {
+              var frac = parseFloat(el.getAttribute("data-frac"));
+              el.style.transformBox = "fill-box";
+              el.style.transformOrigin = "center";
+              el.animate(
+                [
+                  { opacity: 0, transform: "scale(0)" },
+                  { opacity: 1, transform: "scale(1.3)", offset: 0.7 },
+                  { opacity: 1, transform: "scale(1)" },
+                ],
+                {
+                  duration: 360,
+                  delay: Math.max(0, T.drawStart + T.drawDur * frac - 120),
+                  easing: "cubic-bezier(.2,.8,.3,1.4)",
+                  fill: "forwards",
+                },
+              );
+            });
+            // contador 0→100 sincronizado com o traço
+            var t0i = performance.now();
+            (function tick() {
+              var pr = Math.min(
+                1,
+                (performance.now() - t0i) / (T.drawStart + T.drawDur),
+              );
+              counter.textContent = Math.round((1 - Math.pow(1 - pr, 3)) * 100);
+              if (pr < 1) requestAnimationFrame(tick);
+            })();
+            // contador sai, tagline entra
+            setTimeout(function () {
+              counter.animate([{ opacity: 1 }, { opacity: 0 }], {
+                duration: 220,
+                fill: "forwards",
+              });
+              tagline.animate([{ opacity: 0 }, { opacity: 1 }], {
+                duration: 400,
+                delay: 240,
+                fill: "forwards",
+              });
+            }, T.drawStart + T.drawDur);
+            // o símbolo se ESTICA e vira um traço contínuo que contorna o logotipo
+            setTimeout(function () {
+              ipath.animate(
+                [
+                  { strokeDashoffset: 0 },
+                  { strokeDashoffset: -(lenTotal - lenSym) },
+                ],
+                {
+                  duration: T.sweepDur,
+                  easing: "cubic-bezier(.5,.05,.3,.95)",
+                  fill: "forwards",
+                },
+              );
+              nodes[0].animate([{ opacity: 1 }, { opacity: 0 }], {
+                duration: 260,
+                delay: 120,
+                fill: "forwards",
+              });
+              nodes[1].animate([{ opacity: 1 }, { opacity: 0 }], {
+                duration: 300,
+                delay: 340,
+                fill: "forwards",
+              });
+            }, T.sweepAt);
+            // revelação: o véu abre revelando o hero
+            setTimeout(function () {
+              intro.style.pointerEvents = "none";
+              var an = intro.animate([{ opacity: 1 }, { opacity: 0 }], {
+                duration: 1400,
+                easing: "cubic-bezier(.4,0,.2,1)",
+                fill: "forwards",
+              });
+              an.onfinish = function () {
+                intro.style.display = "none";
+              };
+              setTimeout(function () {
+                if (window.ModernEasyBG) window.ModernEasyBG.powerOn();
+              }, 400);
+            }, T.revealAt);
+            // letras e traço se dissolvem já sobre o hero
+            setTimeout(function () {
+              letters.forEach(function (el) {
+                var li = +el.getAttribute("data-li");
+                el.animate([{ opacity: 1 }, { opacity: 0 }], {
+                  duration: 280,
+                  delay: li * 22,
+                  fill: "forwards",
+                });
+              });
+              tagline.animate([{ opacity: 1 }, { opacity: 0 }], {
+                duration: 300,
+                fill: "forwards",
+              });
+              isvg.animate([{ opacity: 1 }, { opacity: 0 }], {
+                duration: 420,
+                delay: 320,
+                fill: "forwards",
+              });
+            }, T.exitAt);
+          }
+        }
       })();
-      // contador sai, tagline entra
-      setTimeout(function(){
-        counter.animate([{opacity:1},{opacity:0}],{duration:220,fill:'forwards'});
-        tagline.animate([{opacity:0},{opacity:1}],{duration:400,delay:240,fill:'forwards'});
-      },T.drawStart+T.drawDur);
-      // o símbolo se ESTICA e vira um traço contínuo que contorna o logotipo
-      setTimeout(function(){
-        ipath.animate([{strokeDashoffset:0},{strokeDashoffset:-(lenTotal-lenSym)}],
-          {duration:T.sweepDur,easing:'cubic-bezier(.5,.05,.3,.95)',fill:'forwards'});
-        nodes[0].animate([{opacity:1},{opacity:0}],{duration:260,delay:120,fill:'forwards'});
-        nodes[1].animate([{opacity:1},{opacity:0}],{duration:300,delay:340,fill:'forwards'});
-      },T.sweepAt);
-      // revelação: o véu abre revelando o hero
-      setTimeout(function(){
-        intro.style.pointerEvents='none';
-        var an=intro.animate([{opacity:1},{opacity:0}],{duration:1400,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'});
-        an.onfinish=function(){intro.style.display='none';};
-        setTimeout(function(){ if(window.ModernEasyBG) window.ModernEasyBG.powerOn(); },400);
-      },T.revealAt);
-      // letras e traço se dissolvem já sobre o hero
-      setTimeout(function(){
-        letters.forEach(function(el){var li=+el.getAttribute('data-li');el.animate([{opacity:1},{opacity:0}],{duration:280,delay:li*22,fill:'forwards'});});
-        tagline.animate([{opacity:1},{opacity:0}],{duration:300,fill:'forwards'});
-        isvg.animate([{opacity:1},{opacity:0}],{duration:420,delay:320,fill:'forwards'});
-      },T.exitAt);
-    }
-  }
-})();
-</script>
-
-</body>
+    </script>
+  </body>
 </html>
