@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ModernEasy — Seção Portfólio de Automações (base para o Claude Design)</title>
+    <!--
+      ════════════════════════════════════════════════════════════════════════
+      BRIEF PARA O CLAUDE DESIGN
+      Esta é a nossa seção "Portfólio de automações" (carrossel estilo Spotlight,
+      inspirado em atompoint.com). Queremos elevá-la a um nível premium / digno de
+      Awwwards, MAS respeitando duas coisas inegociáveis:
+        1) A NOSSA identidade visual (verde — nada de azul de agência de tech).
+        2) Que continue FÁCIL de um leigo entender (dono de clínica, consultório,
+           supermercado). Nada de jargão nem visual "complicado de tecnologia".
+
+      Contexto: a ModernEasy instala automações com IA para PMEs (confirmação de
+      agendamentos, resposta a orçamentos, cobrança), tudo dentro do WhatsApp e das
+      planilhas que o cliente já usa.
+
+      Sobre o card: no lado esquerdo hoje há um MOCKUP de conversa no WhatsApp
+      (demonstração). No futuro esse espaço vai receber VÍDEO ou PRINT do fluxo real
+      (n8n) rodando — então mantenha um "slot de mídia" nesse lugar.
+
+      Restrições técnicas: self-contained (HTML+CSS+JS puro, SEM bibliotecas/CDN/
+      imagens externas); foco em DESKTOP; respeitar prefers-reduced-motion.
+      Âmbar #F5A524 é EXCLUSIVO de botões — PROIBIDO no fundo/decoração.
+
+      Paleta:
+        verde-abissal #06251C (fundo escuro) · verde-mata #0B3D2E (fundo desta seção)
+        verde-vivo #1FA36C (destaques/animação) · areia #FAF7F2 (texto)
+        âmbar #F5A524 (só botões)
+      Tipografia: títulos Sora, texto Figtree.
+      Vocabulário PROIBIDO: "disruptivo", "soluções inovadoras", "IA de ponta",
+      "transformação digital", "chatbot".
+
+      Ideias bem-vindas: efeito "espião" dos cards vizinhos (mostrar as bordas dos
+      cases ao lado, como na atompoint), profundidade/parallax, transições mais ricas
+      entre os cases — sempre sem prejudicar a leitura nem a clareza.
+      ════════════════════════════════════════════════════════════════════════
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Figtree:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --verde-abissal: #06251c;
+        --verde-mata: #0b3d2e;
+        --verde-vivo: #1fa36c;
+        --ambar: #f5a524;
+        --areia: #faf7f2;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Figtree", sans-serif;
+        color: var(--areia);
+        background: var(--verde-abissal);
+      }
+      h2,
+      h3 {
+        font-family: "Sora", sans-serif;
+        font-weight: 600;
+      }
+      .wrap {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      /* ---------- Seção de portfólio: carrossel "Spotlight" ---------- */
+      #cases {
+        position: relative;
+        background: var(--verde-mata);
+        padding: 96px 0 104px;
+        overflow: hidden;
+      }
+      #cases .wrap {
+        position: relative;
+        z-index: 1;
+      }
+      .cases__topo {
+        text-align: center;
+        max-width: 720px;
+        margin: 0 auto 56px;
+      }
+      .cases__eyebrow {
+        font-family: "Sora", sans-serif;
+        font-size: 13px;
+        font-weight: 400;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--verde-vivo);
+        display: block;
+        margin-bottom: 16px;
+      }
+      .cases__titulo {
+        font-size: clamp(28px, 4vw, 44px);
+        line-height: 1.12;
+        letter-spacing: -0.02em;
+        color: var(--areia);
+      }
+      .cases__titulo em {
+        font-style: normal;
+        color: var(--verde-vivo);
+      }
+      .cases__sub {
+        font-size: 17px;
+        line-height: 1.55;
+        color: rgba(250, 247, 242, 0.7);
+        max-width: 56ch;
+        margin: 14px auto 0;
+      }
+
+      .spot {
+        position: relative;
+      }
+      .spot__stage {
+        position: relative;
+        min-height: 520px;
+        transition: height 0.4s ease;
+      }
+      .spot__slide {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.6s ease;
+        display: grid;
+        grid-template-columns: minmax(0, 46%) minmax(0, 54%);
+        gap: clamp(32px, 5vw, 72px);
+        align-items: center;
+        pointer-events: none;
+      }
+      .spot__slide.ativo {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+
+      /* lado esquerdo: mockup de conversa no WhatsApp (SLOT p/ vídeo/print futuro) */
+      .spot__media {
+        position: relative;
+      }
+      .zap {
+        background: #07301f;
+        border: 1px solid rgba(250, 247, 242, 0.1);
+        border-radius: 22px;
+        padding: 18px 18px 22px;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+      }
+      .zap__head {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding-bottom: 14px;
+        margin-bottom: 16px;
+        border-bottom: 1px solid rgba(250, 247, 242, 0.08);
+      }
+      .zap__ava {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: var(--verde-vivo);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+      }
+      .zap__ava svg {
+        width: 22px;
+        height: 22px;
+        display: block;
+      }
+      .zap__nome {
+        font-family: "Sora", sans-serif;
+        font-weight: 600;
+        font-size: 15px;
+        color: var(--areia);
+      }
+      .zap__on {
+        font-size: 12px;
+        color: rgba(250, 247, 242, 0.5);
+      }
+      .zap__msgs {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .bolha {
+        max-width: 82%;
+        padding: 10px 14px;
+        border-radius: 16px;
+        font-size: 14.5px;
+        line-height: 1.45;
+      }
+      .bolha.ent {
+        align-self: flex-start;
+        background: #0f4230;
+        color: var(--areia);
+        border-bottom-left-radius: 5px;
+      }
+      .bolha.sai {
+        align-self: flex-end;
+        background: var(--verde-vivo);
+        color: #04160f;
+        border-bottom-right-radius: 5px;
+      }
+      .spot__media-cap {
+        text-align: center;
+        font-size: 12.5px;
+        color: rgba(250, 247, 242, 0.45);
+        margin-top: 14px;
+        letter-spacing: 0.02em;
+      }
+
+      /* lado direito: número gigante + texto do case */
+      .spot__info {
+        position: relative;
+        padding-left: 8px;
+      }
+      .spot__num {
+        position: absolute;
+        top: -58px;
+        left: -6px;
+        font-family: "Sora", sans-serif;
+        font-weight: 800;
+        font-size: clamp(120px, 15vw, 190px);
+        line-height: 1;
+        color: rgba(250, 247, 242, 0.05);
+        z-index: 0;
+        pointer-events: none;
+      }
+      .spot__tag {
+        position: relative;
+        z-index: 1;
+        font-family: "Sora", sans-serif;
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--verde-vivo);
+        display: block;
+        margin-bottom: 14px;
+      }
+      .spot__nome {
+        position: relative;
+        z-index: 1;
+        font-size: clamp(24px, 3vw, 34px);
+        line-height: 1.15;
+        letter-spacing: -0.01em;
+        color: var(--areia);
+        margin-bottom: 16px;
+      }
+      .spot__desc {
+        position: relative;
+        z-index: 1;
+        font-size: 16.5px;
+        line-height: 1.6;
+        color: rgba(250, 247, 242, 0.74);
+        max-width: 52ch;
+        margin-bottom: 28px;
+      }
+      .spot__link {
+        position: relative;
+        z-index: 1;
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        color: var(--areia);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 15px;
+      }
+      .spot__link .circ {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--verde-vivo);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.18s ease;
+      }
+      .spot__link .circ svg {
+        width: 18px;
+        height: 18px;
+        stroke: #04160f;
+      }
+      .spot__link:hover .circ {
+        transform: translateX(4px);
+      }
+
+      /* controles do carrossel */
+      .spot__ctrl {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 48px;
+      }
+      .spot__dots {
+        display: flex;
+        gap: 10px;
+      }
+      .spot__dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: rgba(250, 247, 242, 0.22);
+        border: 0;
+        padding: 0;
+        cursor: pointer;
+        transition:
+          background 0.2s ease,
+          transform 0.2s ease;
+      }
+      .spot__dot.ativo {
+        background: var(--verde-vivo);
+        transform: scale(1.25);
+      }
+      .spot__setas {
+        display: flex;
+        gap: 12px;
+      }
+      .spot__seta {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: transparent;
+        border: 1px solid rgba(250, 247, 242, 0.22);
+        color: var(--areia);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          border-color 0.18s ease,
+          background 0.18s ease;
+      }
+      .spot__seta:hover {
+        border-color: var(--verde-vivo);
+        background: rgba(31, 163, 108, 0.12);
+      }
+      .spot__seta svg {
+        width: 18px;
+        height: 18px;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .spot__slide {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ============ SEÇÃO: PORTFÓLIO DE AUTOMAÇÕES ============ -->
+    <section id="cases">
+      <div class="wrap">
+        <div class="cases__topo">
+          <span class="cases__eyebrow">Portfólio de automações</span>
+          <h2 class="cases__titulo">O que a gente <em>coloca pra rodar</em>.</h2>
+          <p class="cases__sub">
+            Exemplos do que as nossas automações fazem — explicados em linguagem
+            de gente, sem tecniquês.
+          </p>
+        </div>
+
+        <div class="spot" id="spot">
+          <div class="spot__stage">
+            <!-- CASE 01 — piloto real -->
+            <div class="spot__slide ativo" data-i="0">
+              <div class="spot__media">
+                <div class="zap">
+                  <div class="zap__head">
+                    <span class="zap__ava">
+                      <svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <path
+                          d="M4 19 L9 9 L14 17 L23 5"
+                          stroke="#04160F"
+                          stroke-width="2.6"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                        <circle cx="14" cy="17" r="2.2" fill="#04160F" />
+                        <circle cx="23" cy="5" r="3" fill="#04160F" />
+                      </svg>
+                    </span>
+                    <div>
+                      <div class="zap__nome">Clínica Sorriso</div>
+                      <div class="zap__on">online</div>
+                    </div>
+                  </div>
+                  <div class="zap__msgs">
+                    <div class="bolha sai">
+                      Olá, Maria! 😊 Sua consulta com a Dra. Ana é amanhã às 14h.
+                      Posso confirmar?
+                    </div>
+                    <div class="bolha ent">Pode sim!</div>
+                    <div class="bolha sai">
+                      Perfeito, tá confirmado! Até amanhã 💚
+                    </div>
+                  </div>
+                </div>
+                <div class="spot__media-cap">
+                  Demonstração · em breve, vídeo do fluxo real
+                </div>
+              </div>
+              <div class="spot__info">
+                <span class="spot__num">01</span>
+                <span class="spot__tag">Piloto · Clínica Sorriso</span>
+                <h3 class="spot__nome">Confirmação de consultas no automático</h3>
+                <p class="spot__desc">
+                  Todo dia, sozinho, o sistema manda no WhatsApp a confirmação
+                  das consultas do dia seguinte. Quem confirma, remarca ou
+                  cancela é atualizado na hora — e a recepção só recebe a lista
+                  de quem precisa de atenção. Menos cadeira vazia, sem ninguém
+                  ligando um por um.
+                </p>
+                <a class="spot__link" href="#">
+                  <span class="circ"
+                    ><svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      aria-hidden="true"
+                    >
+                      <path d="M5 12h14M13 6l6 6-6 6" /></svg
+                  ></span>
+                  Ver o passo a passo
+                </a>
+              </div>
+            </div>
+
+            <!-- CASE 02 -->
+            <div class="spot__slide" data-i="1">
+              <div class="spot__media">
+                <div class="zap">
+                  <div class="zap__head">
+                    <span class="zap__ava">
+                      <svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <path
+                          d="M4 19 L9 9 L14 17 L23 5"
+                          stroke="#04160F"
+                          stroke-width="2.6"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                        <circle cx="14" cy="17" r="2.2" fill="#04160F" />
+                        <circle cx="23" cy="5" r="3" fill="#04160F" />
+                      </svg>
+                    </span>
+                    <div>
+                      <div class="zap__nome">Seu atendimento</div>
+                      <div class="zap__on">online</div>
+                    </div>
+                  </div>
+                  <div class="zap__msgs">
+                    <div class="bolha ent">
+                      Oi, quanto fica a limpeza + clareamento?
+                    </div>
+                    <div class="bolha sai">
+                      Oi! A limpeza sai R$ 150 e o clareamento R$ 600. Quer que
+                      eu já veja um horário pra você? 😉
+                    </div>
+                  </div>
+                </div>
+                <div class="spot__media-cap">
+                  Demonstração · em breve, vídeo do fluxo real
+                </div>
+              </div>
+              <div class="spot__info">
+                <span class="spot__num">02</span>
+                <span class="spot__tag">Automação · Atendimento</span>
+                <h3 class="spot__nome">Orçamento respondido na hora</h3>
+                <p class="spot__desc">
+                  Cliente que espera resposta compra do concorrente. Cada pedido
+                  de orçamento recebe um retorno na hora, no WhatsApp, com tudo
+                  registrado para a sua equipe acompanhar depois — sem perder
+                  venda por demora.
+                </p>
+                <a class="spot__link" href="#">
+                  <span class="circ"
+                    ><svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      aria-hidden="true"
+                    >
+                      <path d="M5 12h14M13 6l6 6-6 6" /></svg
+                  ></span>
+                  Ver o passo a passo
+                </a>
+              </div>
+            </div>
+
+            <!-- CASE 03 -->
+            <div class="spot__slide" data-i="2">
+              <div class="spot__media">
+                <div class="zap">
+                  <div class="zap__head">
+                    <span class="zap__ava">
+                      <svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                        <path
+                          d="M4 19 L9 9 L14 17 L23 5"
+                          stroke="#04160F"
+                          stroke-width="2.6"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                        <circle cx="14" cy="17" r="2.2" fill="#04160F" />
+                        <circle cx="23" cy="5" r="3" fill="#04160F" />
+                      </svg>
+                    </span>
+                    <div>
+                      <div class="zap__nome">Seu financeiro</div>
+                      <div class="zap__on">online</div>
+                    </div>
+                  </div>
+                  <div class="zap__msgs">
+                    <div class="bolha sai">
+                      Oi, João! Passando para lembrar que a parcela de R$ 200
+                      vence amanhã. Aqui o link para pagar 👉
+                    </div>
+                    <div class="bolha ent">
+                      Ah, verdade! Já paguei, obrigado 🙏
+                    </div>
+                  </div>
+                </div>
+                <div class="spot__media-cap">
+                  Demonstração · em breve, vídeo do fluxo real
+                </div>
+              </div>
+              <div class="spot__info">
+                <span class="spot__num">03</span>
+                <span class="spot__tag">Automação · Financeiro</span>
+                <h3 class="spot__nome">
+                  Lembrete de pagamento sem constrangimento
+                </h3>
+                <p class="spot__desc">
+                  O sistema avisa com jeito quando uma parcela está para vencer
+                  ou venceu, no WhatsApp, já com o link de pagamento. Você recebe
+                  sem precisar cobrar na cara — e acompanha quem já pagou numa
+                  lista simples.
+                </p>
+                <a class="spot__link" href="#">
+                  <span class="circ"
+                    ><svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      aria-hidden="true"
+                    >
+                      <path d="M5 12h14M13 6l6 6-6 6" /></svg
+                  ></span>
+                  Ver o passo a passo
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="spot__ctrl">
+            <div class="spot__dots">
+              <button class="spot__dot ativo" aria-label="Case 1"></button>
+              <button class="spot__dot" aria-label="Case 2"></button>
+              <button class="spot__dot" aria-label="Case 3"></button>
+            </div>
+            <div class="spot__setas">
+              <button class="spot__seta spot__ant" aria-label="Anterior">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  aria-hidden="true"
+                >
+                  <path d="M19 12H5M11 6l-6 6 6 6" />
+                </svg>
+              </button>
+              <button class="spot__seta spot__prox" aria-label="Próximo">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  aria-hidden="true"
+                >
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      // Carrossel do portfólio (estilo "Spotlight"): um case por vez,
+      // setas + indicadores, avanço automático que pausa ao passar o mouse.
+      (function () {
+        var spot = document.getElementById("spot");
+        if (!spot) return;
+        var stage = spot.querySelector(".spot__stage");
+        var slides = [].slice.call(spot.querySelectorAll(".spot__slide"));
+        var dots = [].slice.call(spot.querySelectorAll(".spot__dot"));
+        var i = 0,
+          timer = null;
+        var reduz = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+
+        function altura() {
+          if (slides[i]) stage.style.height = slides[i].offsetHeight + "px";
+        }
+        function mostra(n) {
+          i = (n + slides.length) % slides.length;
+          slides.forEach(function (s, k) {
+            s.classList.toggle("ativo", k === i);
+          });
+          dots.forEach(function (d, k) {
+            d.classList.toggle("ativo", k === i);
+          });
+          altura();
+        }
+        function inicia() {
+          if (reduz) return;
+          timer = setInterval(function () {
+            mostra(i + 1);
+          }, 5500);
+        }
+        function para() {
+          if (timer) {
+            clearInterval(timer);
+            timer = null;
+          }
+        }
+        function reinicia() {
+          para();
+          inicia();
+        }
+
+        spot.querySelector(".spot__prox").addEventListener("click", function () {
+          mostra(i + 1);
+          reinicia();
+        });
+        spot.querySelector(".spot__ant").addEventListener("click", function () {
+          mostra(i - 1);
+          reinicia();
+        });
+        dots.forEach(function (d, k) {
+          d.addEventListener("click", function () {
+            mostra(k);
+            reinicia();
+          });
+        });
+        spot.addEventListener("mouseenter", para);
+        spot.addEventListener("mouseleave", inicia);
+        window.addEventListener("resize", altura);
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(altura);
+        }
+
+        mostra(0);
+        inicia();
+      })();
+    </script>
+  </body>
+</html>
