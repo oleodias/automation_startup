@@ -173,6 +173,16 @@ página dedicada (multi-página) ou virar um expandir/modal; efeito "espião" do
 (a atompoint mostra as bordas dos cards ao lado — deixei um crossfade limpo por ora);
 e trocar os mockups pelos vídeos/prints reais quando existirem.
 
+**Design v2 (Claude Design) integrado (2026-07-22).** O Leo mandou a versão do Claude Design
+(`referencias/portifolio/design-portfolio.html`) e aprovou o rumo. Integrei no `index.html`
+substituindo a nossa v1. Upgrades: **espião dos cards vizinhos** (bordas dos cases ao lado),
+**brilho ambiente** pulsando, mockup de WhatsApp turbinado (avatar com a logo em base64,
+indicador "digitando…", mensagens em sequência), **setas laterais** flutuantes + navegação
+por **teclado** e **arrastar**. Continua escopado em `#cases`, self-contained, respeita
+`prefers-reduced-motion`. Troca feita por script (marcadores de CSS/section/JS) + Prettier.
+**Verificação (Playwright):** hero/intro intactos, 3 slides, 2 setas, brilho e avatar ok,
+clique na seta sem erro, sem erros de JS. Aguardando avaliação dos sócios para levar à main.
+
 ---
 
 ## Registro por seção
