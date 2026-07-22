@@ -130,6 +130,59 @@ Quando o resultado voltar, ele **substitui a rede SVG provisória** que está no
 integro só o fundo, preservando título/navbar. (Este é o "fundo mais adiante" que ficou
 pendente desde a Valéo.)
 
+**Resultado (2026-07-21):** o Claude Design devolveu uma versão bem-feita (marca-d'água do
+símbolo + partículas verdes fluindo), mas **não era o que o Leo imaginava** → decisão:
+**pular o fundo v2** e manter o fundo de rede SVG que já temos. O prompt e a referência ficam
+guardados na pasta caso queiram retomar depois.
+
+---
+
+## Seção 1 (HERO) — APROVADA E PUBLICADA NA MAIN ✅ (2026-07-21)
+O hero foi aprovado (intro + navbar full-width + título com palavra girando + fundo de rede)
+e **mergeado na `main`** (commit de merge `ce1cc0b`) → publicado no GitHub Pages via
+`deploy-pages.yml`. Próxima seção: **Portfólio de automações** (os "cases").
+
+### Seção 2 — PORTFÓLIO DE AUTOMAÇÕES (em definição)
+Conceito (já conversado): inspirado na seção "Spotlight" da atompoint — cards de automações
+reais, cada um levando a uma página dedicada que explica a automação parte por parte + a
+aplicação no negócio. **Primeiro case = Clínica Sorriso como piloto/demonstração** (conteúdo
+real disponível em `A1-CONSTRUCAO.md`). Decisões de layout/escopo sendo definidas com os
+sócios. Sem foto de produto ainda → cards devem usar um grafismo/ícone (ex.: mini-fluxo),
+não banco de imagem.
+
+**Rascunho v1 (2026-07-21).** Referência: `referencias/portifolio/` (print + nota) — a seção
+"Spotlight" da atompoint. Pedido do Leo: bonito **e fácil para leigo** (dono de clínica,
+mercado); quer no futuro **vídeos do n8n rodando + prints**. Construí no `index.html`:
+- **Carrossel "Spotlight"** (`#cases`, fundo verde-mata para separar do hero): um case por
+  vez, **número gigante ao fundo**, tag + título + descrição em linguagem de gente + link
+  "Ver o passo a passo", com **setas + indicadores (dots)** e avanço automático que pausa no
+  hover. Altura do palco acompanha o case ativo. Respeita `prefers-reduced-motion`.
+- **Lado esquerdo = mockup de conversa no WhatsApp** (demonstração) em vez de foto — é o que
+  o leigo entende na hora e é o **lugar reservado para o vídeo/print do fluxo real** depois
+  (tem legenda "Demonstração · em breve, vídeo do fluxo real"). Bolhas em verde-vivo (não uso
+  o verde oficial do WhatsApp — regra da marca).
+- **3 cases seed:** 01 Confirmação de consultas (**piloto real Clínica Sorriso**, de
+  `A1-CONSTRUCAO.md`), 02 Orçamento respondido na hora, 03 Lembrete de pagamento. Os cards
+  02/03 são automações que oferecemos (rotulados "Automação", não cliente fake).
+
+**Verificação (Playwright):** seção presente ✓, seta avança ✓, dot pula pro case certo ✓,
+altura do palco ajusta ✓, sem erros de JS. Prettier aplicado.
+
+**Aberto para lapidar:** textos dos cases; se o link "Ver o passo a passo" deve já abrir uma
+página dedicada (multi-página) ou virar um expandir/modal; efeito "espião" dos cards vizinhos
+(a atompoint mostra as bordas dos cards ao lado — deixei um crossfade limpo por ora);
+e trocar os mockups pelos vídeos/prints reais quando existirem.
+
+**Design v2 (Claude Design) integrado (2026-07-22).** O Leo mandou a versão do Claude Design
+(`referencias/portifolio/design-portfolio.html`) e aprovou o rumo. Integrei no `index.html`
+substituindo a nossa v1. Upgrades: **espião dos cards vizinhos** (bordas dos cases ao lado),
+**brilho ambiente** pulsando, mockup de WhatsApp turbinado (avatar com a logo em base64,
+indicador "digitando…", mensagens em sequência), **setas laterais** flutuantes + navegação
+por **teclado** e **arrastar**. Continua escopado em `#cases`, self-contained, respeita
+`prefers-reduced-motion`. Troca feita por script (marcadores de CSS/section/JS) + Prettier.
+**Verificação (Playwright):** hero/intro intactos, 3 slides, 2 setas, brilho e avatar ok,
+clique na seta sem erro, sem erros de JS. Aguardando avaliação dos sócios para levar à main.
+
 ---
 
 ## Registro por seção
