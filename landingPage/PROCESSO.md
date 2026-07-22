@@ -69,6 +69,30 @@ legibilidade acima de tudo, respeitar reduced-motion) e pede 2–3 conceitos + i
 **Ao usar: anexar `simbolo.png` e `logo-principal.png`.** Quando o resultado voltar, a gente
 escolhe/ajusta e substitui a rede SVG provisória que está no hero hoje.
 
+### Intro de entrada — captada da "Valéo" (2026-07-21)
+O Claude Design devolveu uma versão chamada **Valéo**
+(`landingPage/referencias/entrada_landingPage and hero/valeo.html`) com 3 partes:
+(1) um **fundo em canvas** ("Fluxo de Nós Ascendente"), (2) uma **página de exemplo** e
+(3) uma **intro de entrada**. Decisão do Leo: **capturar SÓ a intro** por agora; ignorar a
+página de exemplo; e **não** trocar o fundo ainda (o fundo em canvas da Valéo fica guardado
+para depois — hoje o hero segue com a rede SVG que já era nossa).
+
+**O que integrei ao `index.html`:** a intro (overlay `#intro`) — a logo "moderneasy" se
+desenha letra a letra, o símbolo risca por cima (efeito estilo steven.com), um contador vai
+de 0→100, o símbolo se estica num laço e o véu abre revelando o **nosso** hero (título com
+palavra girando + fundo de rede). Adaptações: fonte do wordmark = **Sora 800** (adicionei o
+peso 800 ao import); mapeei as variáveis de cor para as nossas (`--verde-abissal`, etc.).
+**Salvaguardas:** respeita `prefers-reduced-motion` (sem intro) e tem `<noscript>` que
+esconde a intro se o JS estiver desligado (o site nunca fica preso atrás do véu).
+Timeline ajustável no `<script> [INTRO]` (objeto `T`, tempos em ms).
+
+**Teste headless (Playwright):** intro aparece no início ✓, some no fim revelando o hero ✓,
+rotação de palavras roda ✓, sem erros de JS. (O fundo em canvas da Valéo **não** foi trazido;
+o hook `window.ModernEasyBG.powerOn()` fica inofensivo — guardado por `if`.)
+
+**Aberto para lapidar:** duração/tempos da intro; se deve tocar em toda visita ou só na
+primeira (dá para adicionar `sessionStorage`); e a fonte exata do wordmark (hoje Sora 800).
+
 ---
 
 ## Registro por seção

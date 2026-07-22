@@ -11,7 +11,9 @@
   <meta property="og:image" content="landingPage/assets-marca/logo-principal.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Salvaguarda: se o JS estiver desligado, a intro some e o site aparece normalmente. -->
+  <noscript><style>#intro{display:none!important}</style></noscript>
   <style>
     /* ============================================================
        ModernEasy — Landing Page (reconstrução seção por seção)
@@ -88,6 +90,23 @@
       .gira .palavra{transition:none}
     }
 
+    /* ============================================================
+       INTRO DE ENTRADA (captada da versão "Valéo" do Claude Design)
+       A logo "moderneasy" se desenha, o símbolo risca por cima e o
+       véu abre revelando o hero. É um overlay fixo e autossuficiente:
+       não altera o título nem o fundo da seção 1.
+       Timeline e parâmetros no <script> [INTRO], lá embaixo.
+       ============================================================ */
+    .intro{position:fixed;inset:0;z-index:60;background:var(--verde-abissal);display:flex;align-items:center;justify-content:center}
+    .intro__center{position:relative;display:flex;align-items:center;justify-content:center}
+    .intro__word{position:relative;z-index:1;font-family:'Sora',sans-serif;font-weight:800;font-size:clamp(48px,7vw,96px);letter-spacing:-.03em;line-height:1;white-space:nowrap}
+    .intro__word--front{position:absolute;inset:0;z-index:3;pointer-events:none}
+    .intro__word .il{display:inline-block;opacity:0}
+    .intro__svg{position:absolute;width:76%;left:12%;top:50%;transform:translateY(-52%);overflow:visible;pointer-events:none;z-index:2}
+    .intro__counter,.intro__tagline{position:absolute;bottom:40px;left:0;right:0;text-align:center;color:rgba(250,247,242,.55)}
+    .intro__counter{font-size:14px;letter-spacing:.1em;font-variant-numeric:tabular-nums}
+    .intro__tagline{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:rgba(250,247,242,.6);opacity:0}
+
     /* ---------- rodapé provisório (slim, até as próximas seções nascerem) ---------- */
     footer{border-top:1px solid rgba(250,247,242,.07);padding:28px 0;font-size:14px;color:rgba(250,247,242,.55)}
     footer .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
@@ -97,6 +116,21 @@
   </style>
 </head>
 <body>
+
+<!-- ============ INTRO DE ENTRADA (overlay; captada da "Valéo") ============ -->
+<div class="intro" id="intro">
+  <div class="intro__center">
+    <div class="intro__word"><span class="il" data-li="0" style="color:#FAF7F2">m</span><span class="il" data-li="1" style="color:#FAF7F2">o</span><span class="il" data-li="2" style="color:#FAF7F2">d</span><span class="il" data-li="3" style="color:#FAF7F2">e</span><span class="il" data-li="4" style="color:#FAF7F2">r</span><span class="il" data-li="5" style="color:#FAF7F2">n</span><span class="il" data-li="6" style="color:#1FA36C">e</span><span class="il" data-li="7" style="color:#1FA36C">a</span><span class="il" data-li="8" style="color:#1FA36C">s</span><span class="il" data-li="9" style="color:#1FA36C">y</span></div>
+    <svg class="intro__svg" viewBox="0 0 256 197" aria-hidden="true">
+      <path id="introPath" data-symbol-d="M30 150 L78 74 L128 150 L206 50" d="M30 150 L78 74 L128 150 L206 50 C236 10 190 -3 128 -3 C9.3 -3 -87 44 -87 102 C-87 160 9.3 207 128 207 C246.7 207 343 160 343 102 C343 44 246.7 -3 128 -3" stroke="#1FA36C" stroke-width="14" fill="none" stroke-linecap="round" stroke-linejoin="round" style="opacity:.97;stroke-dasharray:0.1 99999"/>
+      <circle class="intro__node" data-frac="0.59" cx="128" cy="150" r="11" fill="#1FA36C" style="opacity:0"/>
+      <circle class="intro__node" data-frac="1" cx="206" cy="50" r="20" fill="#1FA36C" style="opacity:0"/>
+    </svg>
+    <div class="intro__word intro__word--front" aria-hidden="true"><span class="il" data-li="0" style="color:#FAF7F2">m</span><span class="il" data-li="1" style="color:#FAF7F2">o</span><span class="il" data-li="2" style="color:#FAF7F2">d</span><span class="il" data-li="3" style="color:#FAF7F2">e</span><span class="il" data-li="4" style="color:#FAF7F2">r</span><span class="il" data-li="5" style="color:#FAF7F2">n</span><span class="il" data-li="6" style="color:#1FA36C">e</span><span class="il" data-li="7" style="color:#1FA36C">a</span><span class="il" data-li="8" style="color:#1FA36C">s</span><span class="il" data-li="9" style="color:#1FA36C">y</span></div>
+  </div>
+  <div class="intro__counter" id="introCounter">0</div>
+  <div class="intro__tagline" id="introTagline">Automação sem complicação · feita aqui no Vale</div>
+</div>
 
 <header>
   <div class="wrap nav">
@@ -218,6 +252,81 @@
       }, 460);
     }, 3200);
   })();
+</script>
+
+<script>
+/* =========================================================================
+   [INTRO] Intro de entrada (captada da versão "Valéo" do Claude Design).
+   A logo se desenha, o símbolo vira um traço contínuo que contorna a marca
+   e revela o hero. Overlay autossuficiente — não depende do fundo da seção.
+   Ajuste a timeline no objeto T (tempos em ms).
+   ========================================================================= */
+(function(){
+  var mq=window.matchMedia('(prefers-reduced-motion: reduce)');
+  var intro=document.getElementById('intro');
+  if(intro){
+    if(mq.matches){ intro.style.display='none'; }   // menos movimento -> sem intro
+    else{
+      var T={drawStart:300,drawDur:1400,sweepAt:1850,sweepDur:1900,revealAt:2450,exitAt:2900}; // timeline (ms) — ajuste fácil
+      var ipath=document.getElementById('introPath');
+      var letters=intro.querySelectorAll('.il');
+      var nodes=intro.querySelectorAll('.intro__node');
+      var counter=document.getElementById('introCounter');
+      var tagline=document.getElementById('introTagline');
+      var isvg=intro.querySelector('.intro__svg');
+      // letras entram
+      letters.forEach(function(el){var li=+el.getAttribute('data-li');el.animate(
+        [{opacity:0,transform:'translateY(16px)'},{opacity:1,transform:'translateY(0)'}],
+        {duration:500,delay:120+li*45,easing:'cubic-bezier(.2,.7,.2,1)',fill:'forwards'});});
+      // traço se desenha atravessando o logotipo (o mesmo caminho continua no laço ao redor da marca)
+      var symD=ipath.getAttribute('data-symbol-d');
+      var tmp=ipath.cloneNode(); tmp.setAttribute('d',symD); isvg.appendChild(tmp);
+      var lenSym=tmp.getTotalLength(); isvg.removeChild(tmp);
+      var lenTotal=ipath.getTotalLength();
+      ipath.style.strokeDasharray=lenSym+' '+lenTotal; ipath.style.strokeDashoffset=lenSym;
+      ipath.animate([{strokeDashoffset:lenSym},{strokeDashoffset:0}],
+        {duration:T.drawDur,delay:T.drawStart,easing:'cubic-bezier(.65,0,.35,1)',fill:'forwards'});
+      // nós pipocam quando o traço passa por eles
+      nodes.forEach(function(el){
+        var frac=parseFloat(el.getAttribute('data-frac'));
+        el.style.transformBox='fill-box'; el.style.transformOrigin='center';
+        el.animate([{opacity:0,transform:'scale(0)'},{opacity:1,transform:'scale(1.3)',offset:.7},{opacity:1,transform:'scale(1)'}],
+          {duration:360,delay:Math.max(0,T.drawStart+T.drawDur*frac-120),easing:'cubic-bezier(.2,.8,.3,1.4)',fill:'forwards'});});
+      // contador 0→100 sincronizado com o traço
+      var t0i=performance.now();
+      (function tick(){
+        var pr=Math.min(1,(performance.now()-t0i)/(T.drawStart+T.drawDur));
+        counter.textContent=Math.round((1-Math.pow(1-pr,3))*100);
+        if(pr<1)requestAnimationFrame(tick);
+      })();
+      // contador sai, tagline entra
+      setTimeout(function(){
+        counter.animate([{opacity:1},{opacity:0}],{duration:220,fill:'forwards'});
+        tagline.animate([{opacity:0},{opacity:1}],{duration:400,delay:240,fill:'forwards'});
+      },T.drawStart+T.drawDur);
+      // o símbolo se ESTICA e vira um traço contínuo que contorna o logotipo
+      setTimeout(function(){
+        ipath.animate([{strokeDashoffset:0},{strokeDashoffset:-(lenTotal-lenSym)}],
+          {duration:T.sweepDur,easing:'cubic-bezier(.5,.05,.3,.95)',fill:'forwards'});
+        nodes[0].animate([{opacity:1},{opacity:0}],{duration:260,delay:120,fill:'forwards'});
+        nodes[1].animate([{opacity:1},{opacity:0}],{duration:300,delay:340,fill:'forwards'});
+      },T.sweepAt);
+      // revelação: o véu abre revelando o hero
+      setTimeout(function(){
+        intro.style.pointerEvents='none';
+        var an=intro.animate([{opacity:1},{opacity:0}],{duration:1400,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'});
+        an.onfinish=function(){intro.style.display='none';};
+        setTimeout(function(){ if(window.ModernEasyBG) window.ModernEasyBG.powerOn(); },400);
+      },T.revealAt);
+      // letras e traço se dissolvem já sobre o hero
+      setTimeout(function(){
+        letters.forEach(function(el){var li=+el.getAttribute('data-li');el.animate([{opacity:1},{opacity:0}],{duration:280,delay:li*22,fill:'forwards'});});
+        tagline.animate([{opacity:1},{opacity:0}],{duration:300,fill:'forwards'});
+        isvg.animate([{opacity:1},{opacity:0}],{duration:420,delay:320,fill:'forwards'});
+      },T.exitAt);
+    }
+  }
+})();
 </script>
 
 </body>
