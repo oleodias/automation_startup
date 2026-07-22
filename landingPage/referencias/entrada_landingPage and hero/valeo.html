@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<!--
+  ModernEasy — versão "Valéo" · self-contained (HTML+CSS+JS puros, sem CDN, sem imagens)
+  ══════════════════════════════════════════════════════════════════════════
+  PARÂMETROS AJUSTÁVEIS — objeto CFG no <script> [HERO-BG]:
+    streamCount    9      densidade: nº de linhas de fluxo ascendente
+    pulseSpeedBase 150    velocidade dos pulsos de luz (px/s)
+    guideAlphaMin  0.05   opacidade das linhas atrás do texto (esquerda, calmo)
+    guideAlphaMax  0.30   opacidade das linhas à direita (energia)
+    nodeGapBase    74     distância entre nós (px) → tamanho do ziguezague
+    ampRatio       0.30   altura do ziguezague relativa ao espaçamento
+    bobAmount      5      "respiração" das linhas (px); 0 = totalmente estático
+    maxDPR         2      teto de densidade de pixels (performance)
+  Timeline da intro (opcional): objeto T no <script> [INTRO].
+
+  INTEGRAÇÃO — só o fundo no seu hero:
+    1. copie a <div id="hero-bg"> inteira;
+    2. copie o bloco de CSS marcado [HERO-BG];
+    3. copie o <script> marcado [HERO-BG];
+    4. cole dentro de um elemento com position:relative (o fundo preenche ele).
+  O texto de exemplo (.hero__content) e a intro são demonstração — descartáveis.
+-->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ModernEasy — Automação sem complicação, feita aqui no Vale</title>
+<style>
+  :root{
+    --abissal:#06251C;  /* fundo   */
+    --mata:#0B3D2E;
+    --vivo:#1FA36C;     /* animação */
+    --areia:#FAF7F2;    /* texto    */
+    --ambar:#F5A524;    /* SÓ botões */
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--abissal);
+    color:var(--areia);
+    font-family:'SF Pro Display','Segoe UI Variable','Segoe UI',system-ui,-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+  }
+  a{text-decoration:none;}
+
+  /* ═══════════ [HERO-BG] fundo animado — módulo isolado ═══════════
+     Copie estas regras junto com a <div id="hero-bg">. */
+  #hero-bg{position:absolute;inset:0;z-index:0;overflow:hidden;background:var(--abissal);pointer-events:none;}
+  #hero-bg canvas{position:absolute;inset:0;width:100%;height:100%;display:block;}
+  /* véus que protegem a leitura do texto à esquerda (opcionais) */
+  #hero-bg .scrim{position:absolute;inset:0;
+    background:linear-gradient(100deg,#06251C 0%,rgba(6,37,28,.94) 20%,rgba(6,37,28,.62) 42%,rgba(6,37,28,.12) 62%,rgba(6,37,28,0) 78%);}
+  #hero-bg .scrim2{position:absolute;inset:0;
+    background:radial-gradient(120% 90% at 12% 30%,rgba(6,37,28,.55) 0%,rgba(6,37,28,0) 55%);}
+  @media (prefers-reduced-motion: reduce){ #hero-bg canvas{opacity:.9;} }
+  /* ═══════════ fim [HERO-BG] ═══════════ */
+
+  /* ----- daqui pra baixo: layout de EXEMPLO (hero demonstrativo) ----- */
+  .hero{position:relative;width:100%;min-height:100vh;background:var(--abissal);overflow:hidden;display:flex;flex-direction:column;}
+
+  .hero__brand{position:absolute;top:clamp(28px,4vw,46px);left:clamp(32px,8vw,120px);z-index:3;display:flex;align-items:center;gap:13px;}
+  .hero__wordmark{font-weight:800;font-size:23px;letter-spacing:-.02em;}
+
+  .hero__content{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;justify-content:center;padding:120px clamp(32px,8vw,120px) 90px;}
+  .hero__eyebrow{display:inline-flex;align-items:center;gap:10px;margin-bottom:26px;}
+  .hero__eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--vivo);box-shadow:0 0 12px 1px rgba(31,163,108,.9);}
+  .hero__eyebrow span{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:rgba(250,247,242,.68);font-weight:600;}
+  .hero__title{margin:0;font-size:clamp(40px,5.2vw,68px);line-height:1.03;letter-spacing:-.028em;font-weight:800;color:var(--areia);max-width:15ch;text-wrap:balance;}
+  .hero__title em{font-style:normal;color:var(--vivo);}
+  .hero__sub{margin:26px 0 0;font-size:clamp(17px,1.35vw,20px);line-height:1.55;color:rgba(250,247,242,.72);max-width:540px;text-wrap:pretty;}
+  .hero__actions{display:flex;gap:16px;margin-top:38px;align-items:center;flex-wrap:wrap;}
+  .hero__actions a{white-space:nowrap;}
+  .btn-primary{background:var(--ambar);color:var(--abissal);font-weight:700;font-size:16px;padding:15px 30px;border-radius:12px;box-shadow:0 12px 34px rgba(245,165,36,.26);transition:transform .18s,box-shadow .18s;}
+  .btn-primary:hover{box-shadow:0 16px 42px rgba(245,165,36,.4);transform:translateY(-2px);}
+  .btn-ghost{color:var(--areia);border:1px solid rgba(250,247,242,.26);padding:14px 26px;border-radius:12px;font-weight:600;font-size:16px;transition:border-color .18s,background .18s;}
+  .btn-ghost:hover{border-color:rgba(31,163,108,.8);background:rgba(31,163,108,.1);}
+  .hero__trust{margin-top:28px;font-size:14px;color:rgba(250,247,242,.5);}
+
+  /* ===== Intro de entrada ===== */
+  .intro{position:fixed;inset:0;z-index:60;background:var(--abissal);display:flex;align-items:center;justify-content:center;}
+  .intro__center{position:relative;display:flex;align-items:center;justify-content:center;}
+  .intro__word{position:relative;z-index:1;font-weight:800;font-size:clamp(48px,7vw,96px);letter-spacing:-.03em;line-height:1;white-space:nowrap;}
+  .intro__word--front{position:absolute;inset:0;z-index:3;pointer-events:none;}
+  .intro__word .il{display:inline-block;opacity:0;}
+  .intro__svg{position:absolute;width:76%;left:12%;top:50%;transform:translateY(-52%);overflow:visible;pointer-events:none;z-index:2;}
+  .intro__counter,.intro__tagline{position:absolute;bottom:40px;left:0;right:0;text-align:center;color:rgba(250,247,242,.55);}
+  .intro__counter{font-size:14px;letter-spacing:.1em;font-variant-numeric:tabular-nums;}
+  .intro__tagline{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:rgba(250,247,242,.6);opacity:0;}
+</style>
+</head>
+<body>
+  <section class="hero">
+    <!-- ═══════════ [HERO-BG] fundo animado — plugue só esta div no seu hero ═══════════ -->
+    <div id="hero-bg" aria-hidden="true">
+      <canvas id="flow"></canvas>
+      <div class="scrim"></div>
+      <div class="scrim2"></div>
+    </div>
+    <!-- ═══════════ fim [HERO-BG] ═══════════ -->
+
+    <header class="hero__brand">
+      <svg width="44" height="34" viewBox="0 0 256 197" fill="none" aria-hidden="true">
+        <path d="M30 150 L78 74 L128 150 L206 50" stroke="#1FA36C" stroke-width="25" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="128" cy="150" r="19" fill="#1FA36C"/>
+        <circle cx="206" cy="50" r="35" fill="#1FA36C"/>
+      </svg>
+      <span class="hero__wordmark"><span style="color:#FAF7F2">modern</span><span style="color:#1FA36C">easy</span></span>
+    </header>
+
+    <div class="hero__content">
+      <div class="hero__eyebrow">
+        <span class="dot"></span>
+        <span>Automação com IA · Vale do Taquari, RS</span>
+      </div>
+      <h1 class="hero__title">Automação sem complicação, <em>feita aqui no Vale.</em></h1>
+      <p class="hero__sub">Confirmação de agendamento, resposta de orçamento e cobrança que acontecem sozinhas — dentro do WhatsApp e das planilhas que a sua equipe já usa.</p>
+      <div class="hero__actions">
+        <a class="btn-primary" href="#">Falar com a gente</a>
+        <a class="btn-ghost" href="#">Ver como funciona →</a>
+      </div>
+      <p class="hero__trust">Gente séria daqui do Vale do Taquari — sem enrolação, no ritmo do seu negócio.</p>
+    </div>
+
+    <!-- ===== Intro de entrada: a logo se desenha e o véu abre para o site ===== -->
+    <div class="intro" id="intro">
+      <div class="intro__center">
+        <div class="intro__word"><span class="il" data-li="0" style="color:#FAF7F2">m</span><span class="il" data-li="1" style="color:#FAF7F2">o</span><span class="il" data-li="2" style="color:#FAF7F2">d</span><span class="il" data-li="3" style="color:#FAF7F2">e</span><span class="il" data-li="4" style="color:#FAF7F2">r</span><span class="il" data-li="5" style="color:#FAF7F2">n</span><span class="il" data-li="6" style="color:#1FA36C">e</span><span class="il" data-li="7" style="color:#1FA36C">a</span><span class="il" data-li="8" style="color:#1FA36C">s</span><span class="il" data-li="9" style="color:#1FA36C">y</span></div>
+        <svg class="intro__svg" viewBox="0 0 256 197" aria-hidden="true">
+          <path id="introPath" data-symbol-d="M30 150 L78 74 L128 150 L206 50" d="M30 150 L78 74 L128 150 L206 50 C236 10 190 -3 128 -3 C9.3 -3 -87 44 -87 102 C-87 160 9.3 207 128 207 C246.7 207 343 160 343 102 C343 44 246.7 -3 128 -3" stroke="#1FA36C" stroke-width="14" fill="none" stroke-linecap="round" stroke-linejoin="round" style="opacity:.97;stroke-dasharray:0.1 99999"/>
+          <circle class="intro__node" data-frac="0.59" cx="128" cy="150" r="11" fill="#1FA36C" style="opacity:0"/>
+          <circle class="intro__node" data-frac="1" cx="206" cy="50" r="20" fill="#1FA36C" style="opacity:0"/>
+        </svg>
+        <div class="intro__word intro__word--front" aria-hidden="true"><span class="il" data-li="0" style="color:#FAF7F2">m</span><span class="il" data-li="1" style="color:#FAF7F2">o</span><span class="il" data-li="2" style="color:#FAF7F2">d</span><span class="il" data-li="3" style="color:#FAF7F2">e</span><span class="il" data-li="4" style="color:#FAF7F2">r</span><span class="il" data-li="5" style="color:#FAF7F2">n</span><span class="il" data-li="6" style="color:#1FA36C">e</span><span class="il" data-li="7" style="color:#1FA36C">a</span><span class="il" data-li="8" style="color:#1FA36C">s</span><span class="il" data-li="9" style="color:#1FA36C">y</span></div>
+      </div>
+      <div class="intro__counter" id="introCounter">0</div>
+      <div class="intro__tagline" id="introTagline">Automação sem complicação · feita aqui no Vale</div>
+    </div>
+  </section>
+
+<script>
+/* =========================================================================
+   [HERO-BG] ModernEasy — fundo animado: "Fluxo de Nós Ascendente"
+   O símbolo da marca (ziguezague que sobe conectando nós e termina num
+   círculo cheio) vira várias linhas de fluxo; pulsos de luz percorrem os
+   nós de baixo para cima, como etapas de uma automação executando, e
+   florescem no nó terminal. Mais energia à direita, calmo atrás do texto.
+   Canvas 2D puro — sem bibliotecas, sem CDN, sem imagens externas.
+   ========================================================================= */
+(function(){
+  var canvas = document.querySelector('#hero-bg canvas');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d', { alpha:false });
+
+  /* ============ PARÂMETROS FÁCEIS DE AJUSTAR ============ */
+  var CFG = {
+    streamCount:    9,     // densidade: nº de linhas de fluxo ascendente
+    pulseSpeedBase: 150,   // velocidade do pulso ao longo dos nós (px/s)
+    guideAlphaMin:  0.05,  // opacidade das linhas atrás do texto (esquerda = calmo)
+    guideAlphaMax:  0.30,  // opacidade das linhas à direita (energia)
+    nodeGapBase:    74,    // distância base entre nós (px) -> tamanho do ziguezague
+    ampRatio:       0.30,  // altura do ziguezague relativa ao espaçamento
+    bobAmount:      5,     // "respiração" suave das linhas (px); 0 = totalmente estático
+    maxDPR:         2      // limite de densidade de pixels (performance)
+  };
+  /* Paleta (verdes apenas — âmbar é proibido no fundo) */
+  var GREEN=[31,163,108];  // #1FA36C verde-vivo
+  var GLOW =[99,230,169];  // verde claro do brilho
+  var CORE =[214,255,238]; // núcleo quase-branco do pulso
+  var BG   ='#06251C';     // verde-abissal
+  var PULSE_TAIL=62, PULSE_APPROACH=26; // decaimento / antecipação do acendimento
+  /* ====================================================== */
+
+  function rgba(c,a){return 'rgba('+c[0]+','+c[1]+','+c[2]+','+a+')';}
+  function clamp(v,a,b){return v<a?a:v>b?b:v;}
+  function smooth(a,b,x){x=clamp((x-a)/(b-a),0,1);return x*x*(3-2*x);}
+  function rand(a,b){return a+Math.random()*(b-a);}
+
+  function sprite(inner,mid){
+    var s=128,c=document.createElement('canvas');c.width=c.height=s;
+    var x=c.getContext('2d');
+    var g=x.createRadialGradient(s/2,s/2,0,s/2,s/2,s/2);
+    g.addColorStop(0,inner);g.addColorStop(0.28,mid);g.addColorStop(1,'rgba(0,0,0,0)');
+    x.fillStyle=g;x.fillRect(0,0,s,s);return c;
+  }
+  var glowSprite=sprite(rgba(GLOW,0.95),rgba(GLOW,0.35));
+  var coreSprite=sprite(rgba(CORE,1),rgba(GLOW,0.5));
+  var ambientSprite=sprite(rgba(GREEN,0.5),rgba(GREEN,0.14));
+
+  var W=0,H=0,dpr=1,streams=[],time=0,last=0,raf=0,running=false,visible=true,boost=0;
+  function powerOn(){boost=1;} // a intro "energiza" a interface ao terminar
+
+  function buildStreams(){
+    streams=[];
+    var N=CFG.streamCount;
+    for(var i=0;i<N;i++){
+      var t=(i+0.5)/N;
+      var rx=0.24+0.72*Math.pow(t,0.82);        // espalhamento horizontal (mais denso à direita)
+      var ry=0.14+0.72*((i*0.61803+0.13)%1);    // espalhamento vertical (razão áurea)
+      var energy=clamp(smooth(0.18,0.95,rx),0.08,1);
+      var scale=0.7+0.65*rx+rand(-0.06,0.06);
+      var th=rand(0.24,0.46);                    // ângulo de subida (~14°..26°)
+      var u={x:Math.cos(th),y:-Math.sin(th)};
+      var vp={x:Math.sin(th),y:Math.cos(th)};
+      var count=5+Math.round(rand(0,3));
+      var gap=CFG.nodeGapBase*scale*rand(0.85,1.15);
+      var amp=gap*CFG.ampRatio*rand(0.85,1.15);
+      var pts=[],k;
+      for(k=0;k<count;k++){var al=k*gap,la=amp*(k%2?-1:1);
+        pts.push({x:u.x*al+vp.x*la,y:u.y*al+vp.y*la});}
+      var mx=0,my=0;pts.forEach(function(p){mx+=p.x;my+=p.y;});mx/=count;my/=count;
+      var cx=rx*W,cy=ry*H;pts.forEach(function(p){p.x+=cx-mx;p.y+=cy-my;});
+      var L=0;pts[0].L=0;
+      for(k=1;k<count;k++){L+=Math.hypot(pts[k].x-pts[k-1].x,pts[k].y-pts[k-1].y);pts[k].L=L;}
+      var total=L;
+      var nP=rx>0.5?2:1;
+      var period=total+PULSE_TAIL+total*(0.35+(1-energy)*0.9)+50;
+      var speed=CFG.pulseSpeedBase*(0.72+0.55*energy);
+      var pulses=[];for(var j=0;j<nP;j++)pulses.push((j/nP)*period+rand(0,period/nP*0.6));
+      streams.push({pts:pts,total:total,energy:energy,scale:scale,vp:vp,
+        nodeR:2.0*scale,termR:4.6*scale,lineW:Math.max(1,1.4*scale),
+        pulses:pulses,period:period,speed:speed,
+        bobA:CFG.bobAmount*rand(0.5,1.2),bobS:rand(0.15,0.4),bobP:rand(0,6.28)});
+    }
+  }
+
+  function resize(){
+    var r=canvas.getBoundingClientRect();
+    W=r.width;H=r.height;if(W<2||H<2)return;
+    dpr=Math.min(window.devicePixelRatio||1,CFG.maxDPR);
+    canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    buildStreams();
+  }
+
+  function headAt(pts,p){
+    for(var k=1;k<pts.length;k++){
+      if(p<=pts[k].L){var seg=(pts[k].L-pts[k-1].L)||1,f=(p-pts[k-1].L)/seg;
+        return {x:pts[k-1].x+(pts[k].x-pts[k-1].x)*f,y:pts[k-1].y+(pts[k].y-pts[k-1].y)*f};}
+    }
+    return pts[pts.length-1];
+  }
+  function inten(p,L){var d=p-L;
+    if(d<-PULSE_APPROACH)return 0;
+    if(d<0)return 0.5*(d+PULSE_APPROACH)/PULSE_APPROACH;
+    return Math.exp(-d/PULSE_TAIL);
+  }
+
+  function draw(){
+    ctx.globalCompositeOperation='source-over';
+    ctx.fillStyle=BG;ctx.fillRect(0,0,W,H);
+    // brilho ambiente concentrado à direita
+    ctx.globalCompositeOperation='lighter';
+    var aw=Math.max(W,H)*1.15;
+    ctx.globalAlpha=Math.min(1,0.5*(1+boost*0.9));ctx.drawImage(ambientSprite,0.80*W-aw/2,0.40*H-aw/2,aw,aw);ctx.globalAlpha=1;
+    // PASSO A: linhas-guia + nós base
+    ctx.globalCompositeOperation='source-over';
+    ctx.lineJoin='round';ctx.lineCap='round';
+    var si,k;
+    for(si=0;si<streams.length;si++){
+      var s=streams[si];
+      var bob=s.bobA*Math.sin(time*s.bobS+s.bobP),ox=s.vp.x*bob,oy=s.vp.y*bob;
+      ctx.beginPath();
+      for(k=0;k<s.pts.length;k++){var p=s.pts[k];k?ctx.lineTo(p.x+ox,p.y+oy):ctx.moveTo(p.x+ox,p.y+oy);}
+      ctx.strokeStyle=rgba(GREEN,Math.min(0.6,(CFG.guideAlphaMin+(CFG.guideAlphaMax-CFG.guideAlphaMin)*s.energy)*(1+boost*0.6)));
+      ctx.lineWidth=s.lineW;ctx.stroke();
+      for(k=0;k<s.pts.length;k++){var q=s.pts[k],term=(k===s.pts.length-1);
+        ctx.beginPath();ctx.arc(q.x+ox,q.y+oy,term?s.termR:s.nodeR,0,6.2832);
+        ctx.fillStyle=rgba(GREEN,(term?0.55:0.32)*(0.4+0.6*s.energy));ctx.fill();}
+    }
+    // PASSO B: brilhos aditivos (nós acesos, cabeça do pulso, bloom do terminal)
+    ctx.globalCompositeOperation='lighter';
+    for(si=0;si<streams.length;si++){
+      var s2=streams[si];
+      var bob2=s2.bobA*Math.sin(time*s2.bobS+s2.bobP),ox2=s2.vp.x*bob2,oy2=s2.vp.y*bob2;
+      for(var pi=0;pi<s2.pulses.length;pi++){
+        var pp=s2.pulses[pi]%s2.period;
+        for(k=0;k<s2.pts.length;k++){var nd=s2.pts[k],it=inten(pp,nd.L);if(it<=0.01)continue;
+          var term2=(k===s2.pts.length-1);
+          var rr=(term2?s2.termR*3.4:s2.nodeR*3.2)*(0.6+it),a=it*(term2?0.9:0.7)*(0.5+0.5*s2.energy);
+          ctx.globalAlpha=Math.min(1,a*(1+boost*0.6));ctx.drawImage(glowSprite,nd.x+ox2-rr,nd.y+oy2-rr,rr*2,rr*2);}
+        if(pp>=0&&pp<=s2.total){
+          var h=headAt(s2.pts,pp),hr=(9+5*s2.scale);
+          ctx.globalAlpha=0.85*(0.5+0.5*s2.energy);ctx.drawImage(glowSprite,h.x+ox2-hr,h.y+oy2-hr,hr*2,hr*2);
+          var cr=3.4*s2.scale;ctx.globalAlpha=0.95;ctx.drawImage(coreSprite,h.x+ox2-cr*2.2,h.y+oy2-cr*2.2,cr*4.4,cr*4.4);}
+      }
+    }
+    ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over';
+  }
+
+  function staticFrame(){for(var i=0;i<streams.length;i++)streams[i].pulses=[streams[i].total*0.62];time=0;draw();}
+
+  function frame(ts){
+    if(!running)return;
+    var dt=Math.min(0.05,(ts-last)/1000||0);last=ts;time+=dt;
+    boost=Math.max(0,boost-dt*0.45);
+    for(var i=0;i<streams.length;i++)for(var j=0;j<streams[i].pulses.length;j++)
+      streams[i].pulses[j]=(streams[i].pulses[j]+dt*streams[i].speed)%streams[i].period;
+    draw();
+    raf=requestAnimationFrame(frame);
+  }
+  function start(){if(running)return;running=true;last=performance.now();raf=requestAnimationFrame(frame);}
+  function stop(){running=false;cancelAnimationFrame(raf);}
+
+  var mq=window.matchMedia('(prefers-reduced-motion: reduce)');
+  function update(){
+    if(mq.matches){stop();staticFrame();return;}   // menos movimento -> quadro estático e calmo
+    if(visible)start();else stop();                 // rAF já pausa sozinho em abas ocultas
+  }
+
+  resize();
+  if(mq.matches)staticFrame();else draw();          // primeiro quadro imediato
+  update();
+
+  var ro=new ResizeObserver(function(){resize();if(mq.matches)staticFrame();else draw();});
+  ro.observe(canvas);
+  var io=new IntersectionObserver(function(es){visible=es[0].isIntersecting;update();},{threshold:0.01});
+  io.observe(canvas);
+  document.addEventListener('visibilitychange',update);
+  if(mq.addEventListener)mq.addEventListener('change',update);
+
+  // hook público: a intro (ou o seu código) chama isto pra "acender" o fundo
+  window.ModernEasyBG = { powerOn: powerOn };
+})();
+
+/* =========================================================================
+   [INTRO] Intro de entrada (opcional): a logo se desenha, o símbolo vira um
+   traço contínuo que contorna a marca e revela a interface. Remova este
+   bloco e a <div class="intro"> se quiser só o fundo.
+   ========================================================================= */
+(function(){
+  var mq=window.matchMedia('(prefers-reduced-motion: reduce)');
+  var intro=document.getElementById('intro');
+  if(intro){
+    if(mq.matches){ intro.style.display='none'; }
+    else{
+      var T={drawStart:300,drawDur:1400,sweepAt:1850,sweepDur:1900,revealAt:2450,exitAt:2900}; // timeline (ms) — ajuste fácil
+      var ipath=document.getElementById('introPath');
+      var letters=intro.querySelectorAll('.il');
+      var nodes=intro.querySelectorAll('.intro__node');
+      var counter=document.getElementById('introCounter');
+      var tagline=document.getElementById('introTagline');
+      var isvg=intro.querySelector('.intro__svg');
+      // letras entram
+      letters.forEach(function(el){var li=+el.getAttribute('data-li');el.animate(
+        [{opacity:0,transform:'translateY(16px)'},{opacity:1,transform:'translateY(0)'}],
+        {duration:500,delay:120+li*45,easing:'cubic-bezier(.2,.7,.2,1)',fill:'forwards'});});
+      // traço se desenha atravessando o logotipo (o mesmo caminho continua no laço ao redor da marca)
+      var symD=ipath.getAttribute('data-symbol-d');
+      var tmp=ipath.cloneNode(); tmp.setAttribute('d',symD); isvg.appendChild(tmp);
+      var lenSym=tmp.getTotalLength(); isvg.removeChild(tmp);
+      var lenTotal=ipath.getTotalLength();
+      ipath.style.strokeDasharray=lenSym+' '+lenTotal; ipath.style.strokeDashoffset=lenSym;
+      ipath.animate([{strokeDashoffset:lenSym},{strokeDashoffset:0}],
+        {duration:T.drawDur,delay:T.drawStart,easing:'cubic-bezier(.65,0,.35,1)',fill:'forwards'});
+      // nós pipocam quando o traço passa por eles
+      nodes.forEach(function(el){
+        var frac=parseFloat(el.getAttribute('data-frac'));
+        el.style.transformBox='fill-box'; el.style.transformOrigin='center';
+        el.animate([{opacity:0,transform:'scale(0)'},{opacity:1,transform:'scale(1.3)',offset:.7},{opacity:1,transform:'scale(1)'}],
+          {duration:360,delay:Math.max(0,T.drawStart+T.drawDur*frac-120),easing:'cubic-bezier(.2,.8,.3,1.4)',fill:'forwards'});});
+      // contador 0→100 sincronizado com o traço
+      var t0i=performance.now();
+      (function tick(){
+        var pr=Math.min(1,(performance.now()-t0i)/(T.drawStart+T.drawDur));
+        counter.textContent=Math.round((1-Math.pow(1-pr,3))*100);
+        if(pr<1)requestAnimationFrame(tick);
+      })();
+      // contador sai, tagline entra
+      setTimeout(function(){
+        counter.animate([{opacity:1},{opacity:0}],{duration:220,fill:'forwards'});
+        tagline.animate([{opacity:0},{opacity:1}],{duration:400,delay:240,fill:'forwards'});
+      },T.drawStart+T.drawDur);
+      // o símbolo se ESTICA e vira um traço contínuo que contorna o logotipo
+      // (mesmo path: a janela de dash desliza do símbolo para o laço — sem troca de elemento)
+      setTimeout(function(){
+        ipath.animate([{strokeDashoffset:0},{strokeDashoffset:-(lenTotal-lenSym)}],
+          {duration:T.sweepDur,easing:'cubic-bezier(.5,.05,.3,.95)',fill:'forwards'});
+        nodes[0].animate([{opacity:1},{opacity:0}],{duration:260,delay:120,fill:'forwards'});
+        nodes[1].animate([{opacity:1},{opacity:0}],{duration:300,delay:340,fill:'forwards'});
+      },T.sweepAt);
+      // revelação conduzida pelo traço: o véu abre enquanto ele circula a marca ("desperta" o sistema)
+      setTimeout(function(){
+        intro.style.pointerEvents='none';
+        var an=intro.animate([{opacity:1},{opacity:0}],{duration:1400,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'});
+        an.onfinish=function(){intro.style.display='none';};
+        setTimeout(function(){ if(window.ModernEasyBG) window.ModernEasyBG.powerOn(); },400);
+      },T.revealAt);
+      // letras e traço se dissolvem já sobre a interface acesa
+      setTimeout(function(){
+        letters.forEach(function(el){var li=+el.getAttribute('data-li');el.animate([{opacity:1},{opacity:0}],{duration:280,delay:li*22,fill:'forwards'});});
+        tagline.animate([{opacity:1},{opacity:0}],{duration:300,fill:'forwards'});
+        isvg.animate([{opacity:1},{opacity:0}],{duration:420,delay:320,fill:'forwards'});
+      },T.exitAt);
+    }
+  }
+})();
+</script>
+</body>
+</html>
