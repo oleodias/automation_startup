@@ -93,6 +93,21 @@ o hook `window.ModernEasyBG.powerOn()` fica inofensivo — guardado por `if`.)
 **Aberto para lapidar:** duração/tempos da intro; se deve tocar em toda visita ou só na
 primeira (dá para adicionar `sessionStorage`); e a fonte exata do wordmark (hoje Sora 800).
 
+### Layout do hero — posicionamento estilo atompoint (2026-07-21)
+Pedido do Leo: replicar da atompoint o **posicionamento** (não as cores) — navbar de largura
+total (logo colada à esquerda, links + botão à direita) e título grande alinhado à esquerda,
+centralizado na vertical, com a margem esquerda do título alinhada à da logo.
+
+**Como fiz:** criei a variável `--gutter: clamp(28px,5vw,88px)` (margem lateral única) e
+soltei o header e o hero do container central de 1120px — os dois agora usam a largura toda
+com `padding-left/right: var(--gutter)`, então **logo e título alinham na mesma linha** à
+esquerda. A navbar ficou **transparente** sobre o hero e ganha fundo/desfoque ao rolar
+(classe `.scrolled` via um pequeno script de scroll) — evita quebrar em seções claras
+futuras. Cores da marca mantidas (só o posicionamento foi copiado).
+
+**Verificação (Playwright, viewport 1728px):** logo.left = 86px e título.left = 86px
+(alinhados ✓), botão a 86px da borda direita (navbar full-width simétrica ✓), sem erros de JS.
+
 ---
 
 ## Registro por seção
