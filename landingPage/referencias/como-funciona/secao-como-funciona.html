@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ModernEasy — Seção "Como funciona" (base para o Claude Design)</title>
+    <!--
+      ════════════════════════════════════════════════════════════════════════
+      BRIEF PARA O CLAUDE DESIGN
+      Esta é a nossa seção "Como funciona": uma jornada em ZIGUE-ZAGUE (ícone de
+      um lado, texto do outro, alternando) com uma "CORDA" pontilhada de fluxo
+      (estilo n8n) que SE DESENHA conforme o scroll, ligando os ícones.
+
+      Queremos elevá-la a nível premium / Awwwards, MAS respeitando:
+        1) A NOSSA identidade (verde — nada de azul de agência de tech).
+        2) Continuar FÁCIL de um leigo entender (dono de clínica, mercado).
+
+      O que já existe e pode ser melhorado:
+        - A "corda" hoje são segmentos RETOS pontilhados; pode virar uma CURVA
+          suave (mais cara de "cabo"/fluxo), com nós que acendem ao serem
+          alcançados, partículas correndo pela corda, etc.
+        - Reveal das etapas ao entrar na tela.
+        - Ícones em outline (traço fino).
+
+      Restrições técnicas (IMPORTANTES): self-contained — HTML + CSS + JS puro,
+      SEM bibliotecas, SEM CDN, SEM imagens externas (tudo inline). Foco DESKTOP.
+      Respeitar prefers-reduced-motion. Âmbar #F5A524 é EXCLUSIVO de botões —
+      proibido no fundo/decoração.
+
+      Paleta: verde-abissal #06251C (fundo) · verde-mata #0B3D2E · verde-vivo
+      #1FA36C (corda/destaques) · areia #FAF7F2 (texto/ícones).
+      Tipografia: títulos Sora, texto Figtree.
+      Vocabulário PROIBIDO: "disruptivo", "soluções inovadoras", "IA de ponta",
+      "transformação digital", "chatbot".
+      ════════════════════════════════════════════════════════════════════════
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Figtree:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --verde-abissal: #06251c;
+        --verde-mata: #0b3d2e;
+        --verde-vivo: #1fa36c;
+        --ambar: #f5a524;
+        --areia: #faf7f2;
+        --cinza-verde: #5c6b64;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Figtree", sans-serif;
+        color: var(--areia);
+        background: var(--verde-abissal);
+      }
+      h2,
+      h3 {
+        font-family: "Sora", sans-serif;
+        font-weight: 600;
+      }
+      .wrap {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      /* ============================================================
+         SEÇÃO: COMO FUNCIONA — jornada em zigue-zague + corda de fluxo
+         ============================================================ */
+      #como {
+        position: relative;
+        background: var(--verde-abissal);
+        color: var(--areia);
+        padding: 110px 0 120px;
+        overflow: hidden;
+      }
+      #como .como__topo {
+        text-align: center;
+        max-width: 720px;
+        margin: 0 auto 72px;
+      }
+      #como .como__eyebrow {
+        font-family: "Sora", sans-serif;
+        font-size: 13px;
+        font-weight: 400;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--verde-vivo);
+        display: inline-block;
+        margin-bottom: 16px;
+      }
+      #como .como__titulo {
+        font-family: "Sora", sans-serif;
+        font-weight: 600;
+        font-size: clamp(28px, 4vw, 44px);
+        line-height: 1.12;
+        letter-spacing: -0.02em;
+        color: var(--areia);
+      }
+      #como .como__titulo em {
+        font-style: normal;
+        color: var(--verde-vivo);
+      }
+      #como .como__sub {
+        font-size: 17px;
+        line-height: 1.55;
+        color: rgba(250, 247, 242, 0.68);
+        max-width: 56ch;
+        margin: 16px auto 0;
+      }
+      #como .jornada {
+        position: relative;
+      }
+      #como .jornada__corda {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+        overflow: visible;
+      }
+      #como .corda-trilho {
+        fill: none;
+        stroke: var(--verde-vivo);
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-dasharray: 1 11;
+        opacity: 0.14;
+      }
+      #como .corda-viva {
+        fill: none;
+        stroke: var(--verde-vivo);
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-dasharray: 1 11;
+        opacity: 0.95;
+      }
+      #como .etapa {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+        gap: clamp(30px, 5vw, 80px);
+        min-height: 300px;
+        opacity: 0;
+        transform: translateY(26px);
+        transition:
+          opacity 0.7s ease,
+          transform 0.7s ease;
+      }
+      #como .etapa.dentro {
+        opacity: 1;
+        transform: none;
+      }
+      #como .etapa__ico {
+        grid-row: 1;
+        justify-self: center;
+        width: 110px;
+        height: 110px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #como .etapa__ico svg {
+        width: 100%;
+        height: 100%;
+        fill: none;
+        stroke: var(--areia);
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      #como .etapa__ico svg * {
+        vector-effect: non-scaling-stroke;
+      }
+      #como .etapa__txt {
+        grid-row: 1;
+        position: relative;
+        max-width: 46ch;
+      }
+      #como .etapa--dir .etapa__ico {
+        grid-column: 1;
+      }
+      #como .etapa--dir .etapa__txt {
+        grid-column: 2;
+      }
+      #como .etapa--esq .etapa__ico {
+        grid-column: 2;
+      }
+      #como .etapa--esq .etapa__txt {
+        grid-column: 1;
+      }
+      #como .etapa__n {
+        position: absolute;
+        top: -70px;
+        left: -6px;
+        font-family: "Sora", sans-serif;
+        font-weight: 800;
+        font-size: 122px;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        color: rgba(250, 247, 242, 0.06);
+        z-index: 0;
+        pointer-events: none;
+      }
+      #como .etapa h3 {
+        position: relative;
+        z-index: 1;
+        font-family: "Sora", sans-serif;
+        font-weight: 600;
+        font-size: clamp(21px, 2.4vw, 27px);
+        line-height: 1.18;
+        color: var(--areia);
+        margin-bottom: 14px;
+      }
+      #como .etapa p {
+        position: relative;
+        z-index: 1;
+        font-size: 16px;
+        line-height: 1.6;
+        color: rgba(250, 247, 242, 0.72);
+      }
+      #como .como__nota {
+        text-align: center;
+        margin-top: 64px;
+        font-size: 15.5px;
+        color: rgba(250, 247, 242, 0.6);
+      }
+      #como .como__nota strong {
+        color: var(--areia);
+        font-weight: 600;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #como .etapa {
+          opacity: 1;
+          transform: none;
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ============ SEÇÃO: COMO FUNCIONA ============ -->
+    <section id="como">
+      <div class="wrap">
+        <div class="como__topo">
+          <span class="como__eyebrow">Como funciona</span>
+          <h2 class="como__titulo">
+            Do "oi" ao processo rodando sozinho — <em>em dias</em>.
+          </h2>
+          <p class="como__sub">
+            Sem projeto interminável e sem você precisar entender de tecnologia.
+            A parte complicada fica com a gente.
+          </p>
+        </div>
+
+        <div class="jornada" id="jornada">
+          <svg
+            class="jornada__corda"
+            id="corda"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <defs>
+              <clipPath id="cordaReveal">
+                <rect id="cordaRect" x="0" y="0" width="0" height="0" />
+              </clipPath>
+            </defs>
+            <path class="corda-trilho" id="cordaPath1" d="" />
+            <path
+              class="corda-viva"
+              id="cordaPath2"
+              d=""
+              clip-path="url(#cordaReveal)"
+            />
+          </svg>
+
+          <!-- ETAPA 01 — ícone à esquerda, texto à direita -->
+          <div class="etapa etapa--dir" data-i="0">
+            <div class="etapa__ico">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"
+                />
+              </svg>
+            </div>
+            <div class="etapa__txt">
+              <span class="etapa__n">01</span>
+              <h3>Conversa direta</h3>
+              <p>
+                A gente conversa com você (pode ser no WhatsApp mesmo) e entende
+                como o seu dia funciona hoje. Você não precisa saber nada de
+                tecnologia — quem traduz isso somos nós.
+              </p>
+            </div>
+          </div>
+
+          <!-- ETAPA 02 — ícone à direita, texto à esquerda -->
+          <div class="etapa etapa--esq" data-i="1">
+            <div class="etapa__ico">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="3" />
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+                />
+              </svg>
+            </div>
+            <div class="etapa__txt">
+              <span class="etapa__n">02</span>
+              <h3>Implantação em dias</h3>
+              <p>
+                Montamos a automação nas ferramentas que você já usa — WhatsApp,
+                planilhas, agenda — e deixamos tudo configurado do nosso lado. Em
+                dias, não em meses.
+              </p>
+            </div>
+          </div>
+
+          <!-- ETAPA 03 — ícone à esquerda, texto à direita -->
+          <div class="etapa etapa--dir" data-i="2">
+            <div class="etapa__ico">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 18 L10 12 L14 15 L21 7" />
+                <circle cx="14" cy="15" r="1.3" />
+                <circle cx="21" cy="7" r="2" />
+              </svg>
+            </div>
+            <div class="etapa__txt">
+              <span class="etapa__n">03</span>
+              <h3>Resultado que dá pra ver</h3>
+              <p>
+                Você acompanha em número: quantas confirmações, quantas
+                respostas, quantas horas a equipe deixou de gastar. E se algo
+                parar, a gente avisa antes de virar problema.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <p class="como__nota">
+          Da primeira conversa ao primeiro resultado, normalmente em
+          <strong>menos de uma semana</strong>.
+        </p>
+      </div>
+    </section>
+
+    <script>
+      // "Como funciona": desenha a corda de fluxo (pontilhada) entre os ícones
+      // conforme o scroll, e revela cada etapa ao entrar na tela.
+      (function () {
+        var jornada = document.getElementById("jornada");
+        if (!jornada) return;
+        var svg = document.getElementById("corda");
+        var p1 = document.getElementById("cordaPath1");
+        var p2 = document.getElementById("cordaPath2");
+        var rect = document.getElementById("cordaRect");
+        var etapas = [].slice.call(jornada.querySelectorAll(".etapa"));
+        var reduz = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+        var H = 0;
+
+        function geometria() {
+          var jb = jornada.getBoundingClientRect();
+          var W = jornada.clientWidth;
+          H = jornada.clientHeight;
+          svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+          var pts = etapas.map(function (e) {
+            var r = e.querySelector(".etapa__ico").getBoundingClientRect();
+            return {
+              x: r.left - jb.left + r.width / 2,
+              y: r.top - jb.top + r.height / 2,
+            };
+          });
+          if (pts.length) {
+            var d = "M " + pts[0].x.toFixed(1) + " " + pts[0].y.toFixed(1);
+            for (var i = 1; i < pts.length; i++) {
+              d += " L " + pts[i].x.toFixed(1) + " " + pts[i].y.toFixed(1);
+            }
+            p1.setAttribute("d", d);
+            p2.setAttribute("d", d);
+          }
+          rect.setAttribute("width", W);
+          atualiza();
+        }
+
+        function atualiza() {
+          var jb = jornada.getBoundingClientRect();
+          var vh = window.innerHeight;
+          var prog = (vh * 0.8 - jb.top) / (jb.height + vh * 0.4);
+          prog = Math.max(0, Math.min(1, prog));
+          if (reduz) prog = 1;
+          rect.setAttribute("height", (H * prog).toFixed(1));
+        }
+
+        var tick = false;
+        function onScroll() {
+          if (tick) return;
+          tick = true;
+          requestAnimationFrame(function () {
+            atualiza();
+            tick = false;
+          });
+        }
+        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("resize", geometria);
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(geometria);
+        }
+        geometria();
+
+        if ("IntersectionObserver" in window && !reduz) {
+          var io = new IntersectionObserver(
+            function (entradas) {
+              entradas.forEach(function (en) {
+                if (en.isIntersecting) {
+                  en.target.classList.add("dentro");
+                  io.unobserve(en.target);
+                  requestAnimationFrame(geometria);
+                }
+              });
+            },
+            { threshold: 0.3 },
+          );
+          etapas.forEach(function (e) {
+            io.observe(e);
+          });
+        } else {
+          etapas.forEach(function (e) {
+            e.classList.add("dentro");
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
