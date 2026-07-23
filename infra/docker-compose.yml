@@ -8,8 +8,10 @@ services:
     environment:
       - N8N_DOMAIN=${N8N_DOMAIN}
       - EVO_DOMAIN=${EVO_DOMAIN}
+      - SITE_DOMAIN=${SITE_DOMAIN}
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./coming-soon:/srv/coming-soon:ro
       - caddy_data:/data
       - caddy_config:/config
 

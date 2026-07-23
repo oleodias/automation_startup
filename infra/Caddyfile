@@ -8,3 +8,12 @@
 {$EVO_DOMAIN} {
 	reverse_proxy evolution:8080
 }
+
+# Página "Em breve" no domínio oficial (e www).
+# Quando a landing page real estiver pronta, troca-se o conteúdo de ./coming-soon
+# (ou aponta-se este bloco para outro lugar).
+{$SITE_DOMAIN}, www.{$SITE_DOMAIN} {
+	root * /srv/coming-soon
+	file_server
+	encode gzip
+}
