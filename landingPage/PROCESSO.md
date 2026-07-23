@@ -199,6 +199,20 @@ Fecha com nota "do primeiro oi ao primeiro resultado em menos de uma semana". T�
 **Aberto para lapidar:** textos dos passos; se quer uma linha de fluxo conectando os 3;
 e se cabe um CTA leve ao final. Aguardando avaliação dos sócios.
 
+**Rascunho v2 — jornada em zigue-zague + corda scroll-responsiva (2026-07-22).** O Leo mandou
+uma referência (atompoint "needs") e pediu: passos alternando lado a lado (ícone x texto) com
+uma **"corda" pontilhada de fluxo (estilo n8n) que se desenha conforme o scroll**. Refiz a
+seção: **voltou a ser ESCURA** (verde-abissal) — o efeito exige fundo escuro como na
+referência (avisei o Leo que dá pra reverter pro claro se ele preferir o respiro).
+- 3 etapas em **zigue-zague** (01 ícone-esq/texto-dir, 02 ícone-dir/texto-esq, 03 como a 01),
+  número gigante esmaecido, ícones em outline (traço areia, `non-scaling-stroke`).
+- **Corda**: SVG com dois paths (trilho faint + "viva" revelada por um `clipPath` cujo `rect`
+  cresce em altura conforme o progresso do scroll). `d` calculado por JS ligando os centros
+  dos ícones (zigue-zague). Respeita `prefers-reduced-motion` (corda cheia, sem animar).
+- Etapas surgem via IntersectionObserver.
+**Verificação (Playwright):** fundo verde-abissal, 3 etapas, corda 0→311px ao rolar, 2 etapas
+reveladas, sem erros de JS. Substituiu a v1 clara. Aguardando avaliação.
+
 ---
 
 ## Registro por seção
