@@ -181,7 +181,23 @@ indicador "digitando…", mensagens em sequência), **setas laterais** flutuante
 por **teclado** e **arrastar**. Continua escopado em `#cases`, self-contained, respeita
 `prefers-reduced-motion`. Troca feita por script (marcadores de CSS/section/JS) + Prettier.
 **Verificação (Playwright):** hero/intro intactos, 3 slides, 2 setas, brilho e avatar ok,
-clique na seta sem erro, sem erros de JS. Aguardando avaliação dos sócios para levar à main.
+clique na seta sem erro, sem erros de JS.
+
+**APROVADA E PUBLICADA NA MAIN ✅ (2026-07-22)** — merge `aa3285c`. Portfólio no ar no Pages.
+
+## Seção 3 (COMO FUNCIONA) — rascunho v1 (2026-07-22)
+Decisão de design: **seção CLARA** (fundo areia) — o Manual pede claro para as seções que
+"explicam", e dá respiro após duas seções escuras (ritmo escuro → escuro → claro). Estática,
+sem JS. **3 passos** em cards brancos com número gigante esmaecido ao fundo (consistente com o
+motivo do portfólio) e ícone em verde-vivo:
+1. **Conversa direta** — entende o dia do cliente; ele não precisa saber de tecnologia.
+2. **Implantação em dias** — monta nas ferramentas que já usa (WhatsApp/planilhas/agenda).
+3. **Resultado que dá pra ver** — acompanha em número + alerta se algo parar.
+Fecha com nota "do primeiro oi ao primeiro resultado em menos de uma semana". Título:
+*Do "oi" ao processo rodando sozinho — em dias.* Ícones: balão, engrenagem, gráfico-subindo
+(o motivo do nosso símbolo). Verificado no Playwright (fundo areia, 3 passos, sem erros).
+**Aberto para lapidar:** textos dos passos; se quer uma linha de fluxo conectando os 3;
+e se cabe um CTA leve ao final. Aguardando avaliação dos sócios.
 
 ---
 

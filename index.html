@@ -858,6 +858,117 @@
         }
       }
 
+      /* ============================================================
+         SEÇÃO 3: COMO FUNCIONA — seção CLARA (o Manual pede claro para
+         "explicar"; dá respiro após duas seções escuras). 3 passos.
+         ============================================================ */
+      #como {
+        background: var(--areia);
+        color: var(--grafite);
+        padding: 100px 0 104px;
+      }
+      #como .como__topo {
+        text-align: center;
+        max-width: 720px;
+        margin: 0 auto 64px;
+      }
+      #como .como__eyebrow {
+        font-family: "Sora", sans-serif;
+        font-size: 13px;
+        font-weight: 400;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--verde-vivo);
+        display: inline-block;
+        margin-bottom: 16px;
+      }
+      #como .como__titulo {
+        font-family: "Sora", sans-serif;
+        font-weight: 600;
+        font-size: clamp(28px, 4vw, 44px);
+        line-height: 1.12;
+        letter-spacing: -0.02em;
+        color: var(--verde-mata);
+      }
+      #como .como__titulo em {
+        font-style: normal;
+        color: var(--verde-vivo);
+      }
+      #como .como__sub {
+        font-size: 17px;
+        line-height: 1.55;
+        color: var(--cinza-verde);
+        max-width: 56ch;
+        margin: 16px auto 0;
+      }
+      #como .passos {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 28px;
+      }
+      #como .passo {
+        position: relative;
+        background: #fff;
+        border: 1px solid #ece7de;
+        border-radius: 18px;
+        padding: 40px 32px 34px;
+        overflow: hidden;
+      }
+      #como .passo__n {
+        position: absolute;
+        top: 6px;
+        right: 18px;
+        font-family: "Sora", sans-serif;
+        font-weight: 800;
+        font-size: 96px;
+        line-height: 1;
+        color: rgba(11, 61, 46, 0.05);
+        pointer-events: none;
+      }
+      #como .passo__ico {
+        width: 60px;
+        height: 60px;
+        border-radius: 16px;
+        background: rgba(31, 163, 108, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 22px;
+      }
+      #como .passo__ico svg {
+        width: 28px;
+        height: 28px;
+      }
+      #como .passo h3 {
+        position: relative;
+        font-family: "Sora", sans-serif;
+        font-weight: 600;
+        font-size: 20px;
+        color: var(--verde-mata);
+        margin-bottom: 12px;
+      }
+      #como .passo p {
+        position: relative;
+        font-size: 15.5px;
+        line-height: 1.6;
+        color: var(--cinza-verde);
+      }
+      #como .como__nota {
+        text-align: center;
+        margin-top: 44px;
+        font-size: 15.5px;
+        color: var(--cinza-verde);
+      }
+      #como .como__nota strong {
+        color: var(--verde-mata);
+        font-weight: 600;
+      }
+      @media (max-width: 860px) {
+        #como .passos {
+          grid-template-columns: 1fr;
+        }
+      }
+
       /* ---------- rodapé provisório (slim, até as próximas seções nascerem) ---------- */
       footer {
         border-top: 1px solid rgba(250, 247, 242, 0.07);
@@ -1346,6 +1457,105 @@
             </svg>
           </button>
         </div>
+      </div>
+    </section>
+
+    <!-- ============ SEÇÃO 3: COMO FUNCIONA ============ -->
+    <section id="como">
+      <div class="wrap">
+        <div class="como__topo">
+          <span class="como__eyebrow">Como funciona</span>
+          <h2 class="como__titulo">
+            Do "oi" ao processo rodando sozinho — <em>em dias</em>.
+          </h2>
+          <p class="como__sub">
+            Sem projeto interminável e sem você precisar entender de tecnologia.
+            A parte complicada fica com a gente.
+          </p>
+        </div>
+
+        <div class="passos">
+          <div class="passo">
+            <span class="passo__n">01</span>
+            <div class="passo__ico">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#1FA36C"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path
+                  d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"
+                />
+              </svg>
+            </div>
+            <h3>Conversa direta</h3>
+            <p>
+              A gente conversa com você (pode ser no WhatsApp mesmo) e entende
+              como o seu dia funciona hoje. Você não precisa saber nada de
+              tecnologia — quem traduz isso somos nós.
+            </p>
+          </div>
+
+          <div class="passo">
+            <span class="passo__n">02</span>
+            <div class="passo__ico">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#1FA36C"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="3" />
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+                />
+              </svg>
+            </div>
+            <h3>Implantação em dias</h3>
+            <p>
+              Montamos a automação nas ferramentas que você já usa — WhatsApp,
+              planilhas, agenda — e deixamos tudo configurado do nosso lado. Em
+              dias, não em meses.
+            </p>
+          </div>
+
+          <div class="passo">
+            <span class="passo__n">03</span>
+            <div class="passo__ico">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#1FA36C"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M4 18 L10 12 L14 15 L21 7" />
+                <circle cx="14" cy="15" r="1.4" fill="#1FA36C" stroke="none" />
+                <circle cx="21" cy="7" r="2" fill="#1FA36C" stroke="none" />
+              </svg>
+            </div>
+            <h3>Resultado que dá pra ver</h3>
+            <p>
+              Você acompanha em número: quantas confirmações, quantas respostas,
+              quantas horas a equipe deixou de gastar. E se algo parar, a gente
+              avisa antes de virar problema.
+            </p>
+          </div>
+        </div>
+
+        <p class="como__nota">
+          Da primeira conversa ao primeiro resultado, normalmente em
+          <strong>menos de uma semana</strong>.
+        </p>
       </div>
     </section>
 
