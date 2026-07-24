@@ -347,13 +347,77 @@
         }
       }
 
+      /* ---------- símbolo da marca no hero (marca d'água em leve 3D) ----------
+         Manual, grafismo 1: símbolo gigante, cortado na borda, 5–8% de opacidade,
+         um por peça e sempre num canto — nunca atrás de texto denso. Por isso ele
+         mora à direita, onde o texto do hero (máx. 820px) não chega.
+         O 3D vem da perspectiva + inclinação; o movimento é lento de propósito. */
+      .hero__simbolo {
+        position: absolute;
+        top: 50%;
+        right: clamp(-110px, -5vw, -40px);
+        width: min(560px, 44vw);
+        transform: translateY(-50%);
+        perspective: 1000px;
+        z-index: 1;
+        pointer-events: none;
+        user-select: none;
+      }
+      /* camada 1 — inclinação (a que o cursor move) */
+      .hero__simbolo .tilt {
+        transform: rotateX(calc(8deg + var(--rx, 0deg)))
+          rotateY(calc(-15deg + var(--ry, 0deg)));
+        transform-style: preserve-3d;
+        transition: transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+        will-change: transform;
+      }
+      /* camada 2 — flutuação própria: sobe/desce e gira de leve, dando volume
+         mesmo sem ninguém mexer o mouse (e no celular, onde não há cursor) */
+      .hero__simbolo img {
+        display: block;
+        width: 100%;
+        opacity: 0.08;
+        filter: drop-shadow(0 30px 44px rgba(0, 0, 0, 0.55))
+          drop-shadow(0 0 30px rgba(31, 163, 108, 0.3));
+        animation: simbolo-flutua 13s ease-in-out infinite;
+        will-change: transform;
+      }
+      @keyframes simbolo-flutua {
+        0%,
+        100% {
+          transform: translateY(0) rotateY(0deg) rotateZ(0deg);
+        }
+        50% {
+          transform: translateY(-22px) rotateY(9deg) rotateZ(-1.5deg);
+        }
+      }
+      /* no celular o texto ocupa a largura toda: o símbolo desce para o canto
+         de baixo e clareia, para nunca disputar leitura com o título */
+      @media (max-width: 900px) {
+        .hero__simbolo {
+          top: auto;
+          bottom: 2%;
+          right: -22%;
+          width: 68vw;
+          transform: none;
+        }
+        .hero__simbolo img {
+          opacity: 0.06;
+        }
+      }
+
       /* respeito a quem pediu menos movimento */
       @media (prefers-reduced-motion: reduce) {
         .no,
         .linha-fluxo,
         .deriva,
+        .hero__simbolo img,
         .rolar span::after {
           animation: none;
+        }
+        /* o símbolo continua lá, inclinado e parado — 3D sem movimento */
+        .hero__simbolo .tilt {
+          transition: none;
         }
         .gira .palavra {
           transition: none;
@@ -1869,6 +1933,17 @@
         </g>
       </svg>
 
+      <!-- símbolo da marca em leve 3D: flutua sozinho e inclina conforme o cursor -->
+      <div class="hero__simbolo" id="heroSimbolo" aria-hidden="true">
+        <div class="tilt">
+          <img
+            src="landingPage/assets-marca/simbolo.png"
+            alt=""
+            draggable="false"
+          />
+        </div>
+      </div>
+
       <div class="wrap">
         <div class="conteudo">
           <span class="kicker"
@@ -2425,6 +2500,63 @@
         }
 
         atualiza();
+      })();
+    </script>
+
+    <script>
+      // Símbolo do hero: o cursor inclina a peça de leve, dando profundidade.
+      // A flutuação já roda sozinha no CSS — isto aqui só soma o parallax.
+      (function () {
+        var caixa = document.getElementById("heroSimbolo");
+        if (!caixa) return;
+        var tilt = caixa.querySelector(".tilt");
+        var hero = caixa.closest(".hero");
+        if (!tilt || !hero) return;
+
+        // sem cursor (celular/tablet) ou com movimento reduzido: fica só a peça inclinada
+        var fino = window.matchMedia && window.matchMedia("(hover: hover)").matches;
+        var calmo =
+          window.matchMedia &&
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (!fino || calmo) return;
+
+        var LIMITE = 7; // graus — de propósito discreto
+        var pendente = false;
+        var alvoX = 0;
+        var alvoY = 0;
+
+        function aplica() {
+          pendente = false;
+          tilt.style.setProperty("--rx", alvoX.toFixed(2) + "deg");
+          tilt.style.setProperty("--ry", alvoY.toFixed(2) + "deg");
+        }
+
+        hero.addEventListener(
+          "mousemove",
+          function (e) {
+            var r = hero.getBoundingClientRect();
+            // -1 a 1 a partir do centro da seção
+            var nx = (e.clientX - r.left) / r.width - 0.5;
+            var ny = (e.clientY - r.top) / r.height - 0.5;
+            alvoX = -ny * 2 * LIMITE; // mouse pra baixo, peça inclina pra trás
+            alvoY = nx * 2 * LIMITE;
+            if (!pendente) {
+              pendente = true;
+              requestAnimationFrame(aplica);
+            }
+          },
+          { passive: true },
+        );
+
+        // ao sair do hero, volta devagar para a pose de repouso
+        hero.addEventListener("mouseleave", function () {
+          alvoX = 0;
+          alvoY = 0;
+          if (!pendente) {
+            pendente = true;
+            requestAnimationFrame(aplica);
+          }
+        });
       })();
     </script>
 
