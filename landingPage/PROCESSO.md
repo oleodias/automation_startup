@@ -213,6 +213,20 @@ referência (avisei o Leo que dá pra reverter pro claro se ele preferir o respi
 **Verificação (Playwright):** fundo verde-abissal, 3 etapas, corda 0→311px ao rolar, 2 etapas
 reveladas, sem erros de JS. Substituiu a v1 clara. Aguardando avaliação.
 
+**Design v3 (Claude Design) integrado (2026-07-24).** O Claude Design devolveu
+(`referencias/como-funciona/design-como-funciona.html`) uma versão bem além do pedido: 2
+variantes de "Como funciona" (zigue-zague / timeline) **+ uma seção nova "Integrações"**
+(constelação / fluxo) mostrando WhatsApp, Planilhas, n8n, Gmail, Telegram, Agenda — logos em
+base64, self-contained, escopado em `#me-root`, com um seletor de variantes (demo).
+**Escolha do Leo:** "Como funciona" = **zigue-zague**; incluir **Integrações = constelação**.
+Integrei o bloco `#me-root` inteiro no `index.html` (via script: extrai CSS/HTML/JS do design,
+`showSwitcher=false`, defaults zigzag+constelacao) no lugar da nossa "Como funciona" v2.
+Upgrades do zigue-zague: ícones em "cápsulas", parallax nos números, **partículas correndo
+pela corda**. Nova seção Integrações (constelação) entra logo após.
+**Verificação (Playwright):** `#me-root`, `#como` (zig) e `#integ` (constelação) presentes,
+seletor desligado, 3 etapas, hero/portfólio intactos, sem erros de JS. Prettier aplicado.
+Aguardando avaliação dos sócios para levar à main.
+
 ---
 
 ## Registro por seção
