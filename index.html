@@ -1716,30 +1716,201 @@
         }
       }
 
+      /* ============================================================
+         RODAPÉ INSTITUCIONAL
+         Sem âmbar: ele acabou de ser gasto no CTA da seção acima e o
+         manual pede que apareça uma vez só por dobra. Aqui o destaque
+         é o verde-vivo. Divisor = linha de fluxo (grafismo 3).
+         ============================================================ */
       footer {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(
+          180deg,
+          rgba(11, 61, 46, 0.32) 0%,
+          rgba(6, 37, 28, 0) 55%
+        );
         border-top: 1px solid rgba(250, 247, 242, 0.07);
-        padding: 28px 0;
-        font-size: 14px;
-        color: rgba(250, 247, 242, 0.55);
+        font-size: 15px;
+        color: rgba(250, 247, 242, 0.6);
       }
       footer .wrap {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        flex-wrap: wrap;
+        position: relative;
+        z-index: 1;
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 0 24px;
       }
-      footer img {
-        height: 24px;
+      /* linha de fluxo atravessando o topo do rodapé */
+      footer .rodape__fluxo {
+        position: absolute;
+        top: -1px;
+        left: 0;
+        width: 100%;
+        height: 80px;
+        opacity: 0.5;
+        pointer-events: none;
+      }
+
+      footer .rodape__topo {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.85fr);
+        gap: clamp(40px, 6vw, 88px);
+        padding: clamp(58px, 7vw, 88px) 0 clamp(34px, 4vw, 48px);
+      }
+      @media (max-width: 940px) {
+        footer .rodape__topo {
+          grid-template-columns: 1fr;
+          gap: 46px;
+        }
+      }
+
+      /* ---- coluna da marca ---- */
+      footer .rodape__logo {
+        height: 30px;
+        width: auto;
         display: block;
-        opacity: 0.85;
+        margin-bottom: 20px;
+      }
+      footer .rodape__tagline {
+        font-family: var(--font-title);
+        font-weight: 600;
+        font-size: 18px;
+        line-height: 1.35;
+        color: var(--areia);
+        margin-bottom: 12px;
+      }
+      footer .rodape__pitch {
+        font-size: 15px;
+        line-height: 1.6;
+        max-width: 40ch;
+        color: rgba(250, 247, 242, 0.55);
+      }
+      footer .rodape__social {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 24px;
+      }
+      footer .rodape__social a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border: 1px solid rgba(250, 247, 242, 0.16);
+        border-radius: 50%;
+        color: rgba(250, 247, 242, 0.72);
+        transition:
+          border-color 0.18s ease,
+          color 0.18s ease,
+          background 0.18s ease,
+          transform 0.18s ease;
+      }
+      footer .rodape__social a:hover {
+        border-color: var(--verde-vivo);
+        color: var(--verde-vivo);
+        background: rgba(31, 163, 108, 0.1);
+        transform: translateY(-2px);
+      }
+      footer .rodape__social svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* ---- colunas de links ---- */
+      footer .rodape__colunas {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: clamp(24px, 3vw, 40px);
+      }
+      @media (max-width: 620px) {
+        footer .rodape__colunas {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 32px 24px;
+        }
+      }
+      @media (max-width: 400px) {
+        footer .rodape__colunas {
+          grid-template-columns: 1fr;
+        }
+      }
+      footer .rodape__label {
+        display: block;
+        font-family: var(--font-title);
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--verde-vivo);
+        margin-bottom: 18px;
+      }
+      footer .rodape__colunas ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 11px;
+      }
+      footer .rodape__colunas li {
+        font-size: 15px;
+        line-height: 1.45;
+        color: rgba(250, 247, 242, 0.58);
       }
       footer a {
-        color: rgba(250, 247, 242, 0.75);
+        color: rgba(250, 247, 242, 0.72);
         text-decoration: none;
+        transition: color 0.15s ease;
       }
       footer a:hover {
         color: var(--verde-vivo);
+      }
+      footer .rodape__local {
+        margin-top: 4px;
+        font-size: 14px;
+        color: rgba(250, 247, 242, 0.42);
+      }
+
+      /* ---- barra final ---- */
+      footer .rodape__base {
+        border-top: 1px solid rgba(250, 247, 242, 0.08);
+        padding: 22px 0 30px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px 28px;
+        flex-wrap: wrap;
+        font-size: 13.5px;
+        color: rgba(250, 247, 242, 0.42);
+      }
+      footer .rodape__base .assinatura {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      footer .rodape__base .ponto {
+        color: rgba(250, 247, 242, 0.25);
+      }
+      footer .rodape__topo-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13.5px;
+        color: rgba(250, 247, 242, 0.55);
+      }
+      footer .rodape__topo-link svg {
+        width: 14px;
+        height: 14px;
+        transition: transform 0.18s ease;
+      }
+      footer .rodape__topo-link:hover svg {
+        transform: translateY(-3px);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        footer .rodape__social a:hover,
+        footer .rodape__topo-link:hover svg {
+          transform: none;
+        }
       }
     </style>
   </head>
@@ -2375,24 +2546,146 @@
       </div>
     </section>
 
+    <!-- ============ RODAPÉ INSTITUCIONAL ============ -->
     <footer id="contato">
-      <div class="wrap">
-        <img
-          src="landingPage/assets-marca/logo-negativa-para-fundo-escuro.png"
-          alt="moderneasy"
+      <!-- divisor: a linha do símbolo estendida (grafismo 3 do manual) -->
+      <svg
+        class="rodape__fluxo"
+        viewBox="0 0 1440 80"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <path
+          d="M0 46 C 220 6, 380 66, 600 34 S 1010 4, 1200 40 S 1380 58, 1440 30"
+          fill="none"
+          stroke="#1FA36C"
+          stroke-width="1.5"
+          opacity=".45"
         />
-        <div>
-          <a href="mailto:moderneasyautomation@gmail.com"
-            >moderneasyautomation@gmail.com</a
-          >
-          ·
-          <a
-            href="https://instagram.com/modern.easy"
-            target="_blank"
-            rel="noopener"
-            >@modern.easy</a
-          >
-          · Encantado – RS
+        <circle cx="600" cy="34" r="4" fill="#1FA36C" opacity=".75" />
+        <circle cx="1200" cy="40" r="4" fill="#1FA36C" opacity=".75" />
+      </svg>
+
+      <div class="wrap">
+        <div class="rodape__topo">
+          <!-- coluna da marca -->
+          <div class="rodape__marca">
+            <img
+              class="rodape__logo"
+              src="landingPage/assets-marca/logo-negativa-para-fundo-escuro.png"
+              alt="ModernEasy"
+            />
+            <p class="rodape__tagline">Automação que trabalha por você.</p>
+            <p class="rodape__pitch">
+              Conectamos as melhores ferramentas de automação aos processos
+              reais da sua empresa — implantação em dias e resultado que dá
+              para medir.
+            </p>
+            <div class="rodape__social">
+              <a
+                href="https://wa.me/5551993584396?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20ModernEasy."
+                target="_blank"
+                rel="noopener"
+                aria-label="Falar no WhatsApp"
+                title="WhatsApp"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.9-.9L3 20.5l1.6-4.9A8.4 8.4 0 0 1 3.6 11 8.5 8.5 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5Z" />
+                </svg>
+              </a>
+              <a
+                href="https://instagram.com/modern.easy"
+                target="_blank"
+                rel="noopener"
+                aria-label="Instagram @modern.easy"
+                title="Instagram"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="5" />
+                  <circle cx="12" cy="12" r="3.6" />
+                  <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" />
+                </svg>
+              </a>
+              <a
+                href="mailto:moderneasyautomation@gmail.com"
+                aria-label="Enviar e-mail"
+                title="E-mail"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="2.5" y="4.5" width="19" height="15" rx="2.5" />
+                  <path d="m3 7 9 6 9-6" />
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- colunas de navegação e contato -->
+          <nav class="rodape__colunas" aria-label="Rodapé">
+            <div>
+              <span class="rodape__label">Navegue</span>
+              <ul>
+                <li><a href="#cases">Portfólio</a></li>
+                <li><a href="#como">Como funciona</a></li>
+                <li><a href="#integ">Integrações</a></li>
+                <li><a href="#chamada">Fale com a gente</a></li>
+              </ul>
+            </div>
+            <div>
+              <span class="rodape__label">O que automatizamos</span>
+              <ul>
+                <li>Confirmação de agendamentos</li>
+                <li>Resposta a orçamentos</li>
+                <li>Cobrança e financeiro</li>
+                <li>Rotinas internas do dia a dia</li>
+              </ul>
+            </div>
+            <div>
+              <span class="rodape__label">Contato</span>
+              <ul>
+                <li>
+                  <a
+                    href="https://wa.me/5551993584396"
+                    target="_blank"
+                    rel="noopener"
+                    >(51) 99358-4396</a
+                  >
+                </li>
+                <li>
+                  <a href="mailto:moderneasyautomation@gmail.com"
+                    >moderneasyautomation@gmail.com</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://instagram.com/modern.easy"
+                    target="_blank"
+                    rel="noopener"
+                    >@modern.easy</a
+                  >
+                </li>
+                <li class="rodape__local">
+                  Encantado – RS · Vale do Taquari<br />Rio Grande do Sul,
+                  Brasil
+                </li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+
+        <div class="rodape__base">
+          <div class="assinatura">
+            <span>© 2026 ModernEasy</span>
+            <span class="ponto">·</span>
+            <span>Feita no Vale do Taquari</span>
+            <span class="ponto">·</span>
+            <span>Este site não usa cookies nem pede cadastro</span>
+          </div>
+          <a class="rodape__topo-link" href="#">
+            Voltar ao topo
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 19V5M5 12l7-7 7 7" />
+            </svg>
+          </a>
         </div>
       </div>
     </footer>
