@@ -1814,10 +1814,22 @@
       }
 
       /* ---- colunas de links ---- */
+      /* Colunas medidas pelo próprio conteúdo e espaçadas por igual.
+       Com três colunas de largura fixa (1fr), os blocos ficavam alinhados na
+       matemática mas tortos no olho: a primeira coluna tem textos curtos e
+       sobrava um vão enorme depois dela, jogando a do meio para a direita.
+       Com auto + space-between, o respiro entre um bloco e outro é idêntico,
+       e a coluna do meio cai exatamente no meio das outras duas. */
       footer .rodape__colunas {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: auto auto auto;
+        justify-content: space-between;
         gap: clamp(24px, 3vw, 40px);
+      }
+      /* o e-mail é longo e não tem onde quebrar: liberando a quebra, ele nunca
+       estoura a coluna nas larguras intermediárias */
+      footer .rodape__colunas a {
+        overflow-wrap: anywhere;
       }
       @media (max-width: 620px) {
         footer .rodape__colunas {
@@ -3726,7 +3738,8 @@
               "Onde o trabalho acontece",
             ) +
             groupLabel(
-              "left:50%;top:-6px;transform:translateX(-50%);text-align:center",
+              // sobe 20px: em -6px o "O cérebro por trás" encostava no tile do topo
+              "left:50%;top:-26px;transform:translateX(-50%);text-align:center",
               "Inteligência",
               "O cérebro por trás",
             ) +
