@@ -222,23 +222,18 @@
         font-weight: 700;
         color: var(--areia);
       }
-      /* a linha da palavra que gira — a altura desliza suavemente entre palavras de
-       1 e 2 linhas (JS mede a próxima palavra e anima a altura), sem pulos nem vãos */
+      /* a linha da palavra que gira. A altura NÃO é animada de propósito:
+       quem reserva o espaço é o próprio h1, travado pelo JS na maior altura
+       que o título chega a ter. Assim a troca de palavra nunca empurra o
+       conteúdo abaixo — a página fica parada enquanto a frase muda. */
       .gira {
         display: block;
         position: relative;
         color: var(--verde-vivo);
         min-height: 1.14em;
-        transition: height 0.45s ease;
       }
-      .gira .medidor {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        visibility: hidden;
-        pointer-events: none;
-      }
+      /* o h1 recebe min-height via JS. Sendo um bloco comum, o texto começa no
+       topo e a sobra de espaço cai embaixo da frase — nunca no meio dela. */
       .gira .palavra {
         display: inline-block;
         opacity: 1;
@@ -2703,28 +2698,54 @@
           "rotina no WhatsApp",
         ];
         var el = document.getElementById("palavraGira");
-        var gira = el.parentNode;
+        if (!el) return;
+        var titulo = el.closest("h1");
         var i = 0;
 
-        // Medidor invisível: mede a altura que a próxima palavra vai ocupar,
-        // para a altura do bloco DESLIZAR suavemente (sem pulo, sem vão morto).
-        var medidor = document.createElement("span");
-        medidor.className = "medidor";
-        medidor.setAttribute("aria-hidden", "true");
-        gira.appendChild(medidor);
-        function alturaDe(palavra) {
-          medidor.textContent = palavra;
-          return medidor.offsetHeight;
+        // ---------- ALTURA RESERVADA (o que impede a página de "respirar") ----------
+        // Antes a altura do bloco era animada palavra a palavra: quando a frase
+        // passava de uma para duas linhas, TUDO abaixo do título descia e subia
+        // — cansativo para quem está lendo.
+        // Agora o título nasce travado na MAIOR altura que ele chega a ter entre
+        // todas as palavras da lista. A palavra troca dentro de um espaço que já
+        // estava reservado, então subtítulo, botão e o resto da página não se
+        // mexem um pixel.
+        // A medição é feita num clone invisível, com a mesma largura do original,
+        // para o visitante nunca ver o texto piscando durante o cálculo.
+        function reservarAltura() {
+          if (!titulo || !titulo.parentNode) return;
+          titulo.style.minHeight = ""; // solta, para medir do zero
+
+          var clone = titulo.cloneNode(true);
+          clone.setAttribute("aria-hidden", "true");
+          clone.style.cssText =
+            "position:absolute;left:0;right:0;top:0;min-height:0;visibility:hidden;pointer-events:none";
+          var alvo = clone.querySelector(".palavra");
+          if (alvo) alvo.removeAttribute("id"); // não duplicar o id no documento
+          titulo.parentNode.appendChild(clone);
+
+          var maior = 0;
+          for (var k = 0; k < palavras.length; k++) {
+            if (alvo) alvo.textContent = palavras[k];
+            if (clone.offsetHeight > maior) maior = clone.offsetHeight;
+          }
+          clone.parentNode.removeChild(clone);
+
+          if (maior) titulo.style.minHeight = maior + "px";
         }
-        function assentar() {
-          gira.style.height = alturaDe(palavras[i]) + "px";
-        }
+
+        // as fontes mudam a largura das palavras: medir só depois que carregarem
         if (document.fonts && document.fonts.ready) {
-          document.fonts.ready.then(assentar);
-        } else {
-          assentar();
+          document.fonts.ready.then(reservarAltura);
         }
-        window.addEventListener("resize", assentar);
+        reservarAltura();
+
+        // ao girar o celular ou redimensionar, o número de linhas muda: remede
+        var timer;
+        window.addEventListener("resize", function () {
+          clearTimeout(timer);
+          timer = setTimeout(reservarAltura, 150);
+        });
 
         // respeita quem pediu menos movimento: sem rotação
         if (
@@ -2734,9 +2755,6 @@
           return;
         setInterval(function () {
           el.classList.add("saindo");
-          // a altura já começa a deslizar rumo à próxima palavra, junto com o fade
-          gira.style.height =
-            alturaDe(palavras[(i + 1) % palavras.length]) + "px";
           setTimeout(function () {
             i = (i + 1) % palavras.length;
             el.textContent = palavras[i];
