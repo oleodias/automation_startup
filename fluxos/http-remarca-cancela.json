@@ -1,0 +1,61 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://moderneasyevo.duckdns.org/message/sendText/demo",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "COLE_AQUI_SUA_EVOLUTION_API_KEY" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "keypair",
+        "bodyParameters": {
+          "parameters": [
+            { "name": "number", "value": "={{ $('Consulta pendente').item.json.telefone }}" },
+            { "name": "text", "value": "={{ \"Sem problema, \" + $('Consulta pendente').item.json.paciente + \"! Nossa equipe já vai te chamar para achar um novo horário 😉\" }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http-remarca-01",
+      "name": "HTTP Request REMARCA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1400, 320]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://moderneasyevo.duckdns.org/message/sendText/demo",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "COLE_AQUI_SUA_EVOLUTION_API_KEY" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "keypair",
+        "bodyParameters": {
+          "parameters": [
+            { "name": "number", "value": "={{ $('Consulta pendente').item.json.telefone }}" },
+            { "name": "text", "value": "={{ \"Tudo bem, \" + $('Consulta pendente').item.json.paciente + \", consulta cancelada. Quando quiser remarcar é só chamar aqui! 🙂\" }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http-cancela-01",
+      "name": "HTTP Request CANCELA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1400, 560]
+    }
+  ],
+  "connections": {}
+}
