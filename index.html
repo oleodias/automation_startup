@@ -854,14 +854,16 @@
         transform: translateX(4px);
       }
 
-      /* ---------- setas laterais ---------- */
+      /* ---------- setas de navegação (abaixo dos cases) ---------- */
       #cases .spot {
         position: relative;
+        /* reserva a faixa embaixo onde as setas moram, para elas nunca
+           cobrirem o conteúdo do case */
+        padding-bottom: 84px;
       }
       #cases .spot__nav {
         position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
+        bottom: 0;
         z-index: 20;
         width: 52px;
         height: 52px;
