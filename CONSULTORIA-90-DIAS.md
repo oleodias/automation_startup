@@ -91,7 +91,7 @@ Entregável: página publicada e divulgada + lista de leads/indicações + kit c
 *(v2: este item deixou de ser apoio e virou o coração dos 90 dias. O detalhamento de construção — arquitetura, fluxos n8n, divisão de trabalho, checklist do dia 1 — está em `AUTOMACOES.md`. Aqui fica o escopo e o roteiro de demo.)*
 
 **P1/A1 — Confirmação de consultas "Clínica Sorriso" (a demo principal). ~30h.**
-Stack: n8n self-hosted + Evolution API (WhatsApp) + Google Sheets como agenda (ou Google Calendar) + Claude/GPT via API para interpretar respostas fora do padrão ("não vou poder, meu filho adoeceu" → intenção: remarcar).
+Stack: n8n self-hosted + Evolution API (WhatsApp) + Google Sheets como agenda (ou Google Calendar) + LLM via API (Groq, free tier) para interpretar respostas fora do padrão ("não vou poder, meu filho adoeceu" → intenção: remarcar).
 Escopo mínimo: agenda em planilha → D-1 às 10h dispara mensagem → paciente responde 1 (confirmo) / 2 (remarcar) / 3 (cancelar) → planilha atualiza + horário liberado é oferecido à lista de espera → 7h do dia seguinte, resumo para a "secretária".
 
 **P2/A2 — Resgate de orçamentos parados. ~15h.**
@@ -219,7 +219,7 @@ Refletindo a decisão de infra: **n8n self-hosted em VPS** (recomendado) em vez 
 |---|---|---|---|---|
 | VPS Hostinger KVM 1–2 (n8n + Evolution API) | Demo e produção 24/7 | ~R$ 55/mês (KVM1, plano longo)* | ~R$ 100/mês (KVM2 mensal, sem fidelidade) | Quinzena 2 (sem isso não há demo) |
 | n8n self-hosted + Evolution API | Motor de automação + WhatsApp | R$ 0 | R$ 0 | — |
-| API de IA (Claude/OpenAI) p/ interpretar respostas | Demo P1 e produção | R$ 20–40/mês (uso baixo) | R$ 60/mês | Quinzena 2 |
+| API de IA (Groq — free tier) p/ interpretar respostas | Demo P1 e produção | R$ 0 (14.400 req/dia grátis) | R$ 60/mês (se um dia migrarmos p/ provedor pago) | Quinzena 2 |
 | WhatsApp Cloud API oficial (Meta) | Produção séria/plano B do banimento | R$ 0 agora (conversas de utilidade na janela de 24h são grátis; templates ~centavos/msg) | R$ 50/mês repassável ao cliente | Só ao migrar cliente p/ API oficial |
 | Domínio .com.br + página (GitHub Pages) | Legitimidade | R$ 0 (subdomínio grátis) | R$ 40/ano | Adiável indefinidamente |
 | Abertura LTDA (taxas Junta/prefeitura RS) | Existir juridicamente e faturar | R$ 300–800 (único, estimativa) | R$ 800 | No "sim" verbal do cliente 1 |

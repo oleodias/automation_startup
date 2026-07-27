@@ -82,3 +82,11 @@ Leonardo sem acesso ao servidor de casa (ping/SSH/HTTPS bloqueados) enquanto Mat
 
 ### Depois do hello world
 Começa a construção da **A1 (confirmação de consultas)** — plano em `AUTOMACOES.md`.
+
+### IA do fluxo A1.2: Anthropic → Groq (27/07)
+O nó que interpreta respostas em texto livre passou a usar a **Groq** no lugar da API da
+Anthropic — motivo: a Groq tem free tier de verdade (sem cartão, 14.400 req/dia no
+`llama-3.1-8b-instant`), e nesta escala o custo vira R$ 0. O nó agora chama
+`https://api.groq.com/openai/v1/chat/completions` com header `Authorization: Bearer gsk_...`.
+Passo a passo completo em `fluxos/A1-2-GROQ-PASSO-A-PASSO.md`. Como a API da Groq é
+compatível com a da OpenAI, trocar de provedor no futuro custa três campos.

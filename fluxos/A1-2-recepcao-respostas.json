@@ -4,7 +4,7 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## Depois de importar\n1. Nós Google Sheets: selecionar credencial + documento + aba.\n2. No nó **Claude — classificar intenção**: trocar `SUA_CHAVE_ANTHROPIC_AQUI` pela chave real (console.anthropic.com).\n3. Nós 📤 são placeholders do WhatsApp.\n4. A URL deste webhook (produção) é\n`https://moderneasyn8n.duckdns.org/webhook/evolution-demo`\n— será cadastrada na Evolution (Settings da instância → Webhook → evento `messages.upsert`) quando o número voltar.\n5. Para testar HOJE: use **Listen for test event** no Webhook e envie um POST simulando o payload (exemplo na nota ao lado).",
+        "content": "## Depois de importar\n1. Nós Google Sheets: selecionar credencial + documento + aba.\n2. No nó **Groq — classificar intenção**: trocar `SUA_CHAVE_GROQ_AQUI` pela chave real (console.groq.com/keys) — manter a palavra `Bearer ` na frente. A Groq tem plano gratuito.\n3. Nós 📤 são placeholders do WhatsApp.\n4. A URL deste webhook (produção) é\n`https://moderneasyn8n.duckdns.org/webhook/evolution-demo`\n— será cadastrada na Evolution (Settings da instância → Webhook → evento `messages.upsert`) quando o número voltar.\n5. Para testar HOJE: use **Listen for test event** no Webhook e envie um POST simulando o payload (exemplo na nota ao lado).",
         "height": 380,
         "width": 400,
         "color": 4
@@ -397,17 +397,13 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://api.anthropic.com/v1/messages",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
-              "name": "x-api-key",
-              "value": "SUA_CHAVE_ANTHROPIC_AQUI"
-            },
-            {
-              "name": "anthropic-version",
-              "value": "2023-06-01"
+              "name": "Authorization",
+              "value": "Bearer SUA_CHAVE_GROQ_AQUI"
             },
             {
               "name": "content-type",
@@ -417,11 +413,17 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={ \"model\": \"claude-haiku-4-5-20251001\", \"max_tokens\": 20, \"system\": \"Classifique a mensagem de um paciente respondendo à confirmação de uma consulta. Responda APENAS uma destas palavras: confirmar, remarcar, cancelar, duvida, humano.\", \"messages\": [ { \"role\": \"user\", \"content\": {{ JSON.stringify($('Extrair dados').first().json.texto) }} } ] }",
-        "options": {}
+        "jsonBody": "={ \"model\": \"llama-3.1-8b-instant\", \"max_tokens\": 20, \"temperature\": 0, \"messages\": [ { \"role\": \"system\", \"content\": \"Classifique a mensagem de um paciente respondendo à confirmação de uma consulta. Responda APENAS uma destas palavras, sem pontuação e sem explicação: confirmar, remarcar, cancelar, duvida, humano.\" }, { \"role\": \"user\", \"content\": {{ JSON.stringify($('Extrair dados').first().json.texto) }} } ] }",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": false
+            }
+          }
+        }
       },
-      "id": "a12-claude",
-      "name": "Claude — classificar intenção",
+      "id": "a12-groq",
+      "name": "Groq — classificar intenção",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [1160, 560]
@@ -433,7 +435,7 @@
             {
               "id": "i1",
               "name": "intencao",
-              "value": "={{ ($json.content?.[0]?.text || '').toLowerCase().trim() }}",
+              "value": "={{ (($json.choices?.[0]?.message?.content || '').toLowerCase().match(/confirmar|remarcar|cancelar|duvida|humano/) || ['humano'])[0] }}",
               "type": "string"
             },
             {
@@ -637,7 +639,7 @@
         ],
         [
           {
-            "node": "Claude — classificar intenção",
+            "node": "Groq — classificar intenção",
             "type": "main",
             "index": 0
           }
@@ -677,7 +679,7 @@
         ]
       ]
     },
-    "Claude — classificar intenção": {
+    "Groq — classificar intenção": {
       "main": [
         [
           {

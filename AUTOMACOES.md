@@ -44,7 +44,7 @@ A1 vem primeiro porque é a vitrine do nicho recomendado e porque constrói toda
    - `1` → status `confirmada` + mensagem de confirmação com data/hora.
    - `2` → busca 3 horários livres na agenda → oferece em lista → paciente escolhe → remarca e libera o horário antigo.
    - `3` → status `cancelada` + horário liberado.
-   - **Texto livre** ("não vou poder, meu filho adoeceu") → Claude API classifica a intenção (`confirmar` / `remarcar` / `cancelar` / `dúvida` / `humano`) → segue o ramo certo ou escala para a "secretária" com o contexto. Prompt curto, resposta em JSON, temperatura baixa.
+   - **Texto livre** ("não vou poder, meu filho adoeceu") → IA (Groq API, plano gratuito) classifica a intenção (`confirmar` / `remarcar` / `cancelar` / `dúvida` / `humano`) → segue o ramo certo ou escala para a "secretária" com o contexto. Prompt curto, resposta em JSON, temperatura baixa.
 3. **Lista de espera:** horário liberado (por 2 ou 3) → oferece ao primeiro da aba `Espera` → se aceitar em 2h, agenda; senão, passa ao próximo.
 4. **Resumo diário** (cron, 7h): para o número da "secretária": consultas do dia, confirmadas, pendentes, remarcadas, quem não respondeu (para ligação manual — a automação não precisa resolver 100%, precisa reduzir o manual a exceção).
 5. **Healthcheck** (cron, 30 min): testa Evolution API conectada + n8n vivo + última execução dos crons; falhou → alerta no WhatsApp de vocês dois. *Este fluxo vira produto depois: é o que sustenta o SLA de 12h/24h prometido em contrato (item 4 da consultoria).*
