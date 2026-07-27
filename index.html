@@ -604,7 +604,14 @@
         position: relative;
         display: grid;
         place-items: center;
-        min-height: 560px;
+        /* Piso baixo de propósito: os slides ficam empilhados na mesma célula
+           do grid, então o palco já tem a altura do mais alto e não muda ao
+           trocar de case. Com 560px sobravam ~227px de vão morto embaixo,
+           que empurravam as setas para longe dos cards. Este piso e o pior
+           caso real do palco acima do ponto de quebra (451px, medido em
+           721px de largura), entao a altura nunca oscila ao trocar de case
+           nem enquanto as mensagens vao aparecendo. */
+        min-height: 451px;
         outline: none;
         touch-action: pan-y;
         user-select: none;
