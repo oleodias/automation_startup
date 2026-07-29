@@ -82,3 +82,33 @@ Leonardo sem acesso ao servidor de casa (ping/SSH/HTTPS bloqueados) enquanto Mat
 
 ### Depois do hello world
 Começa a construção da **A1 (confirmação de consultas)** — plano em `AUTOMACOES.md`.
+
+---
+
+## ✅ MARCO — A1 (Clínica Sorriso) funcionando de ponta a ponta
+
+**Restrição do WhatsApp expirou** e o número voltou a enviar/receber normalmente. A automação **A1 está completa e testada**:
+
+- **A1.1 Disparo D-1** — lê a Agenda, filtra consultas de amanhã com status `agendada`, monta a mensagem, **envia pela Evolution**, marca `aguardando resposta` e grava no Log ✅
+- **A1.2 Recepção de respostas** — webhook da Evolution → extrai telefone/texto → acha a consulta pendente → Switch roteia `1`/`2`/`3` → atualiza status na planilha → **responde no WhatsApp**. Três trilhas testadas: CONFIRMA, REMARCA, CANCELA ✅
+- **A1.4 Resumo diário** e **A1.5 Healthcheck** — importados e montados no mesmo projeto ("Automação - Clínica Sorriso", publicado no n8n)
+
+### Aprendizados técnicos desta etapa (valem para toda automação futura)
+1. **Nó HTTP Request da Evolution:** no Body, **Name = nome fixo do campo** (`number`, `text`) e **Value = a expressão**. Inverter isso gera `Bad request - instance requires property number/text` — errei/erramos isso 2×, virou checklist.
+2. **Nono dígito do WhatsApp:** o número que chega no webhook pode vir **sem um 9** em relação ao cadastrado. Solução aplicada no filtro: comparar só os **últimos 8 dígitos** (`String(x).replace(/\D/g,'').slice(-8)`). **Usar esse padrão em toda automação que casa telefone.**
+3. **Webhook da Evolution:** o toggle **"Webhook by Events" precisa ficar DESLIGADO** — ligado, ele muda a URL (acrescenta `/messages-upsert`) e o n8n nunca recebe.
+4. **Test URL vs Production URL:** `webhook-test/...` só funciona com "Listen for test event" ativo; `webhook/...` exige workflow **ativo**. Cadastrar na Evolution a URL correspondente ao modo em uso.
+5. **"Execute step" roda só um nó** — não encadeia. Para testar o fluxo inteiro: "Listen for test event" (e mandar a mensagem real) ou ativar o workflow.
+6. **Google Sheets Update Row:** sempre `Column to match on = row_number`, e em "Values to Update" deixar **somente** a coluna que muda — as demais em branco apagariam os dados.
+7. Depois de um HTTP Request, o `row_number` sai do fluxo: referenciar o nó anterior pelo nome (`$('Consulta pendente').item.json.row_number`).
+
+### Backlog da A1 (melhorias possíveis — NÃO fazer agora)
+Priorizado por valor de venda, para quando fizer sentido (ex.: pedido de um cliente real):
+1. **A1.3 Lista de espera** (~6h) — horário liberado por cancelamento é oferecido ao próximo da fila. *É a melhoria com maior impacto em R$: transforma cancelamento em consulta preenchida.*
+2. **Reagendamento automático de verdade** (~8h) — hoje o `2` marca `remarcada` e avisa a equipe; a v2 ofereceria 3 horários livres e remarcaria sozinha.
+3. **Delay aleatório entre envios** (~1h) — nó Wait 20–60s no A1.1; higiene anti-banimento quando o volume crescer.
+4. **Ativar A1.5 Healthcheck** (~1h) — configurar credencial Gmail e deixar ATIVO; é o que sustenta o SLA prometido em contrato.
+5. **Registro de "falta"** (~3h) — marcar quem confirmou e não apareceu, alimentando a métrica de no-show (o número que vende a automação).
+
+### Próximo passo definido
+Construir **A2 — Resgate de orçamentos parados** (~18h, plano em `AUTOMACOES.md`). Motivo: abre um **segundo mercado** (comércio/serviços) reaproveitando ~70% da base técnica da A1, e completa o portfólio da landing page com uma dor diferente. Depois dela, **A3 — Relatório do dono** (~10h).
