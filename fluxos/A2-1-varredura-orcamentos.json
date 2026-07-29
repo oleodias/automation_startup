@@ -1,0 +1,228 @@
+{
+  "name": "A2.1 — Varredura de orçamentos (follow-up)",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Depois de importar\n1. Nós Google Sheets (verdes): credencial + documento **Moveis Premium — Orcamentos** + aba indicada no nome do nó.\n2. No **Enviar follow-up**: trocar `COLE_AQUI_SUA_EVOLUTION_API_KEY` pela chave real.\n3. ⚠️ Antes do primeiro teste: na planilha, trocar os telefones das 4 linhas amarelas pelos celulares REAIS de vocês.\n4. Testar com **Execute workflow** (o cron das 9h só vale com o fluxo ativo).\n\n### O que o nó Code decide\n- `enviado` + sem toque + 2+ dias → **follow1**\n- `enviado` + `follow1` + 7+ dias → **follow2**\n- máximo **10 envios por execução** (higiene anti-banimento)",
+        "height": 400,
+        "width": 400,
+        "color": 4
+      },
+      "id": "sticky-a21",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-80, -420]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * *"
+            }
+          ]
+        }
+      },
+      "id": "a21-trigger",
+      "name": "Todo dia às 9h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
+      },
+      "id": "a21-read",
+      "name": "Ler aba Orcamentos",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Decide quem recebe follow-up hoje e monta a mensagem.\nfunction parseDataBR(txt) {\n  const partes = String(txt).trim().split('/');\n  if (partes.length !== 3) return null;\n  const [d, m, y] = partes.map(Number);\n  return new Date(y, m - 1, d);\n}\n\nfunction reais(v) {\n  const n = Number(String(v).replace(',', '.')) || 0;\n  return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });\n}\n\nconst hoje = new Date();\nhoje.setHours(0, 0, 0, 0);\nconst LIMITE_POR_EXECUCAO = 10;\n\nconst saida = [];\n\nfor (const item of $input.all()) {\n  const o = item.json;\n  if (String(o.status || '').trim() !== 'enviado') continue;\n\n  const enviado = parseDataBR(o.data_envio);\n  if (!enviado) continue;\n  const dias = Math.floor((hoje - enviado) / 86400000);\n\n  const toqueAtual = String(o.ultimo_toque || '').trim();\n  let toque = null;\n\n  if (toqueAtual === '' && dias >= 2) {\n    toque = 'follow1';\n  } else if (toqueAtual === 'follow1' && dias >= 7) {\n    toque = 'follow2';\n  }\n  if (!toque) continue;\n\n  const primeiroNome = String(o.cliente || '').split(' ')[0];\n  let mensagem;\n  if (toque === 'follow1') {\n    mensagem = `Oi, ${primeiroNome}! Aqui é o ${o.vendedor} da Móveis Premium 😊 Conseguiu dar uma olhada no orçamento do ${o.descricao}? Ficou alguma dúvida que eu possa esclarecer?`;\n  } else {\n    mensagem = `Oi, ${primeiroNome}! Passando para avisar que a condição do orçamento do ${o.descricao} (R$ ${reais(o.valor)}) vale até sexta. Quer que eu reserve para você?`;\n  }\n\n  saida.push({\n    json: {\n      row_number: o.row_number,\n      cliente: o.cliente,\n      para: String(o.telefone),\n      mensagem,\n      toque,\n      dias,\n      vendedor: o.vendedor,\n      descricao: o.descricao,\n    },\n  });\n}\n\nreturn saida.slice(0, LIMITE_POR_EXECUCAO);"
+      },
+      "id": "a21-code",
+      "name": "Quem recebe follow-up hoje",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://moderneasyevo.duckdns.org/message/sendText/demo",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "COLE_AQUI_SUA_EVOLUTION_API_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "keypair",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $json.para }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.mensagem }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a21-send",
+      "name": "Enviar follow-up",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, 0]
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('Quem recebe follow-up hoje').item.json.row_number }}",
+            "ultimo_toque": "={{ $('Quem recebe follow-up hoje').item.json.toque }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "a21-update",
+      "name": "Marcar toque (aba Orcamentos)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [880, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "l1",
+              "name": "quando",
+              "value": "={{ $now.setZone('America/Sao_Paulo').toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "l2",
+              "name": "fluxo",
+              "value": "={{ 'orcamentos-' + $('Quem recebe follow-up hoje').item.json.toque }}",
+              "type": "string"
+            },
+            {
+              "id": "l3",
+              "name": "cliente",
+              "value": "={{ $('Quem recebe follow-up hoje').item.json.cliente }}",
+              "type": "string"
+            },
+            {
+              "id": "l4",
+              "name": "acao",
+              "value": "={{ 'follow-up enviado (' + $('Quem recebe follow-up hoje').item.json.dias + ' dias sem resposta)' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a21-logprep",
+      "name": "Preparar log",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1100, 0]
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "a21-log",
+      "name": "Registrar no Log (aba Log)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1320, 0]
+    }
+  ],
+  "connections": {
+    "Todo dia às 9h": {
+      "main": [[{ "node": "Ler aba Orcamentos", "type": "main", "index": 0 }]]
+    },
+    "Ler aba Orcamentos": {
+      "main": [[{ "node": "Quem recebe follow-up hoje", "type": "main", "index": 0 }]]
+    },
+    "Quem recebe follow-up hoje": {
+      "main": [[{ "node": "Enviar follow-up", "type": "main", "index": 0 }]]
+    },
+    "Enviar follow-up": {
+      "main": [[{ "node": "Marcar toque (aba Orcamentos)", "type": "main", "index": 0 }]]
+    },
+    "Marcar toque (aba Orcamentos)": {
+      "main": [[{ "node": "Preparar log", "type": "main", "index": 0 }]]
+    },
+    "Preparar log": {
+      "main": [[{ "node": "Registrar no Log (aba Log)", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

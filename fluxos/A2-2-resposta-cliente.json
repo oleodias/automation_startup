@@ -1,0 +1,288 @@
+{
+  "name": "A2.2 — Cliente respondeu (alerta ao vendedor)",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Depois de importar\n1. Nós Google Sheets: credencial + documento **Moveis Premium — Orcamentos** + aba indicada.\n2. No **Avisar vendedor**: trocar `COLE_AQUI_SUA_EVOLUTION_API_KEY`.\n3. **Este fluxo NÃO é chamado pela Evolution diretamente** — quem chama é o fluxo `A0 Roteador`.\n   Production URL deste webhook: `https://moderneasyn8n.duckdns.org/webhook/orcamento-resposta`\n4. Precisa estar **ATIVO** para o roteador conseguir chamá-lo.\n\n### Por que não responde ao cliente\nDe propósito: a automação **reabre a conversa**, o vendedor humano **fecha a venda**. Resposta automática aqui soaria robótica e esfriaria a negociação.",
+        "height": 400,
+        "width": 420,
+        "color": 4
+      },
+      "id": "sticky-a22",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-100, -430]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "orcamento-resposta",
+        "options": {}
+      },
+      "id": "a22-webhook",
+      "name": "Webhook orçamento",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "webhookId": "b7c1e9d2-5a44-4f31-8e02-moderneasy02",
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e1",
+              "name": "telefone",
+              "value": "={{ ($json.body?.data?.key?.remoteJid || $json.data?.key?.remoteJid || '').split('@')[0] }}",
+              "type": "string"
+            },
+            {
+              "id": "e2",
+              "name": "telefone8",
+              "value": "={{ String($json.body?.data?.key?.remoteJid || $json.data?.key?.remoteJid || '').split('@')[0].replace(/\\D/g,'').slice(-8) }}",
+              "type": "string"
+            },
+            {
+              "id": "e3",
+              "name": "texto",
+              "value": "={{ ($json.body?.data?.message?.conversation || $json.data?.message?.conversation || '').trim() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a22-extract",
+      "name": "Extrair dados",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
+      },
+      "id": "a22-read",
+      "name": "Ler aba Orcamentos",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [440, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ String($json.telefone).replace(/\\D/g,'').slice(-8) }}",
+              "rightValue": "={{ $('Extrair dados').first().json.telefone8 }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "c2",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "enviado",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "a22-filter",
+      "name": "Orçamento aberto deste cliente",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [660, 0]
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $json.row_number }}",
+            "status": "respondeu"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "a22-update",
+      "name": "Status: respondeu",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [880, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://moderneasyevo.duckdns.org/message/sendText/demo",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "COLE_AQUI_SUA_EVOLUTION_API_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "keypair",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $('Orçamento aberto deste cliente').item.json.vendedor_telefone }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ '🔥 Cliente respondeu o orçamento!\\n\\n' + $('Orçamento aberto deste cliente').item.json.cliente + ' — ' + $('Orçamento aberto deste cliente').item.json.descricao + '\\nValor: R$ ' + $('Orçamento aberto deste cliente').item.json.valor + '\\nTelefone: ' + $('Orçamento aberto deste cliente').item.json.telefone + '\\n\\nDisse: \"' + $('Extrair dados').first().json.texto + '\"\\n\\nFala com ele agora que está quente!' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a22-alerta",
+      "name": "Avisar vendedor",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1100, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "l1",
+              "name": "quando",
+              "value": "={{ $now.setZone('America/Sao_Paulo').toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "l2",
+              "name": "fluxo",
+              "value": "orcamentos-resposta",
+              "type": "string"
+            },
+            {
+              "id": "l3",
+              "name": "cliente",
+              "value": "={{ $('Orçamento aberto deste cliente').item.json.cliente }}",
+              "type": "string"
+            },
+            {
+              "id": "l4",
+              "name": "acao",
+              "value": "={{ 'cliente respondeu — vendedor ' + $('Orçamento aberto deste cliente').item.json.vendedor + ' avisado' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a22-logprep",
+      "name": "Preparar log",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1320, 0]
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "id": "a22-log",
+      "name": "Registrar no Log (aba Log)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [1540, 0]
+    }
+  ],
+  "connections": {
+    "Webhook orçamento": {
+      "main": [[{ "node": "Extrair dados", "type": "main", "index": 0 }]]
+    },
+    "Extrair dados": {
+      "main": [[{ "node": "Ler aba Orcamentos", "type": "main", "index": 0 }]]
+    },
+    "Ler aba Orcamentos": {
+      "main": [[{ "node": "Orçamento aberto deste cliente", "type": "main", "index": 0 }]]
+    },
+    "Orçamento aberto deste cliente": {
+      "main": [[{ "node": "Status: respondeu", "type": "main", "index": 0 }]]
+    },
+    "Status: respondeu": {
+      "main": [[{ "node": "Avisar vendedor", "type": "main", "index": 0 }]]
+    },
+    "Avisar vendedor": {
+      "main": [[{ "node": "Preparar log", "type": "main", "index": 0 }]]
+    },
+    "Preparar log": {
+      "main": [[{ "node": "Registrar no Log (aba Log)", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

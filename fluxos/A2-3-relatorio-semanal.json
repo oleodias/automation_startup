@@ -1,0 +1,120 @@
+{
+  "name": "A2.3 — Relatório semanal (dono)",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Depois de importar\n1. Nó Google Sheets: credencial + documento **Moveis Premium — Orcamentos** + aba **Orcamentos**.\n2. No nó **Montar relatório**: trocar `NUMERO_DO_DONO` pelo celular real de vocês para testar.\n3. No **Enviar relatório**: trocar `COLE_AQUI_SUA_EVOLUTION_API_KEY`.\n4. Testar com **Execute workflow** (o cron de sexta 17h só vale com o fluxo ativo).\n\n### É este número que vende a automação\nO relatório mostra **R$ recuperado** — o argumento da proposta comercial sai daqui.",
+        "height": 340,
+        "width": 400,
+        "color": 4
+      },
+      "id": "sticky-a23",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-80, -370]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 17 * * 5"
+            }
+          ]
+        }
+      },
+      "id": "a23-trigger",
+      "name": "Sexta às 17h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
+      },
+      "id": "a23-read",
+      "name": "Ler aba Orcamentos",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "function num(v) {\n  return Number(String(v ?? '0').replace(/[^\\d,.-]/g, '').replace(',', '.')) || 0;\n}\nfunction reais(n) {\n  return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });\n}\n\nconst itens = $input.all().map((i) => i.json);\nconst por = (s) => itens.filter((o) => String(o.status || '').trim() === s);\n\nconst abertos = por('enviado');\nconst responderam = por('respondeu');\nconst recuperados = por('recuperado');\nconst perdidos = por('perdido');\n\nconst valorAberto = abertos.reduce((s, o) => s + num(o.valor), 0);\nconst valorRecuperado = recuperados.reduce((s, o) => s + num(o.valor), 0);\nconst valorPerdido = perdidos.reduce((s, o) => s + num(o.valor), 0);\n\nconst tocados = itens.filter((o) => String(o.ultimo_toque || '').trim() !== '');\nconst reagiram = tocados.filter((o) => ['respondeu', 'recuperado'].includes(String(o.status || '').trim()));\nconst taxa = tocados.length ? Math.round((reagiram.length / tocados.length) * 100) : 0;\n\nlet msg = '📊 *Móveis Premium — resumo da semana*\\n\\n';\nmsg += `💰 Recuperado: *R$ ${reais(valorRecuperado)}* (${recuperados.length} orçamento(s) fechado(s) após follow-up)\\n`;\nmsg += `🔥 Aguardando o vendedor: ${responderam.length} cliente(s) que responderam\\n`;\nmsg += `⏳ Em aberto: ${abertos.length} orçamento(s) — R$ ${reais(valorAberto)} em jogo\\n`;\nmsg += `❌ Perdidos: ${perdidos.length} — R$ ${reais(valorPerdido)}\\n\\n`;\nmsg += `📈 Taxa de resposta ao follow-up: ${taxa}% (${reagiram.length} de ${tocados.length} contatados)\\n`;\n\nif (responderam.length > 0) {\n  msg += '\\n*Clientes esperando contato:*\\n';\n  msg += responderam\n    .map((o) => `• ${o.cliente} — ${o.descricao} (R$ ${reais(num(o.valor))}) → ${o.vendedor}`)\n    .join('\\n');\n}\n\nif (abertos.length > 0) {\n  msg += '\\n\\n_Os orçamentos em aberto seguem recebendo follow-up automático._';\n}\n\nreturn [{ json: { para: 'NUMERO_DO_DONO', mensagem: msg, valor_recuperado: valorRecuperado, taxa_resposta: taxa } }];"
+      },
+      "id": "a23-code",
+      "name": "Montar relatório",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://moderneasyevo.duckdns.org/message/sendText/demo",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "COLE_AQUI_SUA_EVOLUTION_API_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "keypair",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $json.para }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.mensagem }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a23-send",
+      "name": "Enviar relatório",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, 0]
+    }
+  ],
+  "connections": {
+    "Sexta às 17h": {
+      "main": [[{ "node": "Ler aba Orcamentos", "type": "main", "index": 0 }]]
+    },
+    "Ler aba Orcamentos": {
+      "main": [[{ "node": "Montar relatório", "type": "main", "index": 0 }]]
+    },
+    "Montar relatório": {
+      "main": [[{ "node": "Enviar relatório", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}
