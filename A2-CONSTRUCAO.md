@@ -46,6 +46,16 @@ WhatsApp → Evolution → A0 Roteador ─┬─→ A2.2 (tem orçamento aberto 
 ### Etapa 2 — A2.1 Varredura (~20 min) — não toca em webhook, risco zero
 Importar → configurar os 3 nós Google Sheets → colar a `apikey` no nó de envio → **Execute workflow**.
 
+> ⚠️ **Todo nó "Update Row" precisa de ajuste manual depois de importar.** O n8n não preserva o modo de mapeamento no import: ele cai em **"Map Automatically"**, e aí tenta ler os campos do nó anterior (que, depois de um HTTP Request, é a resposta da Evolution — sem `row_number`). O sintoma é o erro `Unable to parse range: Aba!Fundefined`.
+>
+> **Correção padrão em qualquer nó Update Row:**
+> 1. Mapping Column Mode → **Map Each Column Manually**
+> 2. Column to match on → `row_number`
+> 3. Valor do row_number → `{{ $('NOME DO NÓ QUE TEM O DADO').item.json.row_number }}` (no A2.1 é `Quem recebe follow-up hoje`; no A2.2 basta `{{ $json.row_number }}`)
+> 4. Em Values to Update, preencher **somente a coluna que muda** — as outras em branco apagariam os dados
+>
+> Exceção: nós **Append Row** (os de Log) funcionam certo com **Map Automatically**, porque os campos que chegam já têm os nomes das colunas.
+
 **Resultado esperado:** 4 mensagens enviadas (2 no tom "conseguiu ver o orçamento?", 2 no tom "a condição vale até sexta"), a coluna `ultimo_toque` atualizada e 4 linhas no Log. Rodar de novo no mesmo dia: **zero envios** (prova de que não há spam duplicado).
 
 ### Etapa 3 — A2.3 Relatório (~10 min) — também sem webhook
