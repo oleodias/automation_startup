@@ -1,5 +1,7 @@
 # A2 — Resgate de orçamentos parados (guia de montagem)
 
+> ✅ **Montada e testada em 29/07/2026.** Os 3 fluxos + o roteador estão funcionando em produção no n8n. Use `fluxos/A0-roteador-mensagens-v2.json` (a v1 foi substituída — ver "Roteador: v1 vs v2" no fim do documento).
+
 *Cenário demonstrável: **Móveis Premium**, loja fictícia de móveis planejados. A mesma automação serve para clínica (orçamento de tratamento não fechado), oficina, materiais de construção — é isso que o bloco da landing page vai dizer.*
 
 **A dor que ela resolve:** a loja manda 20 orçamentos por semana, 12 nunca respondem, e ninguém faz follow-up porque o vendedor está atendendo o próximo cliente. Dinheiro pronto indo embora por falta de um lembrete.
@@ -84,7 +86,25 @@ Se um dos dois falhar, olhar a execução do **A0** primeiro: o nó "Decidir des
 - **O alerta vai para o vendedor da linha** (`vendedor_telefone`), não para um número fixo — assim a automação já nasce funcionando para loja com vários vendedores.
 - **Comparação de telefone pelos últimos 8 dígitos**, para sobreviver à variação do nono dígito (aprendizado da A1).
 
+## Roteador: v1 vs v2 (por que trocamos)
+
+A **v1** decidia só por *"este telefone tem orçamento com status `enviado`?"*. Funcionou, mas quebrou num caso real do teste: quando **o mesmo telefone** tinha consulta pendente na clínica **e** orçamento aberto na loja, tudo caía no orçamento — inclusive um `1` que era claramente resposta do menu de confirmação de consulta.
+
+A **v2** lê **as duas planilhas** e desempata pelo conteúdo da mensagem:
+
+| Ordem | Condição | Destino |
+|---|---|---|
+| 1 | texto é `1`/`2`/`3` **e** existe consulta `aguardando resposta` | **CLÍNICA** (resposta de menu) |
+| 2 | existe orçamento com status `enviado` | **ORÇAMENTO** |
+| 3 | existe consulta `aguardando resposta` | **CLÍNICA** |
+| 4 | nada encontrado | **CLÍNICA** (padrão) |
+
+O nó "Decidir destino" devolve `destino`, `motivo`, `temConsultaPendente` e `temOrcamentoAberto` — na aba Executions dá para ler em texto por que ele escolheu cada caminho.
+
+**Atenção ao instalar a v2:** ela tem **dois** nós Google Sheets, de **documentos diferentes** (`Moveis Premium — Orcamentos` aba `Orcamentos` e `Clinica Sorriso — Agenda` aba `Agenda`). E é preciso **despublicar a v1**, porque as duas usam o mesmo path `evolution-in`.
+
 ## Melhorias futuras (backlog, não fazer agora)
 1. **Loop com delay aleatório** entre envios (Split In Batches + Wait 20–60s) — quando o volume passar de ~20 mensagens/dia.
 2. **Classificar a resposta com IA** ("quero fechar" vs "achei caro" vs "só depois") e priorizar o alerta ao vendedor.
 3. **Detectar orçamento sem resposta há 30 dias** → marcar `perdido` sozinho e tirar do relatório de "em jogo".
+4. **Roteador por instância** — quando houver clientes reais, cada um ganha sua instância na Evolution (número próprio) e o roteador passa a rotear por instância, não por planilha. Mais simples e mais robusto.
