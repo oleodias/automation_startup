@@ -1,6 +1,6 @@
 # Plano de Construção das Automações do Portfólio
 
-> **Estado atual (29/07/2026):** **A1 ✅ funcionando** · **A2 ✅ funcionando** (+ roteador A0) · **A3 ⏳ próxima** · demo interativa ⏳.
+> **Estado atual (30/07/2026):** **A1 ✅** · **A2 ✅** · **A3 ✅** · **A0 roteador ✅** — *portfólio de 3 automações completo e testado em produção*. Falta a **demo interativa** da landing page (~8h) e os **vídeos** de 60–90s.
 > Guias de montagem: [`A1-CONSTRUCAO.md`](A1-CONSTRUCAO.md) · [`A2-CONSTRUCAO.md`](A2-CONSTRUCAO.md) · fluxos prontos em [`fluxos/`](fluxos/) · histórico e aprendizados em [`DIARIO.md`](DIARIO.md).
 > **Peça nova, não prevista no plano original:** o **A0 Roteador** — a Evolution API só aceita **um webhook por instância**, então sem um distribuidor central a segunda automação nunca receberia mensagens. Ele decide o destino lendo as planilhas e o conteúdo da mensagem.
 
@@ -74,11 +74,15 @@ A1 vem primeiro porque é a vitrine do nicho recomendado e porque constrói toda
 
 ---
 
-## A3 — Relatório diário do dono (~10h, quinzena 3)
+## A3 — Relatório do dono ✅ (construída — `fluxos/A3-relatorio-dono.json`)
 
-**Fluxo único** (cron, 19h): lê as planilhas de A1 e A2 → monta o resumo do dia (consultas de amanhã, % de confirmação, faltas da semana, orçamentos recuperados no mês) → gera 1 gráfico simples (QuickChart, grátis, via URL) → envia imagem + texto ao "dono".
+**Fluxo único** (cron, 19h): lê a Agenda da clínica → calcula o valor da agenda de amanhã em R$, taxa de confirmação da semana e faltas evitadas → gera gráfico doughnut no **QuickChart** (grátis, via URL, cores da marca) → envia **imagem + legenda** ao dono pelo `sendMedia` da Evolution.
 
-É a automação mais barata e o vídeo mais bonito da landing page — o dono leigo entende em 10 segundos. **É também a primeira a ser cortada se A1 atrasar** (checkpoint do dia 45).
+**Duas decisões diferentes do plano original** (detalhes no `DIARIO.md`):
+- **Não consolida clínica + loja** — são clientes diferentes; o relatório da loja é o A2.3.
+- **É gerencial, para o dono** (19h, R$ e gráfico), complementando o A1.4 que é operacional, para a secretária (7h, lista de quem ligar).
+
+É a automação mais barata e o vídeo mais bonito da landing page — o dono leigo entende em 10 segundos, e é a que ele mostra para os amigos.
 
 ---
 

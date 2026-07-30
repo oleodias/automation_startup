@@ -1,0 +1,149 @@
+{
+  "name": "A3 — Relatório do dono (com gráfico)",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Depois de importar\n1. **Ler aba Agenda** → documento `Clinica Sorriso — Agenda`, aba `Agenda`.\n2. No nó **Montar relatório**, ajustar no topo do código:\n   - `NUMERO_DO_DONO` → celular real para testar\n   - `TICKET_MEDIO` → valor médio da consulta (padrão 150)\n   - `FALTAS_BASELINE` → faltas/semana ANTES da automação (padrão 5)\n3. No **Enviar relatório** → colar a `apikey`.\n4. Testar com **Execute workflow**.\n\n⚠️ **Para o gráfico sair bonito**, a planilha precisa ter consultas com data de AMANHÃ e status variados (confirmada / aguardando resposta / cancelada). Se amanhã estiver vazio, o fluxo cai automaticamente no modo \"últimos 7 dias\".\n\n### Se o envio da imagem falhar\nTrocar a URL do nó de envio para `.../message/sendText/demo` e o body para `{number, text}` (o texto sai igual, só sem o gráfico).",
+        "height": 520,
+        "width": 420,
+        "color": 4
+      },
+      "id": "a3-sticky1",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-120, -560]
+    },
+    {
+      "parameters": {
+        "content": "## POR QUE ESTE É O RELATÓRIO DO *DONO*\nO **A1.4** já manda o resumo **operacional** para a *secretária*, de manhã: quem confirmou, quem ligar.\n\nEste é **gerencial**, para o *dono*, à noite: quanto a agenda de amanhã **vale em R$**, taxa de confirmação da semana, faltas evitadas — e um gráfico que se entende em 2 segundos.\n\nPúblicos diferentes, horários diferentes, conteúdos diferentes. É isso que justifica duas automações em vez de uma.\n\n### Nota de produto\nO plano original previa um relatório consolidando clínica + loja. Descartado: **são clientes diferentes** — o dono da clínica não quer ver orçamentos de móveis. O relatório da loja já existe e é o **A2.3**.",
+        "height": 460,
+        "width": 420,
+        "color": 3
+      },
+      "id": "a3-sticky2",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [340, -560]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 19 * * *"
+            }
+          ]
+        }
+      },
+      "id": "a3-trigger",
+      "name": "Todo dia às 19h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 40]
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
+      },
+      "id": "a3-read",
+      "name": "Ler aba Agenda",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [220, 40]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===== AJUSTES =====\nconst NUMERO_DO_DONO = 'NUMERO_DO_DONO';\nconst TICKET_MEDIO = 150;      // R$ por consulta\nconst TAXA_FALTA_ANTES = 0.20; // % das consultas que viravam falta ANTES da automação (0.20 = 20%)\nconst NOME_CLINICA = 'Clínica Sorriso';\n// ====================\n\nconst so2 = (n) => String(n).padStart(2, '0');\nconst fmtBR = (d) => `${so2(d.getDate())}/${so2(d.getMonth() + 1)}/${d.getFullYear()}`;\nconst reais = (n) => n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });\n\nfunction parseDataBR(txt) {\n  const p = String(txt || '').trim().split('/');\n  if (p.length !== 3) return null;\n  const d = new Date(Number(p[2]), Number(p[1]) - 1, Number(p[0]));\n  return isNaN(d.getTime()) ? null : d;\n}\n\nconst hoje = new Date();\nhoje.setHours(0, 0, 0, 0);\nconst amanha = new Date(hoje);\namanha.setDate(amanha.getDate() + 1);\n\nconst consultas = $input\n  .all()\n  .map((i) => i.json)\n  .filter((c) => c && c.data)\n  .map((c) => ({ ...c, _d: parseDataBR(c.data), _s: String(c.status || '').trim() }))\n  .filter((c) => c._d);\n\nconst mesmoDia = (a, b) => a && b && a.getTime() === b.getTime();\nconst diasEntre = (a, b) => Math.round((a - b) / 86400000);\n\n// --- amanhã ---\nconst deAmanha = consultas.filter((c) => mesmoDia(c._d, amanha));\nconst confAmanha = deAmanha.filter((c) => c._s === 'confirmada');\nconst aguardAmanha = deAmanha.filter((c) => c._s === 'aguardando resposta' || c._s === 'agendada');\nconst cancAmanha = deAmanha.filter((c) => c._s === 'cancelada' || c._s === 'remarcada');\n\n// --- últimos 7 dias (inclui hoje) ---\nconst semana = consultas.filter((c) => {\n  const d = diasEntre(hoje, c._d);\n  return d >= 0 && d <= 6;\n});\nconst confSemana = semana.filter((c) => c._s === 'confirmada');\nconst faltasSemana = semana.filter((c) => c._s === 'falta');\nconst taxaConf = semana.length ? Math.round((confSemana.length / semana.length) * 100) : 0;\n\n// --- escopo do gráfico: amanhã se houver; senão, a semana ---\nconst usaAmanha = deAmanha.length > 0;\nconst base = usaAmanha ? deAmanha : semana;\nconst tituloGrafico = usaAmanha\n  ? `Consultas de amanhã (${fmtBR(amanha)})`\n  : 'Consultas dos últimos 7 dias';\n\nconst gConf = base.filter((c) => c._s === 'confirmada').length;\nconst gAguard = base.filter((c) => c._s === 'aguardando resposta' || c._s === 'agendada').length;\nconst gOutros = base.filter((c) => ['cancelada', 'remarcada', 'falta'].includes(c._s)).length;\n\nconst chart = {\n  type: 'doughnut',\n  data: {\n    labels: ['Confirmadas', 'Sem resposta', 'Canceladas/faltas'],\n    datasets: [\n      {\n        data: [gConf, gAguard, gOutros],\n        backgroundColor: ['#1FA36C', '#F5A524', '#9DB3AA'],\n        borderColor: '#FAF7F2',\n        borderWidth: 3,\n      },\n    ],\n  },\n  options: {\n    plugins: {\n      title: {\n        display: true,\n        text: tituloGrafico,\n        color: '#0B3D2E',\n        font: { size: 20, weight: 'bold' },\n      },\n      legend: { position: 'bottom', labels: { color: '#1C1C1C', font: { size: 14 } } },\n      datalabels: {\n        color: '#FFFFFF',\n        font: { size: 20, weight: 'bold' },\n      },\n    },\n  },\n};\n\nconst chartUrl =\n  'https://quickchart.io/chart?w=640&h=440&bkg=%23FAF7F2&c=' +\n  encodeURIComponent(JSON.stringify(chart));\n\n// --- texto ---\nconst rsGarantido = confAmanha.length * TICKET_MEDIO;\nconst rsRisco = aguardAmanha.length * TICKET_MEDIO;\n// Faltas evitadas proporcionais ao movimento real da semana (nunca um número fixo:\n// afirmar \"5 faltas evitadas\" numa semana de 2 consultas destrói a credibilidade).\nconst faltasEsperadas = Math.round(semana.length * TAXA_FALTA_ANTES);\nconst faltasEvitadas = Math.max(faltasEsperadas - faltasSemana.length, 0);\n\nlet msg = `🌙 *${NOME_CLINICA} — fechamento do dia*\\n${fmtBR(hoje)}\\n\\n`;\n\nif (usaAmanha) {\n  msg += `*Amanhã (${fmtBR(amanha)})*\\n`;\n  msg += `📅 ${deAmanha.length} consulta(s) na agenda\\n`;\n  msg += `✅ ${confAmanha.length} confirmada(s) — R$ ${reais(rsGarantido)} garantidos\\n`;\n  if (aguardAmanha.length > 0) {\n    msg += `⏳ ${aguardAmanha.length} sem resposta — R$ ${reais(rsRisco)} em risco\\n`;\n  }\n  if (cancAmanha.length > 0) {\n    msg += `🔄 ${cancAmanha.length} cancelada(s)/remarcada(s) — horário livre para a lista de espera\\n`;\n  }\n} else {\n  msg += `*Amanhã (${fmtBR(amanha)})*\\n📭 Nenhuma consulta agendada.\\n`;\n}\n\nmsg += `\\n*Últimos 7 dias*\\n`;\nmsg += `📊 Taxa de confirmação: ${taxaConf}% (${confSemana.length} de ${semana.length})\\n`;\nmsg += `🚫 Faltas: ${faltasSemana.length}`;\nif (faltasSemana.length > 0) msg += ` — R$ ${reais(faltasSemana.length * TICKET_MEDIO)} perdidos`;\nmsg += `\\n`;\n// só afirma \"faltas evitadas\" se houve movimento na semana — senão seria número inventado\nif (faltasEvitadas > 0 && semana.length > 0) {\n  msg += `💚 ~${faltasEvitadas} falta(s) evitada(s) vs. antes da automação — R$ ${reais(faltasEvitadas * TICKET_MEDIO)} preservados\\n`;\n}\n\nif (aguardAmanha.length > 0) {\n  msg += `\\n*Vale uma ligação amanhã cedo:*\\n`;\n  msg += aguardAmanha.map((c) => `• ${c.paciente} — ${c.hora}`).join('\\n');\n  msg += `\\n`;\n}\n\nmsg += `\\n_Relatório automático ModernEasy_`;\n\nreturn [\n  {\n    json: {\n      para: NUMERO_DO_DONO,\n      caption: msg,\n      grafico: chartUrl,\n      _debug: {\n        amanha: deAmanha.length,\n        semana: semana.length,\n        taxa: taxaConf,\n        usouAmanha: usaAmanha,\n      },\n    },\n  },\n];"
+      },
+      "id": "a3-code",
+      "name": "Montar relatório",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [440, 40]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://moderneasyevo.duckdns.org/message/sendMedia/demo",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "COLE_AQUI_SUA_EVOLUTION_API_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "keypair",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "={{ $json.para }}"
+            },
+            {
+              "name": "mediatype",
+              "value": "image"
+            },
+            {
+              "name": "mimetype",
+              "value": "image/png"
+            },
+            {
+              "name": "fileName",
+              "value": "relatorio-moderneasy.png"
+            },
+            {
+              "name": "media",
+              "value": "={{ $json.grafico }}"
+            },
+            {
+              "name": "caption",
+              "value": "={{ $json.caption }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a3-send",
+      "name": "Enviar relatório",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, 40]
+    }
+  ],
+  "connections": {
+    "Todo dia às 19h": {
+      "main": [[{ "node": "Ler aba Agenda", "type": "main", "index": 0 }]]
+    },
+    "Ler aba Agenda": {
+      "main": [[{ "node": "Montar relatório", "type": "main", "index": 0 }]]
+    },
+    "Montar relatório": {
+      "main": [[{ "node": "Enviar relatório", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}
