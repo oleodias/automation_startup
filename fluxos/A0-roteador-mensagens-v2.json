@@ -1,0 +1,289 @@
+{
+  "name": "A0 — Roteador de mensagens (v2, desempate por contexto)",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## O QUE MUDOU NA v2\nA v1 decidia só por \"tem orçamento aberto?\" — então um paciente que também tinha orçamento nunca conseguia responder `1`/`2`/`3` para a clínica.\n\nA v2 consulta **as duas planilhas** e desempata pelo **conteúdo da mensagem**:\n\n1. É `1`, `2` ou `3` **e** existe consulta `aguardando resposta`? → **CLÍNICA** (é resposta de menu)\n2. Existe orçamento com status `enviado`? → **ORÇAMENTO**\n3. Existe consulta `aguardando resposta`? → **CLÍNICA**\n4. Nada encontrado → **CLÍNICA** (padrão)\n\n### Nota de arquitetura\nEm produção, cada cliente terá **sua própria instância** na Evolution (número próprio) — e aí este conflito não existe. O roteador é essencial em dois casos: (a) o ambiente de demonstração, com um número só simulando vários clientes; (b) um cliente real com **várias automações no mesmo número**.",
+        "height": 520,
+        "width": 440,
+        "color": 3
+      },
+      "id": "sticky-v2-1",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [-140, -560]
+    },
+    {
+      "parameters": {
+        "content": "## CONFIGURAÇÃO\n1. **Ler aba Orcamentos** → documento `Moveis Premium — Orcamentos`, aba `Orcamentos`\n2. **Ler aba Agenda** → documento `Clinica Sorriso — Agenda`, aba `Agenda`\n   ⚠️ São **documentos diferentes** — atenção ao escolher.\n3. Publicar este workflow.\n4. Na Evolution, a URL segue a mesma: `https://moderneasyn8n.duckdns.org/webhook/evolution-in`\n\n### Depuração\nO nó **Decidir destino** devolve `destino`, `motivo`, `temConsultaPendente` e `temOrcamentoAberto` — dá para ver na execução exatamente por que ele escolheu cada caminho.",
+        "height": 400,
+        "width": 420,
+        "color": 4
+      },
+      "id": "sticky-v2-2",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [330, -560]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "evolution-in",
+        "options": {}
+      },
+      "id": "v2-webhook",
+      "name": "Webhook Evolution IN",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "webhookId": "c4d8f0a1-9e33-4b57-a6d1-moderneasy00",
+      "position": [0, 40]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "v2r1",
+              "name": "telefone8",
+              "value": "={{ String($json.body?.data?.key?.remoteJid || $json.data?.key?.remoteJid || '').split('@')[0].replace(/\\D/g,'').slice(-8) }}",
+              "type": "string"
+            },
+            {
+              "id": "v2r2",
+              "name": "texto",
+              "value": "={{ String($json.body?.data?.message?.conversation || $json.data?.message?.conversation || '').trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "v2r3",
+              "name": "deMim",
+              "value": "={{ $json.body?.data?.key?.fromMe ?? $json.data?.key?.fromMe ?? false }}",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "v2-extract",
+      "name": "Extrair remetente",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [220, 40]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "v2ig1",
+              "leftValue": "={{ $json.deMim }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "v2-ignora",
+      "name": "Ignorar mensagens nossas",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [440, 40]
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
+      },
+      "id": "v2-read-orc",
+      "name": "Ler aba Orcamentos",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [660, 40],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
+      },
+      "id": "v2-read-agenda",
+      "name": "Ler aba Agenda",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [880, 40],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Decide o destino olhando AS DUAS planilhas + o conteúdo da mensagem.\n// Sempre devolve exatamente 1 item (nunca vazio), para o fluxo não morrer aqui.\n\nconst so8 = (v) => String(v || '').replace(/\\D/g, '').slice(-8);\n\nconst info = $('Extrair remetente').first().json;\nconst alvo = info.telefone8;\nconst texto = String(info.texto || '').trim();\nconst body = $('Webhook Evolution IN').first().json.body ?? $('Webhook Evolution IN').first().json;\n\nfunction linhas(nome) {\n  try {\n    return $(nome).all().map((i) => i.json).filter((o) => o && o.telefone !== undefined);\n  } catch (e) {\n    return [];\n  }\n}\n\nconst orcamentos = linhas('Ler aba Orcamentos');\nconst agenda = linhas('Ler aba Agenda');\n\nconst temOrcamentoAberto = orcamentos.some(\n  (o) => so8(o.telefone) === alvo && String(o.status || '').trim() === 'enviado'\n);\nconst temConsultaPendente = agenda.some(\n  (a) => so8(a.telefone) === alvo && String(a.status || '').trim() === 'aguardando resposta'\n);\n\nconst ehRespostaDeMenu = ['1', '2', '3'].includes(texto);\n\nlet destino;\nlet motivo;\n\nif (temConsultaPendente && ehRespostaDeMenu) {\n  destino = 'A1';\n  motivo = 'resposta de menu (1/2/3) com consulta aguardando';\n} else if (temOrcamentoAberto) {\n  destino = 'A2';\n  motivo = 'orcamento com status enviado para este telefone';\n} else if (temConsultaPendente) {\n  destino = 'A1';\n  motivo = 'consulta aguardando resposta para este telefone';\n} else {\n  destino = 'A1';\n  motivo = 'nada encontrado — padrao clinica';\n}\n\nreturn [\n  {\n    json: {\n      destino,\n      motivo,\n      telefone8: alvo,\n      texto,\n      temConsultaPendente,\n      temOrcamentoAberto,\n      body,\n    },\n  },\n];"
+      },
+      "id": "v2-decide",
+      "name": "Decidir destino",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1100, 40]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "v2d1",
+                    "leftValue": "={{ $json.destino }}",
+                    "rightValue": "A2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "ORÇAMENTO (A2.2)"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "v2d2",
+                    "leftValue": "={{ $json.destino }}",
+                    "rightValue": "A1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CLÍNICA (A1.2)"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "v2-switch",
+      "name": "Para onde vai",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [1320, 40]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://moderneasyn8n.duckdns.org/webhook/orcamento-resposta",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body) }}",
+        "options": {}
+      },
+      "id": "v2-to-a22",
+      "name": "→ A2.2 Orçamento",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1560, -60]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://moderneasyn8n.duckdns.org/webhook/evolution-demo",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body) }}",
+        "options": {}
+      },
+      "id": "v2-to-a12",
+      "name": "→ A1.2 Clínica",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1560, 140]
+    }
+  ],
+  "connections": {
+    "Webhook Evolution IN": {
+      "main": [[{ "node": "Extrair remetente", "type": "main", "index": 0 }]]
+    },
+    "Extrair remetente": {
+      "main": [[{ "node": "Ignorar mensagens nossas", "type": "main", "index": 0 }]]
+    },
+    "Ignorar mensagens nossas": {
+      "main": [[{ "node": "Ler aba Orcamentos", "type": "main", "index": 0 }]]
+    },
+    "Ler aba Orcamentos": {
+      "main": [[{ "node": "Ler aba Agenda", "type": "main", "index": 0 }]]
+    },
+    "Ler aba Agenda": {
+      "main": [[{ "node": "Decidir destino", "type": "main", "index": 0 }]]
+    },
+    "Decidir destino": {
+      "main": [[{ "node": "Para onde vai", "type": "main", "index": 0 }]]
+    },
+    "Para onde vai": {
+      "main": [
+        [{ "node": "→ A2.2 Orçamento", "type": "main", "index": 0 }],
+        [{ "node": "→ A1.2 Clínica", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}
