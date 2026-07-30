@@ -138,13 +138,39 @@ Motivo de isolar o roteador: publicar/despublicar é **por workflow**. Se o rote
 5. **Nota de arquitetura:** em produção, cada cliente terá sua **própria instância** na Evolution (número próprio), e esse conflito desaparece. O roteador é essencial em dois casos: o ambiente de demonstração (um número simulando vários clientes) e um cliente real com **várias automações no mesmo número**.
 6. Copiar/colar nós entre workflows (`Ctrl+C`/`Ctrl+V`) **preserva parâmetros e credenciais** — melhor que reimportar quando já se configurou algo.
 
-### Estado do portfólio (meta dos 90 dias)
+---
+
+## 🎉 MARCO — PORTFÓLIO DE 3 AUTOMAÇÕES COMPLETO
+
 | Bloco | Automação | Estado |
 |---|---|---|
-| 1 | A1 — Confirmação de consultas (clínicas) | ✅ funcionando |
-| 2 | A2 — Resgate de orçamentos (comércio/serviços) | ✅ funcionando |
-| 3 | A3 — Relatório do dono com gráfico | ⏳ a construir (~10h) |
-| — | Demo interativa da landing page | ⏳ a construir (~8h) |
+| 1 | **A1** — Confirmação e reagendamento de consultas (clínicas) | ✅ funcionando |
+| 2 | **A2** — Resgate de orçamentos parados (comércio/serviços) | ✅ funcionando |
+| 3 | **A3** — Relatório gerencial do dono, com gráfico | ✅ funcionando |
+| — | A0 — Roteador central de mensagens (infra) | ✅ funcionando |
+| — | Demo interativa da landing page | ⏳ ~8h |
+
+### A3 — decisões de produto (mudanças em relação ao plano original)
+1. **Não consolida clínica + loja.** O plano previa um relatório único somando as duas; descartado porque **são clientes diferentes** — o dono da clínica não quer ver orçamentos de móveis. O relatório da loja já é o **A2.3**.
+2. **O público é o DONO, não a secretária.** É o que justifica A3 e A1.4 coexistirem:
+
+| | A1.4 | A3 |
+|---|---|---|
+| Para quem | secretária | **dono** |
+| Quando | 7h | 19h |
+| Natureza | operacional ("quem ligar") | **gerencial** ("quanto vale") |
+| Formato | texto | **gráfico + R$** |
+
+Na venda: *"sua recepção recebe a lista de trabalho; você recebe o resultado em reais."*
+
+3. **Envio de imagem** via `POST /message/sendMedia/{instance}` da Evolution (body plano: `number`, `mediatype`, `mimetype`, `fileName`, `media`, `caption`). Gráfico gerado pelo **QuickChart** (grátis, via URL) nas cores da marca.
+
+### ⚠️ Aprendizado importante: número inventado destrói a demo
+A primeira versão usava `FALTAS_BASELINE = 5` (fixo) para calcular "faltas evitadas". No primeiro teste real, o relatório afirmou *"~5 faltas evitadas — R$ 750 preservados"* numa semana com **2 consultas e 0 faltas**. Qualquer dono faz essa conta de cabeça e passa a duvidar do resto do relatório.
+
+**Correção:** o cálculo passou a ser **proporcional ao movimento real** (`TAXA_FALTA_ANTES = 0.20`, ou seja, 20% das consultas viravam falta antes da automação). Testado: semana de 2 consultas → linha **não aparece**; 22 consultas com 2 faltas → "~2 evitadas, R$ 300 preservados"; 20 consultas com 6 faltas → não aparece (a automação não teria o que comemorar).
+
+**Regra para todas as automações:** nenhum número mostrado ao cliente pode ser fixo/estimado disfarçado de medição. Se não há dado para sustentar, não exibe.
 
 ### Próximo passo definido
-**A3 — Relatório diário do dono** (~10h): lê as planilhas de A1 e A2, monta o resumo do dia com **1 gráfico** (QuickChart, grátis) e envia ao dono às 19h. É a automação mais barata de construir, gera o vídeo mais bonito da landing page e é a que o dono mostra para os amigos — a que mais gera indicação.
+**Dados de demonstração ricos + gravação dos 3 vídeos** (60–90s cada) para a landing page. As automações funcionam, mas as planilhas estão com pouco movimento — um relatório com "nenhuma consulta agendada" não vende. Antes de gravar: encher a Agenda e os Orçamentos com um cenário realista (~20 consultas na semana, mix de status, alguns orçamentos recuperados). Depois: demo interativa (~8h) e a landing page recebendo os vídeos.
