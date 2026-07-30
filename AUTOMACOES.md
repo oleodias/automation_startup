@@ -1,5 +1,9 @@
 # Plano de Construção das Automações do Portfólio
 
+> **Estado atual (29/07/2026):** **A1 ✅ funcionando** · **A2 ✅ funcionando** (+ roteador A0) · **A3 ⏳ próxima** · demo interativa ⏳.
+> Guias de montagem: [`A1-CONSTRUCAO.md`](A1-CONSTRUCAO.md) · [`A2-CONSTRUCAO.md`](A2-CONSTRUCAO.md) · fluxos prontos em [`fluxos/`](fluxos/) · histórico e aprendizados em [`DIARIO.md`](DIARIO.md).
+> **Peça nova, não prevista no plano original:** o **A0 Roteador** — a Evolution API só aceita **um webhook por instância**, então sem um distribuidor central a segunda automação nunca receberia mensagens. Ele decide o destino lendo as planilhas e o conteúdo da mensagem.
+
 *Especificação para começar a construir amanhã. Complementa `CONSULTORIA-90-DIAS.md` (itens 2, 3 e 7). Estimativas de horas incluem aprendizado e retrabalho — vocês estão aprendendo o stack enquanto constroem, e isso é proposital (item 8 da consultoria).*
 
 ## Ordem de construção e por quê

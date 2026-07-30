@@ -110,5 +110,41 @@ Priorizado por valor de venda, para quando fizer sentido (ex.: pedido de um clie
 4. **Ativar A1.5 Healthcheck** (~1h) — configurar credencial Gmail e deixar ATIVO; é o que sustenta o SLA prometido em contrato.
 5. **Registro de "falta"** (~3h) — marcar quem confirmou e não apareceu, alimentando a métrica de no-show (o número que vende a automação).
 
+---
+
+## ✅ MARCO — A2 (Móveis Premium) + Roteador funcionando
+
+**Duas automações completas rodando no mesmo número de WhatsApp.** Tudo testado de ponta a ponta:
+
+- **A2.1 Varredura de orçamentos** — cron 9h, classifica quem merece follow-up (2+ dias → follow1; 7+ dias com follow1 → follow2), envia pelo WhatsApp, marca `ultimo_toque` e grava no Log. Máximo 2 toques por orçamento, limite de 10 envios por execução ✅
+- **A2.2 Cliente respondeu** — webhook → acha o orçamento aberto → status `respondeu` → **alerta o vendedor da linha** com contexto (cliente, item, valor, o que ele disse) ✅
+- **A2.3 Relatório semanal** — sexta 17h, resumo com **R$ recuperado**, R$ em jogo e taxa de resposta ao follow-up ✅
+- **A0 Roteador v2** — resolve o limite de 1 webhook por instância da Evolution, distribuindo mensagens entre clínica e orçamentos ✅
+
+### Organização dos workflows no n8n (convenção adotada)
+| Workflow | Conteúdo | Regra |
+|---|---|---|
+| `Automação - Clínica Sorriso` | A1.1, A1.2, A1.4, A1.5 | agrupado por cliente |
+| `Automação - Móveis Premium` | A2.1, A2.2, A2.3 | agrupado por cliente |
+| `A0 - Roteador (infra)` | só o roteador v2 | **infra compartilhada fica isolada** |
+
+Motivo de isolar o roteador: publicar/despublicar é **por workflow**. Se o roteador morasse junto com os crons de um cliente, desligar aquele cliente derrubaria o atendimento do outro.
+
+### Aprendizados desta etapa
+1. **`Import from File` NÃO cria workflow novo** — ele cola os nós no workflow aberto. Sempre criar um **Blank workflow** antes de importar. Um arquivo = um workflow.
+2. **Produção exige workflow publicado.** Webhook `/webhook/...` só responde com o fluxo publicado; `/webhook-test/...` só com "Listen for test event" ativo. O erro `webhook não registrado` é quase sempre isso.
+3. **Nós "Update Row" precisam de ajuste manual após importar** (o n8n cai em "Map Automatically"): modo manual, match por `row_number`, e só a coluna que muda preenchida. Sintoma do erro: `Unable to parse range: Aba!Fundefined`.
+4. **Roteamento por presença em planilha é frágil.** O mesmo telefone pode ter consulta pendente E orçamento aberto. A v2 desempata pelo **conteúdo da mensagem** (`1`/`2`/`3` = resposta de menu → clínica) e devolve um campo `motivo` para depuração.
+5. **Nota de arquitetura:** em produção, cada cliente terá sua **própria instância** na Evolution (número próprio), e esse conflito desaparece. O roteador é essencial em dois casos: o ambiente de demonstração (um número simulando vários clientes) e um cliente real com **várias automações no mesmo número**.
+6. Copiar/colar nós entre workflows (`Ctrl+C`/`Ctrl+V`) **preserva parâmetros e credenciais** — melhor que reimportar quando já se configurou algo.
+
+### Estado do portfólio (meta dos 90 dias)
+| Bloco | Automação | Estado |
+|---|---|---|
+| 1 | A1 — Confirmação de consultas (clínicas) | ✅ funcionando |
+| 2 | A2 — Resgate de orçamentos (comércio/serviços) | ✅ funcionando |
+| 3 | A3 — Relatório do dono com gráfico | ⏳ a construir (~10h) |
+| — | Demo interativa da landing page | ⏳ a construir (~8h) |
+
 ### Próximo passo definido
-Construir **A2 — Resgate de orçamentos parados** (~18h, plano em `AUTOMACOES.md`). Motivo: abre um **segundo mercado** (comércio/serviços) reaproveitando ~70% da base técnica da A1, e completa o portfólio da landing page com uma dor diferente. Depois dela, **A3 — Relatório do dono** (~10h).
+**A3 — Relatório diário do dono** (~10h): lê as planilhas de A1 e A2, monta o resumo do dia com **1 gráfico** (QuickChart, grátis) e envia ao dono às 19h. É a automação mais barata de construir, gera o vídeo mais bonito da landing page e é a que o dono mostra para os amigos — a que mais gera indicação.
