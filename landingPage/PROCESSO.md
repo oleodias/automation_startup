@@ -262,6 +262,38 @@ vieram de `AUTOMACOES.md` (A1, A2, A3) e do A0 Roteador.
 > portfólio precisa ser atualizado para o relatório do dono — ou os sócios decidem construir a
 > automação de cobrança para casar com o card.
 
+### Página integrada — `passo-a-passo.html` (2026-08-05)
+
+O Claude Design devolveu a página, mas **no formato `.dc.html`**: um componente com
+`<x-dc>`, `sc-for`, `sc-if`, `{{ }}` e atributos `style-hover`/`style-focus`, dependendo de um
+runtime `support.js` de **69KB que exige React** (`window.React is not available yet`).
+Não dava para publicar assim — quebraria a regra de página autossuficiente e traria React +
+ReactDOM de CDN para um site estático.
+
+**O que fiz:** converti para HTML/CSS/JS puro em `passo-a-passo.html` (raiz, irmã do
+`index.html`, como o Pages exige), preservando fielmente o design: mesma estrutura, cores,
+espaçamentos, textos, tipografia e as quatro animações (`meIn`, `meDot`, `mePop`, `meTick`).
+Os `style-hover`/`style-focus` viraram regras CSS reais; o motor de tempo (`CHAR_MS`,
+`TYPING_MIN/MAX`, `THINK_MS`, `GAP_MS`, `NOTE_MS`, `INT_MS`) e o objeto `AUTOS` com as três
+automações foram mantidos **na íntegra**.
+
+**Uma coisa que completei:** o design calculava `playLabel`, `prev`, `next`, `restart`, `rail`
+e `speeds` na lógica, mas **não renderizava nada disso na marcação** — a página tocava uma vez
+e parava, sem botão de repetir (só as setas do teclado funcionavam). Montei a barra de
+controles com esses mesmos valores: assistir/pausar/repetir, voltar/avançar, trilho de
+momentos clicável e velocidade 1x/1,5x/2x.
+
+**Ligações:** os três `Ver o passo a passo` do portfólio saíram de `href="#"` para
+`passo-a-passo.html?a=a1|a2|a3`. O CTA da página aponta para `index.html#chamada` e o "voltar"
+para `index.html#cases`. Assets vindos de `landingPage/assets-marca/`.
+
+**Verificação (Playwright):** sincronismo conversa↔etapas confirmado momento a momento;
+controles (play/pausa, voltar/avançar, clique na etapa, trilho) funcionando; troca de aba
+atualizando o hash; link direto `?a=a2` abrindo na automação certa; `prefers-reduced-motion`
+entregando as 8 falas e as 6 etapas já montadas; sem rolagem horizontal em 390px; **zero erros
+de JS**. (A única requisição que falha no meu ambiente é o Google Fonts, bloqueado pelo proxy
+do sandbox — no navegador dos sócios carrega normal.)
+
 ---
 
 ## Registro por seção
