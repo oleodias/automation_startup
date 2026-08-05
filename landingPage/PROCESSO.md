@@ -227,6 +227,41 @@ pela corda**. Nova seção Integrações (constelação) entra logo após.
 seletor desligado, 3 etapas, hero/portfólio intactos, sem erros de JS. Prettier aplicado.
 Aguardando avaliação dos sócios para levar à main.
 
+## Página "Ver o passo a passo" — prompt preparado (2026-07-30)
+
+Com as automações **A1, A2 e A3 concluídas e em produção**, os sócios pediram que o link
+"Ver o passo a passo" dos cards do portfólio (hoje `href="#"`, sem destino) passe a abrir uma
+**página dedicada de demonstração**: de um lado cards com a conversa de WhatsApp se animando
+(o cliente falando com a automação), do outro um painel explicando em detalhe a automação que
+está sendo vista.
+
+**Prompt preparado em** `referencias/passo-a-passo/PROMPT-pagina-passo-a-passo.md`.
+**Ao usar:** anexar `simbolo.png`, `logo-principal.png`, `logo-negativa-para-fundo-escuro.png`
+e as páginas CORES/TIPOGRAFIA/GRAFISMOS do manual.
+
+**Conceito central do pedido:** a conversa e a explicação **sincronizadas** — a etapa do painel
+se destaca conforme a mensagem correspondente aparece, e o visitante pode pausar, repetir ou
+clicar numa etapa para saltar a conversa até ali. É o que separa a página de um vídeo: mostra a
+mágica e a engrenagem ao mesmo tempo.
+
+**Decisões técnicas cravadas no prompt** (para a integração depois ser mecânica):
+- arquivo único self-contained (será página irmã do `index.html` no Pages);
+- as 3 automações num **objeto JS no topo**, com abertura direta por `?a=a1` / `#a1`, para
+  cada card do portfólio linkar na sua;
+- Sora + Figtree, âmbar uma vez por dobra, bolhas **nunca** no verde oficial do WhatsApp;
+- `prefers-reduced-motion` entrega a página inteira montada e parada;
+- linguagem de dono de PME no painel — sem "webhook", "cron", "API", "nó".
+
+**Conteúdo do prompt tirado do repositório** (nada inventado): roteiros de conversa e etapas
+vieram de `AUTOMACOES.md` (A1, A2, A3) e do A0 Roteador.
+
+> ⚠️ **Inconsistência a resolver com os sócios:** o **case 03 do portfólio** no site é
+> *"Lembrete de pagamento sem constrangimento"* (Financeiro), mas a automação **A3 construída
+> é o "Relatório do dono"** (gerencial, 19h, gráfico QuickChart). O prompt foi escrito com as
+> **3 automações reais** (A1, A2, A3 = relatório). Quando a página existir, o card 03 do
+> portfólio precisa ser atualizado para o relatório do dono — ou os sócios decidem construir a
+> automação de cobrança para casar com o card.
+
 ---
 
 ## Registro por seção
