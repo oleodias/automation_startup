@@ -632,86 +632,6 @@
         color: rgba(250, 247, 242, 0.64);
       }
 
-      /* ---------- controles da demonstração ---------- */
-      .controles {
-        margin-top: 16px;
-        background: #fff;
-        border: 1px solid rgba(28, 28, 28, 0.07);
-        border-radius: 16px;
-        padding: 13px 16px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        flex-wrap: wrap;
-      }
-      .btn-play {
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        border: none;
-        border-radius: 999px;
-        padding: 10px 18px;
-        background: var(--verde-mata);
-        color: var(--areia);
-        font-size: 14px;
-        font-weight: 600;
-        transition: background 0.2s ease;
-      }
-      .btn-play:hover {
-        background: var(--verde-abissal);
-      }
-      .btn-passo {
-        cursor: pointer;
-        width: 36px;
-        height: 36px;
-        flex: none;
-        border-radius: 50%;
-        border: 1px solid rgba(92, 107, 100, 0.35);
-        background: transparent;
-        color: var(--verde-mata);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        transition:
-          border-color 0.2s ease,
-          background 0.2s ease;
-      }
-      .btn-passo:hover:not(:disabled) {
-        border-color: var(--verde-vivo);
-        background: rgba(31, 163, 108, 0.1);
-      }
-      .btn-passo:disabled {
-        opacity: 0.35;
-        cursor: default;
-      }
-      .trilho {
-        display: flex;
-        gap: 5px;
-        align-items: center;
-        flex: 1;
-        min-width: 90px;
-      }
-      .trilho button {
-        cursor: pointer;
-        flex: 1;
-        height: 5px;
-        min-width: 8px;
-        border: none;
-        padding: 0;
-        border-radius: 3px;
-        background: rgba(92, 107, 100, 0.22);
-        transition: background 0.3s ease;
-      }
-      .trilho button[data-on="1"] {
-        background: var(--verde-vivo);
-      }
-      .controles button:focus-visible,
-      .trilho button:focus-visible {
-        outline: 2px solid var(--verde-vivo);
-        outline-offset: 2px;
-      }
-
       /* ---------- cartão "o que o sistema fez" ---------- */
       .agora {
         margin-top: 12px;
@@ -1069,22 +989,6 @@
                   <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5a2.8 2.8 0 0 1 2.8 2.8v5.4a2.8 2.8 0 0 1-5.6 0V6.3A2.8 2.8 0 0 1 12 3.5z"></path><path d="M6.5 11.5a5.5 5.5 0 0 0 11 0M12 17v3.5"></path></svg>
                 </span>
               </div>
-            </div>
-
-            <!-- controles: a lógica do design já previa play/pausa,
-                 avançar/voltar, trilho e velocidade -->
-            <div class="controles">
-              <button class="btn-play" id="btnPlay" type="button">
-                <svg id="iconePlay" viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg>
-                <span id="rotuloPlay">Assistir</span>
-              </button>
-              <button class="btn-passo" id="btnAnt" type="button" aria-label="Momento anterior">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
-              </button>
-              <button class="btn-passo" id="btnProx" type="button" aria-label="Próximo momento">
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
-              </button>
-              <div class="trilho" id="trilho" role="group" aria-label="Momentos da conversa"></div>
             </div>
 
             <div class="agora">
@@ -1460,42 +1364,6 @@
           });
         }
 
-        function pintaControles() {
-          var bs = beats();
-          var cur = Math.min(st.cursor, bs.length - 1);
-
-          el("rotuloPlay").textContent = st.playing
-            ? "Pausar"
-            : st.ended || cur >= bs.length - 1
-              ? "Repetir"
-              : cur < 0
-                ? "Assistir"
-                : "Continuar";
-          el("btnPlay").setAttribute(
-            "aria-label",
-            st.playing ? "Pausar a conversa" : "Continuar a conversa"
-          );
-          el("iconePlay").innerHTML = st.playing
-            ? '<path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"></path>'
-            : st.ended || cur >= bs.length - 1
-              ? '<path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"></path>'
-              : '<path d="M8 5v14l11-7z"></path>';
-
-          el("btnAnt").disabled = cur <= 0;
-          el("btnProx").disabled = cur >= bs.length - 1;
-
-          var trilho = el("trilho");
-          trilho.textContent = "";
-          bs.forEach(function (b, i) {
-            var t = document.createElement("button");
-            t.type = "button";
-            t.setAttribute("data-on", i <= cur ? "1" : "0");
-            t.setAttribute("aria-label", "Ir para o momento " + (i + 1) + " de " + bs.length);
-            t.addEventListener("click", function () { vaiPara(i); });
-            trilho.appendChild(t);
-          });
-        }
-
         function pintaCabecalho() {
           var a = AUTOS[st.a];
           el("kicker").textContent = "// " + a.kicker;
@@ -1528,7 +1396,6 @@
           el("agora").textContent = cur >= 0 ? bs[cur].act : AUTOS[st.a].idle;
           pintaMensagens();
           pintaEtapas();
-          pintaControles();
         }
 
         /* ===== motor da linha do tempo ===== */
@@ -1626,10 +1493,6 @@
         pintaCabecalho();
         pinta();
         if (st.playing) avanca();
-
-        el("btnPlay").addEventListener("click", alterna);
-        el("btnProx").addEventListener("click", proximo);
-        el("btnAnt").addEventListener("click", anterior);
 
         var btnD = el("btnDentro"), detD = el("detalheDentro");
         btnD.addEventListener("click", function () {
