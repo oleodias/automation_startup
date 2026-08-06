@@ -706,28 +706,6 @@
       .trilho button[data-on="1"] {
         background: var(--verde-vivo);
       }
-      .velocidades {
-        display: flex;
-        gap: 4px;
-        flex: none;
-      }
-      .velocidades button {
-        cursor: pointer;
-        border: none;
-        background: transparent;
-        color: var(--cinza-verde);
-        font-size: 12.5px;
-        font-weight: 600;
-        padding: 6px 10px;
-        border-radius: 999px;
-        transition:
-          background 0.2s ease,
-          color 0.2s ease;
-      }
-      .velocidades button[aria-pressed="true"] {
-        background: var(--verde-mata);
-        color: var(--areia);
-      }
       .controles button:focus-visible,
       .trilho button:focus-visible {
         outline: 2px solid var(--verde-vivo);
@@ -1107,7 +1085,6 @@
                 <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
               </button>
               <div class="trilho" id="trilho" role="group" aria-label="Momentos da conversa"></div>
-              <div class="velocidades" id="velocidades" role="group" aria-label="Velocidade"></div>
             </div>
 
             <div class="agora">
@@ -1267,6 +1244,9 @@
           typeof matchMedia === "function" &&
           matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+        /* speed fica fixo em 1: o seletor de velocidade foi removido da
+           interface, mas o motor continua dividindo os tempos por ele — é só
+           voltar a expor um controle se um dia quisermos a opção de novo. */
         var st = { a: "a1", cursor: -1, typing: null, playing: false, speed: 1, ended: false };
         var timer = null;
 
@@ -1513,26 +1493,6 @@
             t.setAttribute("aria-label", "Ir para o momento " + (i + 1) + " de " + bs.length);
             t.addEventListener("click", function () { vaiPara(i); });
             trilho.appendChild(t);
-          });
-
-          var vel = el("velocidades");
-          if (!vel.dataset.pronto) {
-            [[1, "1x"], [1.5, "1,5x"], [2, "2x"]].forEach(function (v) {
-              var b = document.createElement("button");
-              b.type = "button";
-              b.textContent = v[1];
-              b.setAttribute("aria-label", "Velocidade " + v[1]);
-              b.dataset.v = String(v[0]);
-              b.addEventListener("click", function () {
-                st.speed = v[0];
-                pintaControles();
-              });
-              vel.appendChild(b);
-            });
-            vel.dataset.pronto = "1";
-          }
-          Array.prototype.forEach.call(vel.children, function (b) {
-            b.setAttribute("aria-pressed", Number(b.dataset.v) === st.speed ? "true" : "false");
           });
         }
 
