@@ -109,6 +109,12 @@ Os chips "Confirmar consultas / Responder orçamentos / Outra rotina" da caixa d
 
 ---
 
+## Status (18/09/2026)
+
+Aplicado no commit seguinte a este documento: **onda 1** (B-1, B-2, C-1, D-3 e A-3 — "Cases" virou "Portfólio", e "Como funciona" entrou na navbar), **onda 3** inteira (D-1 menu do celular, D-2 intro uma vez por sessão, G-1 foco) e da **onda 4** o E-1 e o E-2 (as 21 imagens em base64 viraram 16 arquivos em `landingPage/assets-marca/integracoes/` + o `simbolo.png` reaproveitado; HTML de 240 KB para 140 KB). O workflow de publicação passou a copiar a `passo-a-passo.html` e as logos.
+
+**Ficam esperando decisão de vocês:** A-1 (Integrações só com o que existe), A-2 (case 03), B-3 (alinhamento dos cabeçalhos), B-4 (ritmo claro/escuro), D-4 (destino de "O que fazemos"), E-3 (pausar animações fora da tela) e F-1 (precisa do símbolo em SVG).
+
 ## Plano, em ondas
 
 | Onda | O quê | Resolve | Esforço |
